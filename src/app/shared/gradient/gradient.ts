@@ -1,0 +1,10 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-gradient',
+  imports: [],
+  templateUrl: './gradient.html',
+})
+export class Gradient {
+
+}
