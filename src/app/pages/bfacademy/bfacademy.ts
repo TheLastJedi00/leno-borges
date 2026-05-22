@@ -1,12 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { Header } from "../../shared/header/header";
-import { Gradient } from "../../shared/gradient/gradient";
 import { NgOptimizedImage } from "@angular/common";
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-bfacademy',
-  imports: [ Header, Gradient, NgOptimizedImage],
+  imports: [ Header, NgOptimizedImage],
   templateUrl: './bfacademy.html',
 })
 export class Bfacademy {

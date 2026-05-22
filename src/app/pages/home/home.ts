@@ -1,14 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Header } from '../../shared/header/header';
-import { Gradient } from '../../shared/gradient/gradient';
 import { Links } from '../../shared/links/links';
 import { Owner } from '../../shared/owner/owner';
 import { ExperienceCard } from '../../shared/experience-card/experience-card';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, Header, Gradient, Links, Owner, ExperienceCard],
+  imports: [RouterLink, Header, Links, Owner, ExperienceCard],
   templateUrl: './home.html',
 })
 export class Home {
