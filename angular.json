@@ -83,7 +83,7 @@
     }
   },
   "schematics": {
-    "@schematicas/angular:component": {
+    "@schematics/angular:component": {
       "style": "scss"
     }
   },
