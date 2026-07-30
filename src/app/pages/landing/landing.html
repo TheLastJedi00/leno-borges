@@ -1,6 +1,6 @@
 <app-header></app-header>
 <main class="pt-main container mx-auto">
-  <section class="p-5 flex flex-col items-center justify-center md:flex-row gap-10">
+  <section class="p-section flex flex-col items-center justify-center md:flex-row gap-10">
     <div class="grid gap-8 sm:w-[60%]">
       <h1 class="text-white text-4xl font-semibold">
         <b class="text-gradient font-bold">Escale sua operação</b>
@@ -13,5 +13,19 @@
       <a href="" class="cta-button text-violet">Otimizar meu negócio</a>
     </div>
     <app-grow-up></app-grow-up>
+  </section>
+  <section class="p-section bg-white grid gap-5">
+    <h2 class="text-2xl text-violet text-center font-semibold">
+      Tecnologia construída para resolver problemas de negócio.
+    </h2>
+    <div class="flex gap-5 horizontal-scroll lg:justify-center">
+      @for (c of cards; track $index) {
+        <app-card 
+          [icon]="c.icon" 
+          [title]="c.title" 
+          [description]="c.description">
+        </app-card>
+      }
+    </div>
   </section>
 </main>

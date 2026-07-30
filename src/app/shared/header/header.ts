@@ -5,7 +5,7 @@ import { Logo } from "../logo/logo";
   selector: 'app-header',
   imports: [Logo],
   template: `
-    <header class="h-header fixed bg-black/40 w-full backdrop-blur-[2px]">
+    <header class="z-99 h-header fixed bg-black/40 w-full backdrop-blur-[2px]">
         <app-logo></app-logo>
     </header>
   `
