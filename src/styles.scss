@@ -21,3 +21,10 @@ $green: #00BCB8;
 .text-violet {
     color: $violet;
 }
+
+.text-gradient {
+    background-image: linear-gradient(to right, $green, $blue);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
