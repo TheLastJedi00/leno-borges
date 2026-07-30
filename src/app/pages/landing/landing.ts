@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { Header } from "../../shared/header/header";
+import { GrowUp } from "../../shared/grow-up/grow-up";
 
 @Component({
   selector: 'app-landing',
-  imports: [],
+  imports: [Header, GrowUp],
   templateUrl: './landing.html',
   styleUrl: './landing.scss',
 })

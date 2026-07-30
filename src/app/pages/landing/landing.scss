@@ -1,26 +1,30 @@
-main section {
+main {
   height: 100vh;
   text-align: left;
-  background-image: linear-gradient(to right, #4f74ae, #6947c5, #47807f);
 }
 
 .cta-button {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(4px);
-  padding: 0.5rem 0.75rem;
+  padding: 0.25rem 2.5rem;
   border-radius: 1.75rem;
   text-align: center;
   width: fit-content;
-  color: #4f74ae;
+  height: fit-content;
   font-size: 1.25rem;
   font-weight: 500;
   transition: all 300ms;
-    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.525);
-
+  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.525);
 
   &:hover {
     background-color: rgb(255, 255, 255);
     transform: translateY(-5px);
-    box-shadow: 0px 5px 10px rgba(255, 255, 255, 0.525);
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.525);
+  }
+
+  &:active {
+    opacity: 0.5;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.525);
+    transform: translateY(0px);
   }
 }

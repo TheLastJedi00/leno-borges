@@ -1,2 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+$h-header: 7vh;
+$violet: #6947C5;
+$blue: #3986FF;
+$green: #00BCB8;
+
+.h-header {
+    height: $h-header;
+}
+
+.pt-main {
+    padding-top: $h-header;
+}
+
+.bg-gradient {
+    background-image: linear-gradient(to right, #1F3F3E, #422C7B, #2D405E);
+}
+
+.text-violet {
+    color: $violet;
+}
