@@ -52,7 +52,7 @@ export interface Contact {
 }
 
 export const summary =
-  'Engenheiro de Software Fullstack com experiência na construção de plataformas SaaS e soluções EdTech de ponta a ponta, utilizando Angular, NestJS e o ecossistema Java/Spring. Focado em traduzir regras de negócio complexas em arquiteturas modulares e eficientes.';
+  'Software Developer Fullstack com experiência na construção de plataformas SaaS e soluções EdTech de ponta a ponta, utilizando Angular, NestJS e o ecossistema Java/Spring. Focado em traduzir regras de negócio complexas em arquiteturas modulares e eficientes.';
 
 export const summaryExtra =
   'Forte vivência prática na integração de Inteligência Artificial para automatizar processos operacionais e na aplicação de estratégias de FinOps para escalar produtos mantendo o custo de infraestrutura próximo a zero. Perfil hands-on e com histórico de mentoria técnica, combinando a entrega ágil de código com a preocupação real sobre o produto e o cliente final.';
@@ -148,7 +148,7 @@ export const experiences: Experience[] = [
   {
     title: 'BF Academy',
     subtitle: 'EdTech & LMS Proprietário',
-    role: 'Cofundador · Engenheiro de Software',
+    role: 'Cofundador · Software Developer',
     period: 'Out 2025 — Atual',
     location: 'Remoto',
     badge: 'Cofundador',

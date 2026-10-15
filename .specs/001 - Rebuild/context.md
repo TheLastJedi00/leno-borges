@@ -49,7 +49,7 @@ Os tokens ficam em `src/styles.css` via `@theme` do Tailwind v4 (ex. `--color-in
 ## Estrutura da Home
 
 1. **Header** — logo atual + navegação âncora (Sobre, Experiência, Competências, Formação, Contato). Fixo, com fundo ao rolar.
-2. **Hero** — nome em display grande, "Engenheiro de Software Fullstack & Tech Educator", localização (Blumenau, SC), foto em destaque, CTAs: "Ver experiência ↓" e "Case BF Academy".
+2. **Hero** — nome em display grande, "Software Developer Fullstack & Tech Educator", localização (Blumenau, SC), foto em destaque, CTAs: "Ver experiência ↓" e "Case BF Academy".
 3. **01 — Sobre** — Resumo profissional do currículo + 3 números de destaque extraídos dele:
    - 5 dias → 2 min (material didático, BF Academy)
    - 3 h → 1 min (material personalizado, Freelancer)

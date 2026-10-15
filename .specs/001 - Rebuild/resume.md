@@ -2,7 +2,7 @@ Leno Borges
 Blumenau, SC 
 (47) 99247-8232 |  lenoborges.dev@gmail.com 
 LinkedIn: linkedin.com/in/jediaelborges00 | Portfólio: lenoborges.com.br 
-Resumo Profissional: Engenheiro de Software Fullstack com experiência na construção de plataformas SaaS e soluções EdTech de ponta a ponta, utilizando Angular, NestJS e o ecossistema Java/Spring. Focado em traduzir regras de negócio complexas em arquiteturas modulares e eficientes. Possui forte vivência prática na integração de Inteligência Artificial para automatizar processos operacionais e na aplicação de estratégias de FinOps para escalar produtos mantendo o custo de infraestrutura próximo a zero. Perfil hands-on e com histórico de mentoria técnica, combinando a entrega ágil de código com a preocupação real sobre o produto e o cliente final. 
+Resumo Profissional: Software Developer Fullstack com experiência na construção de plataformas SaaS e soluções EdTech de ponta a ponta, utilizando Angular, NestJS e o ecossistema Java/Spring. Focado em traduzir regras de negócio complexas em arquiteturas modulares e eficientes. Possui forte vivência prática na integração de Inteligência Artificial para automatizar processos operacionais e na aplicação de estratégias de FinOps para escalar produtos mantendo o custo de infraestrutura próximo a zero. Perfil hands-on e com histórico de mentoria técnica, combinando a entrega ágil de código com a preocupação real sobre o produto e o cliente final. 
 Experiência Profissional
 Desenvolvedor Fullstack | Tichr | Remoto | Abril 2026 – Presente 
 Desenvolvimento ponta a ponta de uma plataforma SaaS educacional multiplano, utilizando Angular 20 (Signals, Standalone) no frontend e NestJS 11 com Firebase no backend. 
@@ -18,7 +18,7 @@ Desenvolvimento de plataforma de consultoria, utilizando Angular e NestJS.
 Implementação de módulo de IA Generativa que automatizou a criação de material personalizado, reduzindo o tempo de produção de 3 horas para 1 minuto.
 Arquitetura modular baseada em Serverless, garantindo alta disponibilidade e custo zero de ociosidade. 
 Configuração de esteiras de CI/CD para deploy automatizado e gestão de qualidade de código.
-Cofundador - Eng. Software | BF Academy | Remoto | Outubro 2025 – Atual
+Cofundador - Software Developer | BF Academy | Remoto | Outubro 2025 – Atual
 Liderança técnica e desenvolvimento end-to-end de um LMS, utilizando Angular no front-end e NestJS no back-end.
 Implementação de módulo de IA Generativa que automatizou a criação de material didático, reduzindo o tempo de produção de 5 dias para 2 minutos.
 Estratégia de FinOps utilizando Arquitetura modular baseada em serviços Serverless, mantendo o custo de infraestrutura próximo de 0%.
