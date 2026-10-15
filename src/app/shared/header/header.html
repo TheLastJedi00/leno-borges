@@ -1,11 +1,36 @@
-<!-- Header -->
-    <header class="fixed inset-x-0 top-0 z-50 backdrop-blur-xs">
-      <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-        <div class="flex lg:flex-1">
-          <a href="" class="-m-1.5 p-1.5">
-            <span class="sr-only">Leno Borges</span>
-            <img class="h-8 w-auto" src="https://i.imgur.com/ATVSc28.png" alt="Leno Borges Logo" />
+<header
+  class="fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300"
+  [class]="scrolled() ? 'border-line bg-ink/85 backdrop-blur-md' : 'border-transparent bg-transparent'"
+>
+  <nav
+    class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-8"
+    aria-label="Principal"
+  >
+    <a routerLink="/" class="-m-1.5 p-1.5">
+      <span class="sr-only">Leno Borges — início</span>
+      <img class="h-8 w-auto" src="https://i.imgur.com/ATVSc28.png" alt="" />
+    </a>
+
+    <ul class="hidden items-center gap-8 md:flex">
+      @for (item of nav; track item.fragment) {
+        <li>
+          <a
+            routerLink="/"
+            [fragment]="item.fragment"
+            class="text-sm text-muted transition-colors hover:text-paper"
+          >
+            {{ item.label }}
           </a>
-        </div>
-      </nav>
-    </header>
+        </li>
+      }
+    </ul>
+
+    <a
+      routerLink="/"
+      fragment="contato"
+      class="rounded-full border border-accent/60 px-4 py-1.5 text-sm font-semibold text-paper transition-colors hover:bg-accent hover:text-ink"
+    >
+      Contato
+    </a>
+  </nav>
+</header>
