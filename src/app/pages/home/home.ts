@@ -4,11 +4,21 @@ import { Header } from '../../shared/header/header';
 import { Owner } from '../../shared/owner/owner';
 import { SectionHeading } from '../../shared/section-heading/section-heading';
 import { ExperienceCard } from '../../shared/experience-card/experience-card';
-import { experiences, metrics, summary, summaryExtra } from './home.data';
+import { SkillGroup } from '../../shared/skill-group/skill-group';
+import { EducationItem } from '../../shared/education-item/education-item';
+import {
+  education,
+  experiences,
+  languages,
+  metrics,
+  skillGroups,
+  summary,
+  summaryExtra,
+} from './home.data';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, Header, Owner, SectionHeading, ExperienceCard],
+  imports: [RouterLink, Header, Owner, SectionHeading, ExperienceCard, SkillGroup, EducationItem],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home.html',
 })
@@ -18,4 +28,7 @@ export class Home {
   readonly summaryExtra = summaryExtra;
   readonly metrics = metrics;
   readonly experiences = experiences;
+  readonly skillGroups = skillGroups;
+  readonly education = education;
+  readonly languages = languages;
 }
