@@ -26,7 +26,8 @@
         </p>
         <div class="mt-10 flex flex-wrap items-center gap-4">
           <a
-            href="#experiencia"
+            routerLink="/"
+            fragment="experiencia"
             class="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-accent-soft"
           >
             Ver experiência ↓
@@ -39,6 +40,49 @@
           </a>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- 01 — Sobre -->
+  <section id="sobre" class="mx-auto max-w-6xl px-4 py-20 sm:px-8">
+    <app-section-heading index="01" title="Sobre"></app-section-heading>
+    <div class="grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-8 md:col-start-4">
+        <p class="font-display text-2xl leading-snug text-paper sm:text-3xl">{{ summary }}</p>
+        <p class="mt-6 text-base leading-relaxed text-muted">{{ summaryExtra }}</p>
+      </div>
+    </div>
+    <dl class="mt-16 grid gap-px overflow-hidden rounded-sm bg-line sm:grid-cols-3">
+      @for (m of metrics; track m.value) {
+        <div class="flex flex-col bg-ink p-6 sm:p-8">
+          <dt class="order-2 mt-3 text-sm leading-relaxed text-muted">{{ m.label }}</dt>
+          <dd class="order-1 font-display text-4xl text-accent sm:text-5xl">{{ m.value }}</dd>
+        </div>
+      }
+    </dl>
+  </section>
+
+  <!-- 02 — Experiência -->
+  <section id="experiencia" class="mx-auto max-w-6xl px-4 py-20 sm:px-8">
+    <app-section-heading
+      index="02"
+      title="Experiência"
+      lead="Liderança técnica e engenharia ponta a ponta de soluções SaaS e EdTech, automação com IA e formação de novos devs."
+    ></app-section-heading>
+    <div class="divide-y divide-line md:border-l md:border-line">
+      @for (xp of experiences; track xp.title) {
+        <app-experience-card
+          [title]="xp.title"
+          [subtitle]="xp.subtitle"
+          [role]="xp.role"
+          [period]="xp.period"
+          [location]="xp.location"
+          [badge]="xp.badge"
+          [techs]="xp.techs"
+          [paths]="xp.paths"
+          [caseLink]="xp.caseLink"
+        ></app-experience-card>
+      }
     </div>
   </section>
 </main>
