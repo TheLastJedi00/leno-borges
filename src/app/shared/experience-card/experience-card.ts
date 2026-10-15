@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-experience-card',
-  imports: [],
+  imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './experience-card.html',
   styleUrl: './experience-card.css',
@@ -17,5 +18,5 @@ export class ExperienceCard {
   location = input<string>();
   badge = input<string>();
   techs = input<string[]>();
+  caseLink = input<string>();
 }
-

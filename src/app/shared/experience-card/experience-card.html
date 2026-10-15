@@ -1,50 +1,60 @@
-<div class="grid gap-3.5 w-full max-w-[540px]">
-  <div class="flex items-center justify-between gap-2 flex-wrap">
-    <h2 class="text-violet-400 text-sm font-semibold uppercase tracking-wider">{{ subtitle() }}</h2>
+<article class="group relative grid gap-4 py-10 md:grid-cols-12 md:gap-8">
+  <!-- Marcador da linha do tempo -->
+  <span
+    aria-hidden="true"
+    class="absolute -left-[5px] top-12 hidden h-2.5 w-2.5 rounded-full border border-accent bg-ink transition-colors group-hover:bg-accent md:block"
+  ></span>
+
+  <div class="md:col-span-3 md:pl-8">
     @if (period()) {
-      <span class="text-xs text-slate-400 font-mono bg-slate-800/80 px-2.5 py-0.5 rounded-full border border-slate-700/60">
-        {{ period() }}
-      </span>
+      <p class="font-mono text-xs uppercase tracking-wider text-faint">{{ period() }}</p>
+    }
+    @if (location()) {
+      <p class="mt-1 text-sm text-faint">{{ location() }}</p>
     }
   </div>
 
-  <div class="flex items-center gap-3 flex-wrap">
-    <h1 class="text-2xl sm:text-3xl font-bold text-white">{{ title() }}</h1>
-    @if (badge()) {
-      <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30">
-        {{ badge() }}
-      </span>
-    }
-  </div>
-
-  @if (role()) {
-    <p class="text-slate-300 font-medium text-sm -mt-1 flex items-center gap-2">
-      <span class="text-violet-400">▹</span>
-      <span>{{ role() }}</span>
-      @if (location()) {
-        <span class="text-slate-500">• {{ location() }}</span>
-      }
-    </p>
-  }
-
-  <div class="grid gap-3 mt-1">
-    @for (p of paths(); track $index) {
-      <div class="p-3.5 grid gap-1 border-l-2 border-t border-violet-400/70 bg-slate-800/25 rounded-tl-lg hover:border-violet-400 transition-colors">
-        <p class="text-slate-300 text-sm leading-relaxed">
-          <b class="font-semibold text-white text-base">{{ p.path }}</b>: {{ p.description }}
-        </p>
-      </div>
-    }
-  </div>
-
-  @if (techs() && techs()!.length > 0) {
-    <div class="flex flex-wrap gap-1.5 pt-2">
-      @for (t of techs(); track $index) {
-        <span class="text-xs px-2.5 py-0.5 rounded bg-slate-800/90 text-slate-400 font-mono border border-slate-700/50">
-          {{ t }}
+  <div class="md:col-span-9">
+    <div class="flex flex-wrap items-baseline gap-x-4 gap-y-2">
+      <h3 class="font-display text-3xl leading-tight text-paper sm:text-4xl">{{ title() }}</h3>
+      @if (badge()) {
+        <span
+          class="rounded-full border border-accent/40 px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-wider text-accent"
+        >
+          {{ badge() }}
         </span>
       }
     </div>
-  }
-</div>
+    <p class="mt-1 text-sm font-semibold text-paper/90">
+      {{ role() }}<span class="font-normal text-faint"> · {{ subtitle() }}</span>
+    </p>
 
+    <ul class="mt-6 grid gap-4">
+      @for (p of paths(); track p.path) {
+        <li class="grid gap-1 sm:grid-cols-[11rem_1fr] sm:gap-6">
+          <span class="text-sm font-semibold text-accent-soft">{{ p.path }}</span>
+          <span class="text-[15px] leading-relaxed text-muted">{{ p.description }}</span>
+        </li>
+      }
+    </ul>
+
+    @if (techs()?.length) {
+      <ul class="mt-6 flex flex-wrap gap-2" aria-label="Tecnologias">
+        @for (t of techs(); track t) {
+          <li class="rounded-sm border border-line px-2 py-0.5 font-mono text-xs text-muted">
+            {{ t }}
+          </li>
+        }
+      </ul>
+    }
+
+    @if (caseLink()) {
+      <a
+        [routerLink]="caseLink()"
+        class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-paper underline decoration-accent decoration-2 underline-offset-4 transition-colors hover:text-accent"
+      >
+        Ler o estudo de caso <span aria-hidden="true">→</span>
+      </a>
+    }
+  </div>
+</article>
