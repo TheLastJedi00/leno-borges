@@ -128,4 +128,48 @@
       </aside>
     </div>
   </section>
+
+  <!-- Contato -->
+  <section id="contato" class="mx-auto max-w-6xl px-4 pt-20 pb-24 sm:px-8">
+    <div class="border-t border-line pt-16">
+      <p class="font-mono text-xs uppercase tracking-[0.25em] text-accent">Contato</p>
+      <h2
+        class="mt-6 font-display text-[clamp(3rem,9vw,7rem)] leading-[0.95] tracking-tight text-paper"
+      >
+        Vamos <em class="text-accent">conversar?</em>
+      </h2>
+      <ul class="mt-14 divide-y divide-line border-y border-line">
+        @for (c of contacts; track c.label) {
+          <li>
+            <a
+              [href]="c.href"
+              [attr.target]="c.href.startsWith('http') ? '_blank' : null"
+              [attr.rel]="c.href.startsWith('http') ? 'noopener noreferrer' : null"
+              class="group flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-5 transition-colors"
+            >
+              <span class="font-mono text-xs uppercase tracking-[0.2em] text-faint">
+                {{ c.label }}
+              </span>
+              <span
+                class="break-all font-display text-2xl text-paper transition-colors group-hover:text-accent sm:text-3xl"
+              >
+                {{ c.value }} <span aria-hidden="true" class="text-accent">↗</span>
+              </span>
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
 </main>
+
+<footer class="border-t border-line bg-ink">
+  <div
+    class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-8"
+  >
+    <p class="text-xs text-faint">
+      &copy; {{ currentYear }} Leno Borges · Blumenau, SC. Todos os direitos reservados.
+    </p>
+    <app-links></app-links>
+  </div>
+</footer>

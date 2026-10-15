@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Header } from '../../shared/header/header';
+import { Links } from '../../shared/links/links';
 import { Owner } from '../../shared/owner/owner';
 import { SectionHeading } from '../../shared/section-heading/section-heading';
 import { ExperienceCard } from '../../shared/experience-card/experience-card';
@@ -9,6 +10,7 @@ import { EducationItem } from '../../shared/education-item/education-item';
 import {
   education,
   experiences,
+  contacts,
   languages,
   metrics,
   skillGroups,
@@ -18,7 +20,16 @@ import {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, Header, Owner, SectionHeading, ExperienceCard, SkillGroup, EducationItem],
+  imports: [
+    RouterLink,
+    Header,
+    Links,
+    Owner,
+    SectionHeading,
+    ExperienceCard,
+    SkillGroup,
+    EducationItem,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home.html',
 })
@@ -31,4 +42,5 @@ export class Home {
   readonly skillGroups = skillGroups;
   readonly education = education;
   readonly languages = languages;
+  readonly contacts = contacts;
 }
