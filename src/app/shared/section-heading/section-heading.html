@@ -1,0 +1,11 @@
+<header class="mb-12 grid gap-6 border-t border-line pt-6 md:grid-cols-12">
+  <p class="font-mono text-xs uppercase tracking-[0.25em] text-accent md:col-span-3">
+    {{ index() }} —
+  </p>
+  <div class="md:col-span-9">
+    <h2 class="font-display text-4xl leading-none text-paper sm:text-5xl">{{ title() }}</h2>
+    @if (lead()) {
+      <p class="mt-4 max-w-2xl text-base leading-relaxed text-muted">{{ lead() }}</p>
+    }
+  </div>
+</header>

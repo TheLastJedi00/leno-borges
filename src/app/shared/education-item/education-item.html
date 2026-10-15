@@ -1,0 +1,19 @@
+<article class="border-t border-line pt-6">
+  <p class="font-mono text-xs uppercase tracking-wider text-faint">{{ period() }}</p>
+  <h3 class="mt-2 font-display text-3xl leading-tight text-paper">{{ title() }}</h3>
+  <p class="mt-1 text-sm font-semibold text-accent-soft">{{ institution() }}</p>
+
+  @if (modules()?.length) {
+    <ol class="mt-6 grid gap-5 sm:grid-cols-2">
+      @for (m of modules(); track m.name) {
+        <li>
+          <p class="text-[15px] font-semibold text-paper">{{ m.name }}</p>
+          <p class="mt-0.5 font-mono text-[11px] uppercase tracking-wider text-faint">
+            {{ m.hours }}
+          </p>
+          <p class="mt-2 text-sm leading-relaxed text-muted">{{ m.description }}</p>
+        </li>
+      }
+    </ol>
+  }
+</article>
