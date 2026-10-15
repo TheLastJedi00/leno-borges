@@ -71,7 +71,7 @@ Os tokens ficam em `src/styles.css` via `@theme` do Tailwind v4 (ex. `--color-in
 - **Foto:** converter o JPG (2160×2881, pesado) para `public/images/leno.webp` (≈ 900px de largura, qualidade ~80) + fallback `.jpg`. Exibir com `NgOptimizedImage` e `priority` no `Owner`. O `Owner` deixa de apontar para o imgur.
 - **Fontes:** `<link>` do Google Fonts com `preconnect` em `src/index.html`; `lang="pt-BR"` no `<html>`.
 - **`gradient-text`:** classe inexistente — remover dos templates da Home (a da Bfacademy fica, fora de escopo).
-- **Testes:** corrigir `app.spec.ts` (expectativa inválida de `h1`) e adicionar spec mínima da Home verificando que as seções renderizam (com `provideZonelessChangeDetection()`).
+- **Testes:** corrigir `app.spec.ts` (expectativa inválida de `h1`) — sem novas specs unitárias; validação por testes no Chrome.
 
 ## Critérios de aceite
 
