@@ -1,0 +1,17 @@
+<span
+  class="group inline-flex items-center rounded-full bg-surface text-muted shadow-raised transition-colors hover:text-paper"
+  [class]="size() === 'md' ? 'gap-2 px-3.5 py-2 text-sm font-medium' : 'gap-1.5 px-2.5 py-1 font-mono text-xs'"
+>
+  @if (icon(); as i) {
+    <svg
+      class="shrink-0 fill-current transition-colors group-hover:text-(--brand)"
+      [class]="size() === 'md' ? 'h-4 w-4' : 'h-3.5 w-3.5'"
+      [style.--brand]="i.hover"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path [attr.d]="i.path" />
+    </svg>
+  }
+  {{ name() }}
+</span>

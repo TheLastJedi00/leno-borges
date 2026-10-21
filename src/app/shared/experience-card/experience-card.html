@@ -1,51 +1,55 @@
-<article class="group relative grid gap-4 py-10 md:grid-cols-12 md:gap-8">
+<article
+  class="group relative rounded-2xl bg-surface p-6 shadow-raised transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 hover:shadow-raised-lg sm:p-8"
+>
   <!-- Marcador da linha do tempo -->
   <span
     aria-hidden="true"
-    class="absolute -left-[5px] top-12 hidden h-2.5 w-2.5 rounded-full border border-accent bg-ink transition-colors group-hover:bg-accent md:block"
+    class="absolute -left-[46px] top-10 hidden h-2.5 w-2.5 rounded-full border-2 border-accent bg-ink transition-colors group-hover:bg-accent md:block"
   ></span>
 
-  <div class="md:col-span-3 md:pl-8">
-    @if (period()) {
-      <p class="font-mono text-xs uppercase tracking-wider text-faint">{{ period() }}</p>
-    }
-    @if (location()) {
-      <p class="mt-1 text-sm text-faint">{{ location() }}</p>
-    }
-  </div>
+  <div class="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+    <div>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <h3 class="font-display text-2xl font-semibold tracking-tight text-paper sm:text-3xl">
+          {{ title() }}
+        </h3>
+        @if (badge()) {
+          <span
+            class="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-wider text-accent-soft"
+          >
+            {{ badge() }}
+          </span>
+        }
+      </div>
+      <p class="mt-1 text-sm font-semibold text-paper/90">
+        {{ role() }}<span class="font-normal text-faint"> · {{ subtitle() }}</span>
+      </p>
+    </div>
 
-  <div class="md:col-span-9">
-    <div class="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-      <h3 class="font-display text-3xl leading-tight text-paper sm:text-4xl">{{ title() }}</h3>
-      @if (badge()) {
-        <span
-          class="rounded-full border border-accent/40 px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-wider text-accent"
-        >
-          {{ badge() }}
-        </span>
+    <div class="text-left sm:text-right">
+      @if (period()) {
+        <p class="font-mono text-xs uppercase tracking-wider text-muted">{{ period() }}</p>
+      }
+      @if (location()) {
+        <p class="mt-1 text-sm text-faint">{{ location() }}</p>
       }
     </div>
-    <p class="mt-1 text-sm font-semibold text-paper/90">
-      {{ role() }}<span class="font-normal text-faint"> · {{ subtitle() }}</span>
-    </p>
+  </div>
 
-    <ul class="mt-6 grid gap-4">
-      @for (p of paths(); track p.path) {
-        <li class="grid gap-1 sm:grid-cols-[11rem_1fr] sm:gap-6">
-          <span class="text-sm font-semibold text-accent-soft">{{ p.path }}</span>
-          <span class="text-[15px] leading-relaxed text-muted">{{ p.description }}</span>
-        </li>
+  <ul class="mt-6 grid gap-4">
+    @for (p of paths(); track p.path) {
+      <li class="grid gap-1 sm:grid-cols-[11rem_1fr] sm:gap-6">
+        <span class="text-sm font-semibold text-accent-soft">{{ p.path }}</span>
+        <span class="text-[15px] leading-relaxed text-muted">{{ p.description }}</span>
+      </li>
+    }
+  </ul>
+
+  @if (techs()?.length) {
+    <ul class="mt-6 flex flex-wrap gap-2" aria-label="Tecnologias">
+      @for (t of techs(); track t) {
+        <li><app-tech-icon [name]="t"></app-tech-icon></li>
       }
     </ul>
-
-    @if (techs()?.length) {
-      <ul class="mt-6 flex flex-wrap gap-2" aria-label="Tecnologias">
-        @for (t of techs(); track t) {
-          <li class="rounded-sm border border-line px-2 py-0.5 font-mono text-xs text-muted">
-            {{ t }}
-          </li>
-        }
-      </ul>
-    }
-  </div>
+  }
 </article>

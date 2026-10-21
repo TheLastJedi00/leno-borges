@@ -1,19 +1,33 @@
 @import "tailwindcss";
 
-/* Tokens do tema editorial escuro — viram utilitários (bg-ink, text-accent, font-display...) */
+/* Tokens do tema grafite + azul da logo — viram utilitários (bg-ink, text-accent, shadow-raised...) */
 @theme {
-  --color-ink: #0f0e0c;
-  --color-surface: #1a1815;
-  --color-line: #2a2723;
-  --color-paper: #ece8e1;
-  --color-muted: #a8a29e;
-  --color-faint: #78716c;
-  --color-accent: #f59e0b;
-  --color-accent-soft: #fb923c;
+  --color-ink: #1c1c1e;
+  --color-surface: #232326;
+  --color-raised: #2a2a2d;
+  --color-line: #383838;
+  --color-paper: #f2f3f5;
+  --color-muted: #a3a7ad;
+  /* #737373 da logo não passa AA sobre ink; tom levemente mais claro */
+  --color-faint: #8e8e93;
+  --color-accent: #3986ff;
+  --color-accent-soft: #488fff;
+  /* Fundo de botões com texto branco (contraste AA) */
+  --color-accent-deep: #2563d9;
 
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Neomorfismo leve: elevação suave e afundado */
+  --shadow-raised:
+    6px 6px 16px rgb(0 0 0 / 0.42), -4px -4px 12px rgb(255 255 255 / 0.025),
+    inset 0 1px 0 rgb(255 255 255 / 0.04);
+  --shadow-raised-lg:
+    10px 10px 28px rgb(0 0 0 / 0.5), -6px -6px 18px rgb(255 255 255 / 0.03),
+    inset 0 1px 0 rgb(255 255 255 / 0.05);
+  --shadow-inset:
+    inset 3px 3px 7px rgb(0 0 0 / 0.5), inset -2px -2px 6px rgb(255 255 255 / 0.03);
 
   --animate-rise: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 
@@ -43,7 +57,7 @@
   }
 
   ::selection {
-    background-color: color-mix(in oklab, var(--color-accent) 35%, transparent);
+    background-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
     color: var(--color-paper);
   }
 

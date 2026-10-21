@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { TechIcon } from '../tech-icon/tech-icon';
 
 @Component({
   selector: 'app-experience-card',
-  imports: [],
+  imports: [TechIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './experience-card.html',
   styleUrl: './experience-card.css',
