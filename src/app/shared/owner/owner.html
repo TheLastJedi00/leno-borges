@@ -8,7 +8,7 @@
         height="1125"
         priority
         class="h-full w-full object-cover"
-        alt="Leno Borges, de jaqueta de couro preta, explicando um conceito em sala de aula na ProWay"
+        [alt]="t().owner.alt"
       />
     </picture>
     <div
@@ -17,7 +17,7 @@
     <figcaption
       class="absolute bottom-4 left-4 rounded-full bg-ink/70 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-paper/90 backdrop-blur-sm"
     >
-      Em aula · ProWay, Blumenau
+      {{ t().owner.caption }}
     </figcaption>
   </div>
 </figure>

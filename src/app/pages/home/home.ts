@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { I18n } from '../../i18n/i18n';
 import { Header } from '../../shared/header/header';
 import { Links } from '../../shared/links/links';
 import { Owner } from '../../shared/owner/owner';
@@ -7,16 +8,7 @@ import { SectionHeading } from '../../shared/section-heading/section-heading';
 import { ExperienceCard } from '../../shared/experience-card/experience-card';
 import { SkillGroup } from '../../shared/skill-group/skill-group';
 import { EducationItem } from '../../shared/education-item/education-item';
-import {
-  education,
-  experiences,
-  contacts,
-  languages,
-  metrics,
-  skillGroups,
-  summary,
-  summaryExtra,
-} from './home.data';
+import { type Contact, contactInfo, whatsappUrl } from './home.data';
 
 @Component({
   selector: 'app-home',
@@ -34,13 +26,21 @@ import {
   templateUrl: './home.html',
 })
 export class Home {
+  readonly t = inject(I18n).t;
   readonly currentYear = new Date().getFullYear();
-  readonly summary = summary;
-  readonly summaryExtra = summaryExtra;
-  readonly metrics = metrics;
-  readonly experiences = experiences;
-  readonly skillGroups = skillGroups;
-  readonly education = education;
-  readonly languages = languages;
-  readonly contacts = contacts;
+
+  readonly contacts = computed<Contact[]>(() => [
+    {
+      label: this.t().contact.emailLabel,
+      value: contactInfo.email,
+      href: `mailto:${contactInfo.email}`,
+    },
+    {
+      label: 'WhatsApp',
+      value: contactInfo.phoneDisplay,
+      href: whatsappUrl(this.t().contact.whatsappMessage),
+    },
+    { label: 'LinkedIn', value: contactInfo.linkedinHandle, href: contactInfo.linkedin },
+    { label: 'GitHub', value: contactInfo.githubHandle, href: contactInfo.github },
+  ]);
 }
