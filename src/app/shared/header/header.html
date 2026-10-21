@@ -40,7 +40,7 @@
             type="button"
             (click)="i18n.setLang(l)"
             [attr.aria-pressed]="i18n.lang() === l"
-            [attr.aria-label]="t().header.langNames[l]"
+            [attr.title]="t().header.langNames[l]"
             [attr.lang]="l"
             class="rounded-full px-2.5 py-1 font-mono text-[11px] font-medium uppercase tracking-wider transition-[color,background-color,box-shadow]"
             [class]="
