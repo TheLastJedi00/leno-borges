@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { TechIcon } from '../tech-icon/tech-icon';
 
 @Component({
   selector: 'app-experience-card',
-  imports: [RouterLink],
+  imports: [TechIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './experience-card.html',
   styleUrl: './experience-card.css',
@@ -18,5 +18,5 @@ export class ExperienceCard {
   location = input<string>();
   badge = input<string>();
   techs = input<string[]>();
-  caseLink = input<string>();
+  techsLabel = input<string>();
 }

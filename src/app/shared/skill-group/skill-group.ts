@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { TechIcon } from '../tech-icon/tech-icon';
 
 @Component({
   selector: 'app-skill-group',
-  imports: [],
+  imports: [TechIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './skill-group.html',
 })
