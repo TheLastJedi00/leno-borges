@@ -29,7 +29,30 @@
       }
     </ul>
 
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <div
+        role="group"
+        [attr.aria-label]="t().header.langLabel"
+        class="flex items-center gap-0.5 rounded-full bg-surface p-1 shadow-inset"
+      >
+        @for (l of langs; track l) {
+          <button
+            type="button"
+            (click)="i18n.setLang(l)"
+            [attr.aria-pressed]="i18n.lang() === l"
+            [attr.aria-label]="t().header.langNames[l]"
+            [attr.lang]="l"
+            class="rounded-full px-2.5 py-1 font-mono text-[11px] font-medium uppercase tracking-wider transition-[color,background-color,box-shadow]"
+            [class]="
+              i18n.lang() === l
+                ? 'bg-raised text-paper shadow-raised'
+                : 'text-faint hover:text-paper'
+            "
+          >
+            {{ l }}
+          </button>
+        }
+      </div>
       <a
         routerLink="/"
         fragment="contact"

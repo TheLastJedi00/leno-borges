@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostListener, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { I18n } from '../../i18n/i18n';
+import { I18n, LANGS } from '../../i18n/i18n';
 
 @Component({
   selector: 'app-header',
@@ -9,7 +9,9 @@ import { I18n } from '../../i18n/i18n';
   templateUrl: './header.html',
 })
 export class Header {
-  readonly t = inject(I18n).t;
+  readonly i18n = inject(I18n);
+  readonly t = this.i18n.t;
+  readonly langs = LANGS;
   readonly scrolled = signal(false);
 
   readonly nav = computed(() => {
