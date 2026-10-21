@@ -18,4 +18,5 @@ export class ExperienceCard {
   location = input<string>();
   badge = input<string>();
   techs = input<string[]>();
+  techsLabel = input<string>();
 }

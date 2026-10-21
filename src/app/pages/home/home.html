@@ -1,3 +1,4 @@
+@let d = t();
 <app-header></app-header>
 
 <main class="min-h-screen bg-ink text-muted">
@@ -12,8 +13,8 @@
         <p
           class="inline-flex items-center gap-2 rounded-full bg-surface px-3.5 py-1.5 font-mono text-xs text-muted shadow-inset"
         >
-          <span aria-hidden="true" class="h-1.5 w-1.5 rounded-full bg-accent"></span>
-          Blumenau, SC · Brasil
+          <span aria-hidden="true" class="h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>
+          {{ d.hero.location }}
         </p>
         <h1
           class="mt-6 font-display text-[clamp(3.25rem,10vw,7rem)] font-semibold leading-[0.95] tracking-tight text-paper"
@@ -21,43 +22,40 @@
           Leno Borges
         </h1>
         <p class="mt-5 max-w-xl font-display text-2xl font-medium leading-snug text-paper/90 sm:text-3xl">
-          Software Developer Fullstack <span class="text-accent">&</span> Tech Educator
+          {{ d.hero.roleLead }} <span class="text-accent">&</span> {{ d.hero.roleTail }}
         </p>
-        <p class="mt-5 max-w-lg text-base leading-relaxed text-muted">
-          Plataformas SaaS e EdTech de ponta a ponta com Angular, NestJS e Java/Spring — com IA
-          Generativa automatizando o operacional e FinOps mantendo a infraestrutura perto de zero.
-        </p>
+        <p class="mt-5 max-w-lg text-base leading-relaxed text-muted">{{ d.hero.tagline }}</p>
         <div class="mt-10 flex flex-wrap items-center gap-4">
           <a
             routerLink="/"
-            fragment="experiencia"
+            fragment="experience"
             class="rounded-full bg-accent-deep px-6 py-3 text-sm font-semibold text-white shadow-raised transition-[filter,box-shadow] hover:brightness-110 active:shadow-inset"
           >
-            Ver experiência ↓
+            {{ d.hero.ctaExperience }}
           </a>
           <a
             routerLink="/"
-            fragment="contato"
+            fragment="contact"
             class="rounded-full bg-surface px-6 py-3 text-sm font-semibold text-paper shadow-raised transition-[color,box-shadow] hover:text-accent active:shadow-inset"
           >
-            Contato
+            {{ d.hero.ctaContact }}
           </a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 01 — Sobre -->
-  <section id="sobre" class="mx-auto max-w-6xl px-4 py-20 sm:px-8">
-    <app-section-heading index="01" title="Sobre"></app-section-heading>
+  <!-- 01 — About -->
+  <section id="about" class="mx-auto max-w-6xl px-4 py-20 sm:px-8">
+    <app-section-heading index="01" [title]="d.about.title"></app-section-heading>
     <div class="max-w-3xl">
       <p class="font-display text-xl font-medium leading-snug text-paper sm:text-2xl">
-        {{ summary }}
+        {{ d.about.summary }}
       </p>
-      <p class="mt-6 text-base leading-relaxed text-muted">{{ summaryExtra }}</p>
+      <p class="mt-6 text-base leading-relaxed text-muted">{{ d.about.summaryExtra }}</p>
     </div>
     <dl class="mt-14 grid gap-5 sm:grid-cols-3">
-      @for (m of metrics; track m.value) {
+      @for (m of d.about.metrics; track $index) {
         <div class="flex flex-col rounded-2xl bg-surface p-6 shadow-raised sm:p-7">
           <dt class="order-2 mt-3 text-sm leading-relaxed text-muted">{{ m.label }}</dt>
           <dd class="order-1 font-display text-3xl font-semibold tracking-tight text-accent sm:text-4xl">
@@ -68,15 +66,15 @@
     </dl>
   </section>
 
-  <!-- 02 — Experiência -->
-  <section id="experiencia" class="mx-auto max-w-6xl px-4 py-20 sm:px-8">
+  <!-- 02 — Experience -->
+  <section id="experience" class="mx-auto max-w-6xl px-4 py-20 sm:px-8">
     <app-section-heading
       index="02"
-      title="Experiência"
-      lead="Liderança técnica e engenharia ponta a ponta de soluções SaaS e EdTech, automação com IA e formação de novos devs."
+      [title]="d.experience.title"
+      [lead]="d.experience.lead"
     ></app-section-heading>
     <div class="grid gap-6 md:ml-1 md:border-l md:border-line md:pl-10">
-      @for (xp of experiences; track xp.title) {
+      @for (xp of d.experience.items; track $index) {
         <app-experience-card
           [title]="xp.title"
           [subtitle]="xp.subtitle"
@@ -85,28 +83,29 @@
           [location]="xp.location"
           [badge]="xp.badge"
           [techs]="xp.techs"
+          [techsLabel]="d.experience.techsLabel"
           [paths]="xp.paths"
         ></app-experience-card>
       }
     </div>
   </section>
 
-  <!-- 03 — Competências -->
-  <section id="competencias" class="mx-auto max-w-6xl px-4 py-20 sm:px-8">
-    <app-section-heading index="03" title="Competências"></app-section-heading>
+  <!-- 03 — Skills -->
+  <section id="skills" class="mx-auto max-w-6xl px-4 py-20 sm:px-8">
+    <app-section-heading index="03" [title]="d.skills.title"></app-section-heading>
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      @for (g of skillGroups; track g.category) {
+      @for (g of d.skills.groups; track $index) {
         <app-skill-group [category]="g.category" [skills]="g.skills"></app-skill-group>
       }
     </div>
   </section>
 
-  <!-- 04 — Formação & Idiomas -->
-  <section id="formacao" class="mx-auto max-w-6xl px-4 py-20 sm:px-8">
-    <app-section-heading index="04" title="Formação"></app-section-heading>
+  <!-- 04 — Education & Languages -->
+  <section id="education" class="mx-auto max-w-6xl px-4 py-20 sm:px-8">
+    <app-section-heading index="04" [title]="d.education.title"></app-section-heading>
     <div class="grid gap-6 lg:grid-cols-12">
       <div class="grid gap-6 lg:col-span-8">
-        @for (e of education; track e.title) {
+        @for (e of d.education.items; track $index) {
           <app-education-item
             [title]="e.title"
             [institution]="e.institution"
@@ -116,13 +115,13 @@
         }
       </div>
 
-      <aside class="lg:col-span-4" aria-labelledby="idiomas-title">
+      <aside class="lg:col-span-4" aria-labelledby="languages-title">
         <div class="rounded-2xl bg-surface p-6 shadow-raised sm:p-8">
-          <h3 id="idiomas-title" class="font-mono text-xs uppercase tracking-[0.2em] text-faint">
-            05 — Idiomas
+          <h3 id="languages-title" class="font-mono text-xs uppercase tracking-[0.2em] text-faint">
+            {{ d.languages.title }}
           </h3>
           <dl class="mt-6 grid gap-5">
-            @for (l of languages; track l.name) {
+            @for (l of d.languages.items; track $index) {
               <div class="rounded-xl bg-ink/40 p-4 shadow-inset">
                 <dt class="font-display text-2xl font-semibold text-paper">{{ l.name }}</dt>
                 <dd class="mt-1 text-sm text-accent-soft">{{ l.level }}</dd>
@@ -134,22 +133,22 @@
     </div>
   </section>
 
-  <!-- Contato -->
-  <section id="contato" class="mx-auto max-w-6xl px-4 pt-20 pb-24 sm:px-8">
+  <!-- Contact -->
+  <section id="contact" class="mx-auto max-w-6xl px-4 pt-20 pb-24 sm:px-8">
     <div class="rounded-[2rem] bg-surface p-6 shadow-raised-lg sm:p-12">
       <p
         class="inline-flex items-center gap-2 rounded-full bg-ink/40 px-3 py-1 font-mono text-xs text-accent shadow-inset"
       >
         <span aria-hidden="true" class="h-1.5 w-1.5 rounded-full bg-accent"></span>
-        Contato
+        {{ d.contact.eyebrow }}
       </p>
       <h2
         class="mt-6 font-display text-[clamp(2.5rem,7vw,5rem)] font-semibold leading-[1] tracking-tight text-paper"
       >
-        Vamos <span class="text-accent">conversar?</span>
+        {{ d.contact.titleLead }} <span class="text-accent">{{ d.contact.titleAccent }}</span>
       </h2>
       <ul class="mt-12 grid gap-4 sm:grid-cols-2">
-        @for (c of contacts; track c.label) {
+        @for (c of contacts(); track c.href) {
           <li>
             <a
               [href]="c.href"
@@ -178,7 +177,7 @@
     class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-8"
   >
     <p class="text-xs text-faint">
-      &copy; {{ currentYear }} Leno Borges · Blumenau, SC. Todos os direitos reservados.
+      &copy; {{ currentYear }} Leno Borges · {{ d.footer.location }}. {{ d.footer.rights }}
     </p>
     <app-links></app-links>
   </div>
