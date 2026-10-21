@@ -14,7 +14,6 @@ export interface Experience {
   badge?: string;
   techs: string[];
   paths: ExperiencePath[];
-  caseLink?: string;
 }
 
 export interface Metric {
@@ -153,7 +152,6 @@ export const experiences: Experience[] = [
     location: 'Remoto',
     badge: 'Cofundador',
     techs: ['Angular', 'NestJS', 'Serverless', 'IA Generativa', 'FinOps', 'CI/CD'],
-    caseLink: '/bfacademy',
     paths: [
       {
         path: 'LMS end-to-end',
