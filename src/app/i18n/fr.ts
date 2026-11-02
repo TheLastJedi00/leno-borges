@@ -1,5 +1,5 @@
 import type { Dictionary } from './dictionary';
-import { projectUrls } from '../pages/home/home.data';
+import { partners, projectUrls } from '../pages/home/home.data';
 
 // Français canadien (OQLF) : « courriel », « infonuagique », espace insécable avant « : » et
 // espace fine avant « ? ». À faire relire par un locuteur natif avant publication.
@@ -85,6 +85,7 @@ export const fr: Dictionary = {
       },
       {
         title: 'Delcastanher',
+        partners: [partners.lidianeDelcastanher],
         subtitle: 'Services administratifs · Projet à la pige',
         role: 'Développeur full stack',
         period: 'Depuis sept. 2026',
@@ -150,6 +151,7 @@ export const fr: Dictionary = {
       },
       {
         title: 'ProWay',
+        partners: [partners.proway],
         subtitle: 'Éducation, formation de développeurs et consultation',
         role: 'Formateur technique',
         period: 'Depuis janv. 2026',
@@ -176,6 +178,7 @@ export const fr: Dictionary = {
       },
       {
         title: 'Matriz do DNA',
+        partners: [partners.paulaMarjorie],
         subtitle: 'Plateforme de formation pour entrepreneures · Pige',
         role: 'Développeur',
         period: 'Depuis janv. 2026',
@@ -202,6 +205,7 @@ export const fr: Dictionary = {
       },
       {
         title: 'BF Academy',
+        partners: [partners.barbaraFarias],
         subtitle: 'EdTech et LMS propriétaire',
         role: 'Cofondateur · Développeur logiciel',
         period: 'Depuis oct. 2025',
@@ -278,6 +282,7 @@ export const fr: Dictionary = {
       {
         title: 'Bootcamp en soutien AMS',
         institution: 'T-Systems / ProWay',
+        partners: [partners.tsystems, partners.proway],
         period: 'déc. 2025',
         modules: [
           {
