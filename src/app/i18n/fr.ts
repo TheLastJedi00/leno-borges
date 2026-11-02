@@ -9,7 +9,7 @@ export const fr: Dictionary = {
     title:
       'Leno Borges — Développeur logiciel full stack et formateur techno | Barrie et RGT, Ontario',
     description:
-      'Leno Borges, développeur logiciel full stack (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) et formateur techno à Barrie et dans la RGT, Ontario, Canada, et à Blumenau, Brésil. Plateformes SaaS et EdTech, API REST, IA générative et optimisation des coûts infonuagiques (FinOps).',
+      'Leno Borges, développeur logiciel full stack (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) et formateur techno à Barrie et dans la RGT, Ontario, Canada, et à Blumenau, Brésil. Plateformes SaaS et EdTech, API REST, IA générative et architecture infonuagique sans serveur.',
   },
   header: {
     navLabel: 'Principale',

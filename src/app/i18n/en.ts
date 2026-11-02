@@ -7,7 +7,7 @@ export const en: Dictionary = {
     htmlLang: 'en',
     title: 'Leno Borges — Full-Stack Software Developer & Tech Educator | Barrie & GTA, Ontario',
     description:
-      'Leno Borges, Full-Stack Software Developer (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) and Tech Educator in Barrie & GTA, Ontario, Canada and Blumenau, Brazil. SaaS and EdTech platforms, REST APIs, generative AI and cloud cost optimization (FinOps).',
+      'Leno Borges, Full-Stack Software Developer (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) and Tech Educator in Barrie & GTA, Ontario, Canada and Blumenau, Brazil. SaaS and EdTech platforms, REST APIs, generative AI and serverless, cloud-native architecture.',
   },
   header: {
     navLabel: 'Main',
