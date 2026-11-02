@@ -13,6 +13,8 @@ export interface Experience {
   period: string;
   location: string;
   badge?: string;
+  /** Página oficial do sistema (de `projectUrls`); sem valor, o card não mostra o botão. */
+  url?: string;
   techs: string[];
   paths: ExperiencePath[];
 }
@@ -61,6 +63,22 @@ export const contactInfo = {
   githubHandle: 'TheLastJedi00',
   instagram: 'https://www.instagram.com/lenoborges.dev/',
 };
+
+/** Páginas oficiais dos sistemas exibidos na timeline (neutras de idioma). */
+export const projectUrls = {
+  ligaDev: 'https://liga.lenoborges.com.br/comunidade',
+  delcastanher: 'https://www.delcastanher.srv.br',
+  tichr: 'https://www.tichr.com.br',
+  bfAcademy: 'https://www.barbarafarias.com.br/academy',
+};
+
+/** URL legível para o botão: sem protocolo, sem `www.` e sem barra final. */
+export function displayUrl(url: string): string {
+  return url
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .replace(/\/$/, '');
+}
 
 export function whatsappUrl(message: string): string {
   return `https://wa.me/${contactInfo.phoneE164}?text=${encodeURIComponent(message)}`;
