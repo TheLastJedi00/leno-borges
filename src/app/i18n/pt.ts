@@ -21,7 +21,7 @@ export const pt: Dictionary = {
     roleLead: 'Software Developer Fullstack',
     roleTail: 'Tech Educator',
     tagline:
-      'Plataformas SaaS e EdTech de ponta a ponta com Angular, NestJS e Java/Spring — com IA Generativa automatizando o operacional e FinOps mantendo a infraestrutura perto de zero.',
+      'Plataformas SaaS e EdTech de ponta a ponta com Angular, NestJS e Java/Spring, usando IA Generativa para automatizar o operacional.',
     ctaExperience: 'Ver experiência ↓',
     ctaContact: 'Contato',
   },
@@ -34,7 +34,7 @@ export const pt: Dictionary = {
     summary:
       'Software Developer Fullstack com experiência na construção de plataformas SaaS e soluções EdTech de ponta a ponta, utilizando Angular, NestJS e o ecossistema Java/Spring. Focado em traduzir regras de negócio complexas em arquiteturas modulares e eficientes.',
     summaryExtra:
-      'Forte vivência prática na integração de Inteligência Artificial para automatizar processos operacionais e na aplicação de estratégias de FinOps para escalar produtos mantendo o custo de infraestrutura próximo a zero. Perfil hands-on e com histórico de mentoria técnica, combinando a entrega ágil de código com a preocupação real sobre o produto e o cliente final.',
+      'Forte vivência prática na integração de Inteligência Artificial para automatizar processos operacionais, com atenção ao custo nas decisões de arquitetura, como a migração de monólito para Serverless e a troca de provedor de hospedagem. Perfil hands-on e com histórico de mentoria técnica, combinando a entrega ágil de código com a preocupação real sobre o produto e o cliente final.',
     metrics: [
       {
         value: '5 dias → 2 min',

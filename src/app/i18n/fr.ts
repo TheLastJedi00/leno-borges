@@ -24,7 +24,7 @@ export const fr: Dictionary = {
     roleLead: 'Développeur logiciel full stack',
     roleTail: 'formateur techno',
     tagline:
-      'Plateformes SaaS et EdTech de bout en bout avec TypeScript, Angular, NestJS et Java/Spring — l’IA générative automatise l’opérationnel et le FinOps garde les coûts infonuagiques près de zéro.',
+      'Plateformes SaaS et EdTech de bout en bout avec TypeScript, Angular, NestJS et Java/Spring, où l’IA générative automatise l’opérationnel.',
     ctaExperience: 'Voir l’expérience ↓',
     ctaContact: 'Me joindre',
   },
@@ -37,7 +37,7 @@ export const fr: Dictionary = {
     summary:
       'Développeur logiciel full stack expérimenté dans la conception de plateformes SaaS et de solutions EdTech de bout en bout avec Angular, NestJS et l’écosystème Java/Spring. Axé sur la traduction de règles d’affaires complexes en architectures modulaires et efficaces.',
     summaryExtra:
-      'Solide expérience pratique de l’intégration de l’IA générative pour automatiser les processus opérationnels et de l’application de stratégies FinOps (optimisation des coûts infonuagiques) pour faire croître des produits tout en gardant les coûts d’infrastructure près de zéro. Profil pratique avec un historique de mentorat technique, alliant livraison agile et souci réel du produit et de l’utilisateur final.',
+      'Solide expérience pratique de l’intégration de l’IA générative pour automatiser les processus opérationnels, avec des choix d’architecture attentifs aux coûts, comme la migration d’un monolithe vers le sans serveur et le changement d’hébergeur. Profil pratique avec un historique de mentorat technique, alliant livraison agile et souci réel du produit et de l’utilisateur final.',
     metrics: [
       {
         value: '5 jours → 2 min',

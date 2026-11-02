@@ -22,7 +22,7 @@ export const en: Dictionary = {
     roleLead: 'Full-Stack Software Developer',
     roleTail: 'Tech Educator',
     tagline:
-      'End-to-end SaaS and EdTech platforms with TypeScript, Angular, NestJS and Java/Spring — using generative AI to automate operations and FinOps to keep cloud costs close to zero.',
+      'End-to-end SaaS and EdTech platforms with TypeScript, Angular, NestJS and Java/Spring, using generative AI to automate operations.',
     ctaExperience: 'See experience ↓',
     ctaContact: 'Contact',
   },
@@ -35,7 +35,7 @@ export const en: Dictionary = {
     summary:
       'Full-Stack Software Developer experienced in building SaaS platforms and EdTech solutions end to end with Angular, NestJS and the Java/Spring ecosystem. Focused on translating complex business rules into modular, efficient architectures.',
     summaryExtra:
-      'Strong hands-on experience integrating generative AI to automate operational processes and applying FinOps (cloud cost optimization) strategies to scale products while keeping infrastructure costs close to zero. Hands-on profile with a track record of technical mentoring, combining agile delivery with genuine care for the product and the end user.',
+      'Strong hands-on experience integrating generative AI to automate operational processes, with cost-aware architecture decisions such as moving a monolith to serverless and switching hosting providers. Hands-on profile with a track record of technical mentoring, combining agile delivery with genuine care for the product and the end user.',
     metrics: [
       {
         value: '5 days → 2 min',
