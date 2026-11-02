@@ -42,11 +42,7 @@ export const pt: Dictionary = {
       },
       {
         value: '3 h → 1 min',
-        label: 'Criação de material personalizado em plataforma de consultoria',
-      },
-      {
-        value: '≈ 0%',
-        label: 'Custo de infraestrutura ociosa com FinOps e arquitetura Serverless',
+        label: 'Criação de material personalizado com IA Generativa na Matriz do DNA',
       },
     ],
   },

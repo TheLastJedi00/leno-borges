@@ -43,11 +43,7 @@ export const en: Dictionary = {
       },
       {
         value: '3 h → 1 min',
-        label: 'Personalized material creation on a consulting platform',
-      },
-      {
-        value: '≈ 0%',
-        label: 'Idle infrastructure cost with FinOps and a serverless architecture',
+        label: 'Personalized material creation with generative AI at Matriz do DNA',
       },
     ],
   },

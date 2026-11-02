@@ -45,11 +45,7 @@ export const fr: Dictionary = {
       },
       {
         value: '3 h → 1 min',
-        label: 'Création de matériel personnalisé sur une plateforme de consultation',
-      },
-      {
-        value: '≈ 0 %',
-        label: 'Coût d’infrastructure inactive grâce au FinOps et à une architecture sans serveur',
+        label: 'Création de matériel personnalisé par l’IA générative chez Matriz do DNA',
       },
     ],
   },

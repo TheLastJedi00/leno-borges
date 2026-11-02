@@ -54,7 +54,7 @@
       </p>
       <p class="mt-6 text-base leading-relaxed text-muted">{{ d.about.summaryExtra }}</p>
     </div>
-    <dl class="mt-14 grid gap-5 sm:grid-cols-3">
+    <dl class="mt-14 grid gap-5 sm:grid-cols-2">
       @for (m of d.about.metrics; track $index) {
         <div class="flex flex-col rounded-2xl bg-surface p-6 shadow-raised sm:p-7">
           <dt class="order-2 mt-3 text-sm leading-relaxed text-muted">{{ m.label }}</dt>
