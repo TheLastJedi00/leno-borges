@@ -268,6 +268,10 @@ export const fr: Dictionary = {
       { category: 'Bases de données', skills: ['PostgreSQL', 'MySQL', 'Firestore'] },
     ],
   },
+  partners: {
+    label: 'Partenaire',
+    linkedin: 'profil LinkedIn',
+  },
   education: {
     title: 'Formation',
     items: [

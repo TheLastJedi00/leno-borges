@@ -40,6 +40,8 @@ export interface Dictionary {
     items: Experience[];
   };
   skills: { title: string; groups: SkillGroup[] };
+  /** Linha de parceria em experiência e formação: "<label> · <nome> <linkedin sr-only>". */
+  partners: { label: string; linkedin: string };
   education: { title: string; items: Education[] };
   languages: { title: string; items: Language[] };
   contact: {
