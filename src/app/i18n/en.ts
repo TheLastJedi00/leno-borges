@@ -91,6 +91,7 @@ export const en: Dictionary = {
         role: 'Full-Stack Developer',
         period: 'Sep 2026 — Present',
         location: 'Remote',
+        badge: 'Current',
         url: projectUrls.delcastanher,
         techs: ['Angular', 'NestJS', 'Serverless', 'PostgreSQL'],
         paths: [

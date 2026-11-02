@@ -90,6 +90,7 @@ export const pt: Dictionary = {
         role: 'Desenvolvedor Fullstack',
         period: 'Set 2026 — Atual',
         location: 'Remoto',
+        badge: 'Atual',
         url: projectUrls.delcastanher,
         techs: ['Angular', 'NestJS', 'Serverless', 'PostgreSQL'],
         paths: [
