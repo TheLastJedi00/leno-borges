@@ -1,4 +1,5 @@
 import type { Dictionary } from './dictionary';
+import { projectUrls } from '../pages/home/home.data';
 
 // Français canadien (OQLF) : « courriel », « infonuagique », espace insécable avant « : » et
 // espace fine avant « ? ». À faire relire par un locuteur natif avant publication.
@@ -56,13 +57,68 @@ export const fr: Dictionary = {
     title: 'Expérience',
     lead: 'Leadership technique et ingénierie de bout en bout de solutions SaaS et EdTech, automatisation par l’IA et formation de développeurs.',
     techsLabel: 'Technologies',
+    visit: 'Visiter',
+    newTab: '(s’ouvre dans un nouvel onglet)',
     items: [
+      {
+        title: 'Liga Dev',
+        subtitle: 'Cours de programmation personnel',
+        role: 'Fondateur',
+        period: '2026 — aujourd’hui',
+        location: 'À distance',
+        badge: 'En cours',
+        url: projectUrls.ligaDev,
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'FinOps', 'CI/CD'],
+        paths: [
+          {
+            path: 'Cours de programmation',
+            description:
+              'Création de mon propre cours de programmation, alliant mon expérience de formateur technique à une plateforme maison.',
+          },
+          {
+            path: 'Plateforme',
+            description:
+              'Bâtie sur la même architecture que BF Academy, avec Angular au frontal et NestJS en arrière-plan.',
+          },
+          {
+            path: 'IA générative et FinOps',
+            description:
+              'Matériel personnalisé généré par l’IA et infrastructure sans serveur au coût quasi nul, avec des pipelines CI/CD.',
+          },
+        ],
+      },
+      {
+        title: 'Delcastanher',
+        subtitle: 'Services administratifs · Projet à la pige',
+        role: 'Développeur full stack',
+        period: 'sept. 2026 — aujourd’hui',
+        location: 'À distance',
+        badge: 'Actuel',
+        url: projectUrls.delcastanher,
+        techs: ['Angular', 'NestJS', 'Serverless', 'PostgreSQL'],
+        paths: [
+          {
+            path: 'Plateforme',
+            description:
+              'Développement full stack de la plateforme de l’Imersão RH Estratégico (programme de RH stratégique), avec Angular au frontal et NestJS en arrière-plan.',
+          },
+          {
+            path: 'Données',
+            description: 'Modélisation et persistance des données avec PostgreSQL.',
+          },
+          {
+            path: 'Sans serveur',
+            description: 'Architecture sans serveur à haute disponibilité, sans coût de serveur inactif.',
+          },
+        ],
+      },
       {
         title: 'Tichr',
         subtitle: 'Plateforme SaaS éducative multiforfait',
         role: 'Développeur full stack',
         period: 'avr. 2026 — aujourd’hui',
         location: 'À distance',
+        url: projectUrls.tichr,
         badge: 'Actuel',
         techs: [
           'Angular 20 (Signals)',
@@ -123,26 +179,28 @@ export const fr: Dictionary = {
         ],
       },
       {
-        title: 'Plateforme de consultation',
-        subtitle: 'Projet à la pige',
+        title: 'Matriz do DNA',
+        subtitle: 'Plateforme de formation pour entrepreneures · Pige',
         role: 'Développeur',
-        period: 'janv. 2026 — mars 2026',
+        period: 'janv. 2026 — aujourd’hui',
         location: 'À distance',
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'CI/CD'],
+        badge: 'En cours',
+        techs: ['Angular', 'NestJS', 'Gemini', 'Serverless', 'CI/CD'],
         paths: [
           {
             path: 'Plateforme',
-            description: 'Développement d’une plateforme de consultation avec Angular et NestJS.',
+            description:
+              'Développement, avec Angular et NestJS, de la plateforme d’une entrepreneure qui forme d’autres entrepreneures.',
           },
           {
-            path: 'IA générative',
+            path: 'Contenu avec Gemini',
             description:
-              'Module qui a automatisé la création de matériel personnalisé, réduisant le temps de production de 3 heures à 1 minute.',
+              'Module d’IA générative avec Gemini qui personnalise le matériel de chaque élève, réduisant le temps de production de 3 heures à 1 minute.',
           },
           {
             path: 'Sans serveur et CI/CD',
             description:
-              'Architecture modulaire sans serveur à haute disponibilité et sans coût d’inactivité, avec des pipelines CI/CD pour le déploiement automatisé et la gestion de la qualité du code.',
+              'Même architecture modulaire sans serveur que BF Academy, à haute disponibilité, sans coût d’inactivité et avec des pipelines CI/CD.',
           },
         ],
       },
@@ -152,6 +210,7 @@ export const fr: Dictionary = {
         role: 'Cofondateur · Développeur logiciel',
         period: 'oct. 2025 — aujourd’hui',
         location: 'À distance',
+        url: projectUrls.bfAcademy,
         badge: 'Cofondateur',
         techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'FinOps', 'CI/CD'],
         paths: [
