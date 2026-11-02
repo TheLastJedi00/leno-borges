@@ -88,6 +88,30 @@ export const fr: Dictionary = {
         ],
       },
       {
+        title: 'Delcastanher',
+        subtitle: 'Services administratifs · Projet à la pige',
+        role: 'Développeur full stack',
+        period: 'sept. 2026 — aujourd’hui',
+        location: 'À distance',
+        url: projectUrls.delcastanher,
+        techs: ['Angular', 'NestJS', 'Serverless', 'PostgreSQL'],
+        paths: [
+          {
+            path: 'Plateforme',
+            description:
+              'Développement full stack de la plateforme de l’Imersão RH Estratégico (programme de RH stratégique), avec Angular au frontal et NestJS en arrière-plan.',
+          },
+          {
+            path: 'Données',
+            description: 'Modélisation et persistance des données avec PostgreSQL.',
+          },
+          {
+            path: 'Sans serveur',
+            description: 'Architecture sans serveur à haute disponibilité, sans coût de serveur inactif.',
+          },
+        ],
+      },
+      {
         title: 'Tichr',
         subtitle: 'Plateforme SaaS éducative multiforfait',
         role: 'Développeur full stack',
