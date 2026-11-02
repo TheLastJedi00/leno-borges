@@ -53,6 +53,8 @@ export const pt: Dictionary = {
     title: 'Experiência',
     lead: 'Liderança técnica e engenharia ponta a ponta de soluções SaaS e EdTech, automação com IA e formação de novos devs.',
     techsLabel: 'Tecnologias',
+    visit: 'Visitar',
+    newTab: '(abre em nova aba)',
     items: [
       {
         title: 'Tichr',

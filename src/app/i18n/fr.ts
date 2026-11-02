@@ -56,6 +56,8 @@ export const fr: Dictionary = {
     title: 'Expérience',
     lead: 'Leadership technique et ingénierie de bout en bout de solutions SaaS et EdTech, automatisation par l’IA et formation de développeurs.',
     techsLabel: 'Technologies',
+    visit: 'Visiter',
+    newTab: '(s’ouvre dans un nouvel onglet)',
     items: [
       {
         title: 'Tichr',

@@ -54,6 +54,8 @@ export const en: Dictionary = {
     title: 'Experience',
     lead: 'Technical leadership and end-to-end engineering of SaaS and EdTech solutions, AI automation and developer training.',
     techsLabel: 'Technologies',
+    visit: 'Visit',
+    newTab: '(opens in a new tab)',
     items: [
       {
         title: 'Tichr',

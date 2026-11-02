@@ -29,7 +29,16 @@ export interface Dictionary {
   };
   owner: { alt: string; caption: string };
   about: { title: string; summary: string; summaryExtra: string; metrics: Metric[] };
-  experience: { title: string; lead: string; techsLabel: string; items: Experience[] };
+  experience: {
+    title: string;
+    lead: string;
+    techsLabel: string;
+    /** Verbo do botão de link do card: "<visit> <domínio> ↗". */
+    visit: string;
+    /** Aviso sr-only de que o link abre em nova aba. */
+    newTab: string;
+    items: Experience[];
+  };
   skills: { title: string; groups: SkillGroup[] };
   education: { title: string; items: Education[] };
   languages: { title: string; items: Language[] };
