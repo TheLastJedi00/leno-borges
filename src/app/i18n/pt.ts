@@ -58,6 +58,57 @@ export const pt: Dictionary = {
     newTab: '(abre em nova aba)',
     items: [
       {
+        title: 'Liga Dev',
+        subtitle: 'Curso de Programação Próprio',
+        role: 'Fundador',
+        period: '2026 — Atual',
+        location: 'Remoto',
+        badge: 'Em construção',
+        url: projectUrls.ligaDev,
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA Generativa', 'FinOps', 'CI/CD'],
+        paths: [
+          {
+            path: 'Curso de programação',
+            description:
+              'Criação de um curso próprio de programação, unindo a experiência de instrutor técnico a uma plataforma própria.',
+          },
+          {
+            path: 'Plataforma',
+            description:
+              'Construída sobre a mesma arquitetura da BF Academy, com Angular no front-end e NestJS no back-end.',
+          },
+          {
+            path: 'IA Generativa & FinOps',
+            description:
+              'Geração de material personalizado com IA e infraestrutura Serverless de custo próximo de zero, com esteiras de CI/CD.',
+          },
+        ],
+      },
+      {
+        title: 'Delcastanher',
+        subtitle: 'Serviços Administrativos · Projeto Freelancer',
+        role: 'Desenvolvedor Fullstack',
+        period: 'Set 2026 — Atual',
+        location: 'Remoto',
+        url: projectUrls.delcastanher,
+        techs: ['Angular', 'NestJS', 'Serverless', 'PostgreSQL'],
+        paths: [
+          {
+            path: 'Plataforma',
+            description:
+              'Desenvolvimento fullstack da plataforma da Imersão RH Estratégico, com Angular no front-end e NestJS no back-end.',
+          },
+          {
+            path: 'Dados',
+            description: 'Modelagem e persistência de dados em PostgreSQL.',
+          },
+          {
+            path: 'Serverless',
+            description: 'Arquitetura Serverless com alta disponibilidade e sem custo de servidor ocioso.',
+          },
+        ],
+      },
+      {
         title: 'Tichr',
         subtitle: 'Plataforma SaaS Educacional Multiplano',
         role: 'Desenvolvedor Fullstack',
@@ -124,26 +175,28 @@ export const pt: Dictionary = {
         ],
       },
       {
-        title: 'Plataforma de Consultoria',
-        subtitle: 'Projeto Freelancer',
+        title: 'Matriz do DNA',
+        subtitle: 'Plataforma de Formação de Empresárias · Freelancer',
         role: 'Desenvolvedor',
-        period: 'Jan 2026 — Mar 2026',
+        period: 'Jan 2026 — Atual',
         location: 'Remoto',
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA Generativa', 'CI/CD'],
+        badge: 'Em construção',
+        techs: ['Angular', 'NestJS', 'Gemini', 'Serverless', 'CI/CD'],
         paths: [
           {
             path: 'Plataforma',
-            description: 'Desenvolvimento de plataforma de consultoria utilizando Angular e NestJS.',
+            description:
+              'Desenvolvimento, com Angular e NestJS, da plataforma de uma empresária que forma outras empresárias.',
           },
           {
-            path: 'IA Generativa',
+            path: 'Conteúdo com Gemini',
             description:
-              'Módulo que automatizou a criação de material personalizado, reduzindo o tempo de produção de 3 horas para 1 minuto.',
+              'Módulo de IA generativa com Gemini que personaliza o material de cada aluna, reduzindo o tempo de produção de 3 horas para 1 minuto.',
           },
           {
             path: 'Serverless & CI/CD',
             description:
-              'Arquitetura modular Serverless com alta disponibilidade e custo zero de ociosidade, além de esteiras de CI/CD para deploy automatizado e gestão de qualidade de código.',
+              'Mesma arquitetura modular Serverless da BF Academy, com alta disponibilidade, custo zero de ociosidade e esteiras de CI/CD.',
           },
         ],
       },
