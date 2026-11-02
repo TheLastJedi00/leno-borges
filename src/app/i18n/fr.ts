@@ -1,4 +1,5 @@
 import type { Dictionary } from './dictionary';
+import { projectUrls } from '../pages/home/home.data';
 
 // Français canadien (OQLF) : « courriel », « infonuagique », espace insécable avant « : » et
 // espace fine avant « ? ». À faire relire par un locuteur natif avant publication.
@@ -65,6 +66,7 @@ export const fr: Dictionary = {
         role: 'Développeur full stack',
         period: 'avr. 2026 — aujourd’hui',
         location: 'À distance',
+        url: projectUrls.tichr,
         badge: 'Actuel',
         techs: [
           'Angular 20 (Signals)',
@@ -154,6 +156,7 @@ export const fr: Dictionary = {
         role: 'Cofondateur · Développeur logiciel',
         period: 'oct. 2025 — aujourd’hui',
         location: 'À distance',
+        url: projectUrls.bfAcademy,
         badge: 'Cofondateur',
         techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'FinOps', 'CI/CD'],
         paths: [
