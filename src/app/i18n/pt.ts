@@ -6,7 +6,7 @@ export const pt: Dictionary = {
     htmlLang: 'pt-BR',
     title: 'Leno Borges — Software Developer Fullstack & Tech Educator | Barrie & GTA, Canadá',
     description:
-      'Leno Borges, Software Developer Fullstack (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) e Tech Educator em Barrie & GTA, Ontário, Canadá e Blumenau, SC, Brasil. Plataformas SaaS e EdTech, REST APIs, IA Generativa e FinOps.',
+      'Leno Borges, Software Developer Fullstack (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) e Tech Educator em Barrie & GTA, Ontário, Canadá e Blumenau, SC, Brasil. Plataformas SaaS e EdTech, REST APIs, IA Generativa e arquitetura Serverless.',
   },
   header: {
     navLabel: 'Principal',
@@ -21,7 +21,7 @@ export const pt: Dictionary = {
     roleLead: 'Software Developer Fullstack',
     roleTail: 'Tech Educator',
     tagline:
-      'Plataformas SaaS e EdTech de ponta a ponta com Angular, NestJS e Java/Spring — com IA Generativa automatizando o operacional e FinOps mantendo a infraestrutura perto de zero.',
+      'Plataformas SaaS e EdTech de ponta a ponta com Angular, NestJS e Java/Spring, usando IA Generativa para automatizar o operacional.',
     ctaExperience: 'Ver experiência ↓',
     ctaContact: 'Contato',
   },
@@ -34,7 +34,7 @@ export const pt: Dictionary = {
     summary:
       'Software Developer Fullstack com experiência na construção de plataformas SaaS e soluções EdTech de ponta a ponta, utilizando Angular, NestJS e o ecossistema Java/Spring. Focado em traduzir regras de negócio complexas em arquiteturas modulares e eficientes.',
     summaryExtra:
-      'Forte vivência prática na integração de Inteligência Artificial para automatizar processos operacionais e na aplicação de estratégias de FinOps para escalar produtos mantendo o custo de infraestrutura próximo a zero. Perfil hands-on e com histórico de mentoria técnica, combinando a entrega ágil de código com a preocupação real sobre o produto e o cliente final.',
+      'Forte vivência prática na integração de Inteligência Artificial para automatizar processos operacionais, com atenção ao custo nas decisões de arquitetura, como a migração de monólito para Serverless e a troca de provedor de hospedagem. Perfil hands-on e com histórico de mentoria técnica, combinando a entrega ágil de código com a preocupação real sobre o produto e o cliente final.',
     metrics: [
       {
         value: '5 dias → 2 min',
@@ -42,11 +42,7 @@ export const pt: Dictionary = {
       },
       {
         value: '3 h → 1 min',
-        label: 'Criação de material personalizado em plataforma de consultoria',
-      },
-      {
-        value: '≈ 0%',
-        label: 'Custo de infraestrutura ociosa com FinOps e arquitetura Serverless',
+        label: 'Criação de material personalizado com IA Generativa na Matriz do DNA',
       },
     ],
   },
@@ -65,7 +61,7 @@ export const pt: Dictionary = {
         location: 'Remoto',
         badge: 'Em construção',
         url: projectUrls.ligaDev,
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA Generativa', 'FinOps', 'CI/CD'],
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA Generativa', 'CI/CD'],
         paths: [
           {
             path: 'Curso de programação',
@@ -78,9 +74,9 @@ export const pt: Dictionary = {
               'Construída sobre a mesma arquitetura da BF Academy, com Angular no front-end e NestJS no back-end.',
           },
           {
-            path: 'IA Generativa & FinOps',
+            path: 'IA Generativa & Serverless',
             description:
-              'Geração de material personalizado com IA e infraestrutura Serverless de custo próximo de zero, com esteiras de CI/CD.',
+              'Geração de material personalizado com IA sobre infraestrutura Serverless, com esteiras de CI/CD.',
           },
         ],
       },
@@ -105,7 +101,7 @@ export const pt: Dictionary = {
           },
           {
             path: 'Serverless',
-            description: 'Arquitetura Serverless com alta disponibilidade e sem custo de servidor ocioso.',
+            description: 'Arquitetura Serverless com alta disponibilidade.',
           },
         ],
       },
@@ -197,7 +193,7 @@ export const pt: Dictionary = {
           {
             path: 'Serverless & CI/CD',
             description:
-              'Mesma arquitetura modular Serverless da BF Academy, com alta disponibilidade, custo zero de ociosidade e esteiras de CI/CD.',
+              'Mesma arquitetura modular Serverless da BF Academy, com alta disponibilidade e esteiras de CI/CD.',
           },
         ],
       },
@@ -209,7 +205,7 @@ export const pt: Dictionary = {
         location: 'Remoto',
         url: projectUrls.bfAcademy,
         badge: 'Cofundador',
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA Generativa', 'FinOps', 'CI/CD'],
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA Generativa', 'Vercel', 'CI/CD'],
         paths: [
           {
             path: 'LMS end-to-end',
@@ -222,9 +218,9 @@ export const pt: Dictionary = {
               'Módulo que automatizou a criação de material didático, reduzindo o tempo de produção de 5 dias para 2 minutos.',
           },
           {
-            path: 'FinOps',
+            path: 'Cloud Run → Vercel',
             description:
-              'Arquitetura modular baseada em serviços Serverless, mantendo o custo de infraestrutura próximo de 0%, com esteiras de CI/CD para deploy automatizado.',
+              'Migração de um serviço do Cloud Run para a Vercel para reduzir o custo de hospedagem, em uma arquitetura modular Serverless com esteiras de CI/CD.',
           },
         ],
       },

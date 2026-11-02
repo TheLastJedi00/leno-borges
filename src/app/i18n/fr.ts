@@ -9,7 +9,7 @@ export const fr: Dictionary = {
     title:
       'Leno Borges — Développeur logiciel full stack et formateur techno | Barrie et RGT, Ontario',
     description:
-      'Leno Borges, développeur logiciel full stack (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) et formateur techno à Barrie et dans la RGT, Ontario, Canada, et à Blumenau, Brésil. Plateformes SaaS et EdTech, API REST, IA générative et optimisation des coûts infonuagiques (FinOps).',
+      'Leno Borges, développeur logiciel full stack (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) et formateur techno à Barrie et dans la RGT, Ontario, Canada, et à Blumenau, Brésil. Plateformes SaaS et EdTech, API REST, IA générative et architecture infonuagique sans serveur.',
   },
   header: {
     navLabel: 'Principale',
@@ -24,7 +24,7 @@ export const fr: Dictionary = {
     roleLead: 'Développeur logiciel full stack',
     roleTail: 'formateur techno',
     tagline:
-      'Plateformes SaaS et EdTech de bout en bout avec TypeScript, Angular, NestJS et Java/Spring — l’IA générative automatise l’opérationnel et le FinOps garde les coûts infonuagiques près de zéro.',
+      'Plateformes SaaS et EdTech de bout en bout avec TypeScript, Angular, NestJS et Java/Spring, où l’IA générative automatise l’opérationnel.',
     ctaExperience: 'Voir l’expérience ↓',
     ctaContact: 'Me joindre',
   },
@@ -37,7 +37,7 @@ export const fr: Dictionary = {
     summary:
       'Développeur logiciel full stack expérimenté dans la conception de plateformes SaaS et de solutions EdTech de bout en bout avec Angular, NestJS et l’écosystème Java/Spring. Axé sur la traduction de règles d’affaires complexes en architectures modulaires et efficaces.',
     summaryExtra:
-      'Solide expérience pratique de l’intégration de l’IA générative pour automatiser les processus opérationnels et de l’application de stratégies FinOps (optimisation des coûts infonuagiques) pour faire croître des produits tout en gardant les coûts d’infrastructure près de zéro. Profil pratique avec un historique de mentorat technique, alliant livraison agile et souci réel du produit et de l’utilisateur final.',
+      'Solide expérience pratique de l’intégration de l’IA générative pour automatiser les processus opérationnels, avec des choix d’architecture attentifs aux coûts, comme la migration d’un monolithe vers le sans serveur et le changement d’hébergeur. Profil pratique avec un historique de mentorat technique, alliant livraison agile et souci réel du produit et de l’utilisateur final.',
     metrics: [
       {
         value: '5 jours → 2 min',
@@ -45,11 +45,7 @@ export const fr: Dictionary = {
       },
       {
         value: '3 h → 1 min',
-        label: 'Création de matériel personnalisé sur une plateforme de consultation',
-      },
-      {
-        value: '≈ 0 %',
-        label: 'Coût d’infrastructure inactive grâce au FinOps et à une architecture sans serveur',
+        label: 'Création de matériel personnalisé par l’IA générative chez Matriz do DNA',
       },
     ],
   },
@@ -68,7 +64,7 @@ export const fr: Dictionary = {
         location: 'À distance',
         badge: 'En cours',
         url: projectUrls.ligaDev,
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'FinOps', 'CI/CD'],
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'CI/CD'],
         paths: [
           {
             path: 'Cours de programmation',
@@ -81,9 +77,9 @@ export const fr: Dictionary = {
               'Bâtie sur la même architecture que BF Academy, avec Angular au frontal et NestJS en arrière-plan.',
           },
           {
-            path: 'IA générative et FinOps',
+            path: 'IA générative et sans serveur',
             description:
-              'Matériel personnalisé généré par l’IA et infrastructure sans serveur au coût quasi nul, avec des pipelines CI/CD.',
+              'Matériel personnalisé généré par l’IA sur une infrastructure sans serveur, avec des pipelines CI/CD.',
           },
         ],
       },
@@ -108,7 +104,7 @@ export const fr: Dictionary = {
           },
           {
             path: 'Sans serveur',
-            description: 'Architecture sans serveur à haute disponibilité, sans coût de serveur inactif.',
+            description: 'Architecture sans serveur à haute disponibilité.',
           },
         ],
       },
@@ -200,7 +196,7 @@ export const fr: Dictionary = {
           {
             path: 'Sans serveur et CI/CD',
             description:
-              'Même architecture modulaire sans serveur que BF Academy, à haute disponibilité, sans coût d’inactivité et avec des pipelines CI/CD.',
+              'Même architecture modulaire sans serveur que BF Academy, à haute disponibilité et avec des pipelines CI/CD.',
           },
         ],
       },
@@ -212,7 +208,7 @@ export const fr: Dictionary = {
         location: 'À distance',
         url: projectUrls.bfAcademy,
         badge: 'Cofondateur',
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'FinOps', 'CI/CD'],
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'Vercel', 'CI/CD'],
         paths: [
           {
             path: 'LMS de bout en bout',
@@ -225,9 +221,9 @@ export const fr: Dictionary = {
               'Module qui a automatisé la création de matériel pédagogique, réduisant le temps de production de 5 jours à 2 minutes.',
           },
           {
-            path: 'FinOps',
+            path: 'Cloud Run → Vercel',
             description:
-              'Architecture modulaire fondée sur des services sans serveur, maintenant les coûts d’infrastructure près de 0 %, avec des pipelines CI/CD pour le déploiement automatisé.',
+              'Migration d’un service de Cloud Run vers Vercel pour réduire les coûts d’hébergement, dans une architecture modulaire sans serveur avec des pipelines CI/CD.',
           },
         ],
       },
