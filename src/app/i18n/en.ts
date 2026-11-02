@@ -311,6 +311,7 @@ export const en: Dictionary = {
     items: [
       { name: 'Portuguese', level: 'Native' },
       { name: 'English', level: 'Intermediate (B1)' },
+      { name: 'French', level: 'Beginner (A1)' },
     ],
   },
   contact: {
