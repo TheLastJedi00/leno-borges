@@ -7,13 +7,13 @@ export const fr: Dictionary = {
   meta: {
     htmlLang: 'fr-CA',
     title:
-      'Leno Borges — Développeur logiciel full stack et formateur techno | Barrie et RGT, Ontario',
+      'Leno Borges, développeur logiciel full stack et formateur techno | Barrie et RGT, Ontario',
     description:
       'Leno Borges, développeur logiciel full stack (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) et formateur techno à Barrie et dans la RGT, Ontario, Canada, et à Blumenau, Brésil. Plateformes SaaS et EdTech, API REST, IA générative et architecture infonuagique sans serveur.',
   },
   header: {
     navLabel: 'Principale',
-    home: 'Leno Borges — accueil',
+    home: 'Page d’accueil de Leno Borges',
     nav: { about: 'À propos', experience: 'Expérience', skills: 'Compétences', education: 'Formation' },
     contact: 'Me joindre',
     langLabel: 'Langue',
@@ -298,7 +298,7 @@ export const fr: Dictionary = {
             name: 'Mentorat et excellence technique',
             hours: 'Java, API et BD · 100 h+',
             description:
-              'Référence technique et mentor pour les collègues de classe pendant les projets pratiques — ce qui a mené à une invitation à se joindre à l’équipe de formateurs de ProWay.',
+              'Référence technique et mentor pour les collègues de classe pendant les projets pratiques, ce qui a mené à une invitation à se joindre à l’équipe de formateurs de ProWay.',
           },
         ],
       },
@@ -310,7 +310,7 @@ export const fr: Dictionary = {
     ],
   },
   languages: {
-    title: '05 — Langues',
+    title: '05 · Langues',
     items: [
       { name: 'Portugais', level: 'Langue maternelle' },
       { name: 'Anglais', level: 'Intermédiaire (B1)' },

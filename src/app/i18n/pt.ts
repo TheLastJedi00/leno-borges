@@ -4,13 +4,13 @@ import { projectUrls } from '../pages/home/home.data';
 export const pt: Dictionary = {
   meta: {
     htmlLang: 'pt-BR',
-    title: 'Leno Borges — Software Developer Fullstack & Tech Educator | Barrie & GTA, Canadá',
+    title: 'Leno Borges, Software Developer Fullstack & Tech Educator | Barrie & GTA, Canadá',
     description:
       'Leno Borges, Software Developer Fullstack (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) e Tech Educator em Barrie & GTA, Ontário, Canadá e Blumenau, SC, Brasil. Plataformas SaaS e EdTech, REST APIs, IA Generativa e arquitetura Serverless.',
   },
   header: {
     navLabel: 'Principal',
-    home: 'Leno Borges — início',
+    home: 'Página inicial de Leno Borges',
     nav: { about: 'Sobre', experience: 'Experiência', skills: 'Competências', education: 'Formação' },
     contact: 'Contato',
     langLabel: 'Idioma',
@@ -295,7 +295,7 @@ export const pt: Dictionary = {
             name: 'Mentoria e Excelência Técnica',
             hours: 'Java, APIs & DB · 100h+',
             description:
-              'Referência técnica e mentor da turma nos projetos práticos — o que resultou no convite para integrar o quadro de instrutores da ProWay.',
+              'Referência técnica e mentor da turma nos projetos práticos, o que resultou no convite para integrar o quadro de instrutores da ProWay.',
           },
         ],
       },
@@ -307,7 +307,7 @@ export const pt: Dictionary = {
     ],
   },
   languages: {
-    title: '05 — Idiomas',
+    title: '05 · Idiomas',
     items: [
       { name: 'Português', level: 'Nativo' },
       { name: 'Inglês', level: 'Intermediário (B1)' },
