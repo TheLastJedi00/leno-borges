@@ -1,5 +1,5 @@
 import type { Dictionary } from './dictionary';
-import { projectUrls } from '../pages/home/home.data';
+import { partners, projectUrls } from '../pages/home/home.data';
 
 export const pt: Dictionary = {
   meta: {
@@ -82,6 +82,7 @@ export const pt: Dictionary = {
       },
       {
         title: 'Delcastanher',
+        partners: [partners.lidianeDelcastanher],
         subtitle: 'Serviços Administrativos · Projeto Freelancer',
         role: 'Desenvolvedor Fullstack',
         period: 'Desde Set 2026',
@@ -147,6 +148,7 @@ export const pt: Dictionary = {
       },
       {
         title: 'ProWay',
+        partners: [partners.proway],
         subtitle: 'Educação, Formação de Devs & Consultoria',
         role: 'Instrutor Técnico',
         period: 'Desde Jan 2026',
@@ -173,6 +175,7 @@ export const pt: Dictionary = {
       },
       {
         title: 'Matriz do DNA',
+        partners: [partners.paulaMarjorie],
         subtitle: 'Plataforma de Formação de Empresárias · Freelancer',
         role: 'Desenvolvedor',
         period: 'Desde Jan 2026',
@@ -199,6 +202,7 @@ export const pt: Dictionary = {
       },
       {
         title: 'BF Academy',
+        partners: [partners.barbaraFarias],
         subtitle: 'EdTech & LMS Proprietário',
         role: 'Cofundador · Software Developer',
         period: 'Desde Out 2025',
@@ -265,12 +269,17 @@ export const pt: Dictionary = {
       { category: 'Banco de Dados', skills: ['PostgreSQL', 'MySQL', 'Firestore'] },
     ],
   },
+  partners: {
+    label: 'Parceria',
+    linkedin: 'perfil no LinkedIn',
+  },
   education: {
     title: 'Formação',
     items: [
       {
         title: 'Bootcamp de Suporte AMS',
         institution: 'T-Systems / ProWay',
+        partners: [partners.tsystems, partners.proway],
         period: 'Dez 2025',
         modules: [
           {

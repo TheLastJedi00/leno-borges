@@ -17,6 +17,8 @@ export interface Experience {
   url?: string;
   techs: string[];
   paths: ExperiencePath[];
+  /** Parceiros do projeto (de `partners`); sem valor, o card não mostra a linha de parceria. */
+  partners?: Partner[];
 }
 
 export interface Metric {
@@ -40,6 +42,13 @@ export interface Education {
   institution: string;
   period: string;
   modules?: EducationModule[];
+  /** Parceiros da formação (de `partners`). */
+  partners?: Partner[];
+}
+
+export interface Partner {
+  name: string;
+  linkedin: string;
 }
 
 export interface Language {
@@ -71,6 +80,24 @@ export const projectUrls = {
   tichr: 'https://www.tichr.com.br',
   bfAcademy: 'https://www.barbarafarias.com.br/academy',
 };
+
+/** Parceiros dos projetos (nomes próprios, neutros de idioma). URLs sem parâmetros de rastreio. */
+export const partners = {
+  barbaraFarias: {
+    name: 'Bárbara Farias',
+    linkedin: 'https://www.linkedin.com/in/b%C3%A1rbara-farias-490041186/',
+  },
+  lidianeDelcastanher: {
+    name: 'Lidiane Delcastanher',
+    linkedin: 'https://www.linkedin.com/in/lidiane-delcastanher-5b2861153/',
+  },
+  paulaMarjorie: {
+    name: 'Paula Marjorie',
+    linkedin: 'https://www.linkedin.com/in/paula-marjorie/',
+  },
+  proway: { name: 'ProWay', linkedin: 'https://www.linkedin.com/company/prowayinfo/' },
+  tsystems: { name: 'T-Systems', linkedin: 'https://www.linkedin.com/company/tsystems-brasil/' },
+} satisfies Record<string, Partner>;
 
 /** URL legível para o botão: sem protocolo, sem `www.` e sem barra final. */
 export function displayUrl(url: string): string {
