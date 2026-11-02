@@ -7,13 +7,13 @@ export const fr: Dictionary = {
   meta: {
     htmlLang: 'fr-CA',
     title:
-      'Leno Borges — Développeur logiciel full stack et formateur techno | Barrie et RGT, Ontario',
+      'Leno Borges, développeur logiciel full stack et formateur techno | Barrie et RGT, Ontario',
     description:
-      'Leno Borges, développeur logiciel full stack (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) et formateur techno à Barrie et dans la RGT, Ontario, Canada, et à Blumenau, Brésil. Plateformes SaaS et EdTech, API REST, IA générative et optimisation des coûts infonuagiques (FinOps).',
+      'Leno Borges, développeur logiciel full stack (TypeScript, Angular, Node.js/NestJS, Java/Spring Boot) et formateur techno à Barrie et dans la RGT, Ontario, Canada, et à Blumenau, Brésil. Plateformes SaaS et EdTech, API REST, IA générative et architecture infonuagique sans serveur.',
   },
   header: {
     navLabel: 'Principale',
-    home: 'Leno Borges — accueil',
+    home: 'Page d’accueil de Leno Borges',
     nav: { about: 'À propos', experience: 'Expérience', skills: 'Compétences', education: 'Formation' },
     contact: 'Me joindre',
     langLabel: 'Langue',
@@ -24,7 +24,7 @@ export const fr: Dictionary = {
     roleLead: 'Développeur logiciel full stack',
     roleTail: 'formateur techno',
     tagline:
-      'Plateformes SaaS et EdTech de bout en bout avec TypeScript, Angular, NestJS et Java/Spring — l’IA générative automatise l’opérationnel et le FinOps garde les coûts infonuagiques près de zéro.',
+      'Plateformes SaaS et EdTech de bout en bout avec TypeScript, Angular, NestJS et Java/Spring, où l’IA générative automatise l’opérationnel.',
     ctaExperience: 'Voir l’expérience ↓',
     ctaContact: 'Me joindre',
   },
@@ -37,7 +37,7 @@ export const fr: Dictionary = {
     summary:
       'Développeur logiciel full stack expérimenté dans la conception de plateformes SaaS et de solutions EdTech de bout en bout avec Angular, NestJS et l’écosystème Java/Spring. Axé sur la traduction de règles d’affaires complexes en architectures modulaires et efficaces.',
     summaryExtra:
-      'Solide expérience pratique de l’intégration de l’IA générative pour automatiser les processus opérationnels et de l’application de stratégies FinOps (optimisation des coûts infonuagiques) pour faire croître des produits tout en gardant les coûts d’infrastructure près de zéro. Profil pratique avec un historique de mentorat technique, alliant livraison agile et souci réel du produit et de l’utilisateur final.',
+      'Solide expérience pratique de l’intégration de l’IA générative pour automatiser les processus opérationnels, avec des choix d’architecture attentifs aux coûts, comme la migration d’un monolithe vers le sans serveur et le changement d’hébergeur. Profil pratique avec un historique de mentorat technique, alliant livraison agile et souci réel du produit et de l’utilisateur final.',
     metrics: [
       {
         value: '5 jours → 2 min',
@@ -45,11 +45,7 @@ export const fr: Dictionary = {
       },
       {
         value: '3 h → 1 min',
-        label: 'Création de matériel personnalisé sur une plateforme de consultation',
-      },
-      {
-        value: '≈ 0 %',
-        label: 'Coût d’infrastructure inactive grâce au FinOps et à une architecture sans serveur',
+        label: 'Création de matériel personnalisé par l’IA générative chez Matriz do DNA',
       },
     ],
   },
@@ -64,11 +60,11 @@ export const fr: Dictionary = {
         title: 'Liga Dev',
         subtitle: 'Cours de programmation personnel',
         role: 'Fondateur',
-        period: '2026 — aujourd’hui',
+        period: 'Depuis 2026',
         location: 'À distance',
         badge: 'En cours',
         url: projectUrls.ligaDev,
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'FinOps', 'CI/CD'],
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'CI/CD'],
         paths: [
           {
             path: 'Cours de programmation',
@@ -81,9 +77,9 @@ export const fr: Dictionary = {
               'Bâtie sur la même architecture que BF Academy, avec Angular au frontal et NestJS en arrière-plan.',
           },
           {
-            path: 'IA générative et FinOps',
+            path: 'IA générative et sans serveur',
             description:
-              'Matériel personnalisé généré par l’IA et infrastructure sans serveur au coût quasi nul, avec des pipelines CI/CD.',
+              'Matériel personnalisé généré par l’IA sur une infrastructure sans serveur, avec des pipelines CI/CD.',
           },
         ],
       },
@@ -91,7 +87,7 @@ export const fr: Dictionary = {
         title: 'Delcastanher',
         subtitle: 'Services administratifs · Projet à la pige',
         role: 'Développeur full stack',
-        period: 'sept. 2026 — aujourd’hui',
+        period: 'Depuis sept. 2026',
         location: 'À distance',
         badge: 'Actuel',
         url: projectUrls.delcastanher,
@@ -108,7 +104,7 @@ export const fr: Dictionary = {
           },
           {
             path: 'Sans serveur',
-            description: 'Architecture sans serveur à haute disponibilité, sans coût de serveur inactif.',
+            description: 'Architecture sans serveur à haute disponibilité.',
           },
         ],
       },
@@ -116,7 +112,7 @@ export const fr: Dictionary = {
         title: 'Tichr',
         subtitle: 'Plateforme SaaS éducative multiforfait',
         role: 'Développeur full stack',
-        period: 'avr. 2026 — aujourd’hui',
+        period: 'Depuis avr. 2026',
         location: 'À distance',
         url: projectUrls.tichr,
         badge: 'Actuel',
@@ -156,7 +152,7 @@ export const fr: Dictionary = {
         title: 'ProWay',
         subtitle: 'Éducation, formation de développeurs et consultation',
         role: 'Formateur technique',
-        period: 'janv. 2026 — aujourd’hui',
+        period: 'Depuis janv. 2026',
         location: 'Blumenau, SC, Brésil · Temps partiel',
         badge: 'Actuel',
         techs: ['Java', 'POO', 'Node.js', 'SQL', 'Angular', 'JavaScript', 'TypeScript', 'Git'],
@@ -182,7 +178,7 @@ export const fr: Dictionary = {
         title: 'Matriz do DNA',
         subtitle: 'Plateforme de formation pour entrepreneures · Pige',
         role: 'Développeur',
-        period: 'janv. 2026 — aujourd’hui',
+        period: 'Depuis janv. 2026',
         location: 'À distance',
         badge: 'En cours',
         techs: ['Angular', 'NestJS', 'Gemini', 'Serverless', 'CI/CD'],
@@ -200,7 +196,7 @@ export const fr: Dictionary = {
           {
             path: 'Sans serveur et CI/CD',
             description:
-              'Même architecture modulaire sans serveur que BF Academy, à haute disponibilité, sans coût d’inactivité et avec des pipelines CI/CD.',
+              'Même architecture modulaire sans serveur que BF Academy, à haute disponibilité et avec des pipelines CI/CD.',
           },
         ],
       },
@@ -208,11 +204,11 @@ export const fr: Dictionary = {
         title: 'BF Academy',
         subtitle: 'EdTech et LMS propriétaire',
         role: 'Cofondateur · Développeur logiciel',
-        period: 'oct. 2025 — aujourd’hui',
+        period: 'Depuis oct. 2025',
         location: 'À distance',
         url: projectUrls.bfAcademy,
         badge: 'Cofondateur',
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'FinOps', 'CI/CD'],
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'Vercel', 'CI/CD'],
         paths: [
           {
             path: 'LMS de bout en bout',
@@ -225,9 +221,9 @@ export const fr: Dictionary = {
               'Module qui a automatisé la création de matériel pédagogique, réduisant le temps de production de 5 jours à 2 minutes.',
           },
           {
-            path: 'FinOps',
+            path: 'Cloud Run → Vercel',
             description:
-              'Architecture modulaire fondée sur des services sans serveur, maintenant les coûts d’infrastructure près de 0 %, avec des pipelines CI/CD pour le déploiement automatisé.',
+              'Migration d’un service de Cloud Run vers Vercel pour réduire les coûts d’hébergement, dans une architecture modulaire sans serveur avec des pipelines CI/CD.',
           },
         ],
       },
@@ -235,7 +231,7 @@ export const fr: Dictionary = {
         title: 'Système de prise de rendez-vous',
         subtitle: 'Projet autonome',
         role: 'Développeur',
-        period: 'oct. 2025 — nov. 2025',
+        period: 'D’oct. 2025 à nov. 2025',
         location: 'Blumenau, SC, Brésil',
         techs: ['Angular', 'Serverless'],
         paths: [
@@ -302,7 +298,7 @@ export const fr: Dictionary = {
             name: 'Mentorat et excellence technique',
             hours: 'Java, API et BD · 100 h+',
             description:
-              'Référence technique et mentor pour les collègues de classe pendant les projets pratiques — ce qui a mené à une invitation à se joindre à l’équipe de formateurs de ProWay.',
+              'Référence technique et mentor pour les collègues de classe pendant les projets pratiques, ce qui a mené à une invitation à se joindre à l’équipe de formateurs de ProWay.',
           },
         ],
       },
@@ -314,7 +310,7 @@ export const fr: Dictionary = {
     ],
   },
   languages: {
-    title: '05 — Langues',
+    title: '05 · Langues',
     items: [
       { name: 'Portugais', level: 'Langue maternelle' },
       { name: 'Anglais', level: 'Intermédiaire (B1)' },
