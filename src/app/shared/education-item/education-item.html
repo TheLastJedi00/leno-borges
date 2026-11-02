@@ -4,6 +4,13 @@
     {{ title() }}
   </h3>
   <p class="mt-1 text-sm font-semibold text-accent-soft">{{ institution() }}</p>
+  <app-partner-links
+    class="mt-2 block empty:hidden"
+    [partners]="partners()"
+    [label]="partnerLabel()"
+    [linkedinLabel]="linkedinLabel()"
+    [newTabLabel]="newTabLabel()"
+  ></app-partner-links>
 
   @if (modules()?.length) {
     <ol class="mt-6 grid gap-4 sm:grid-cols-2">

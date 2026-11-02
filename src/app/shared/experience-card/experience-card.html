@@ -24,6 +24,13 @@
       <p class="mt-1 text-sm font-semibold text-paper/90">
         {{ role() }}<span class="font-normal text-faint"> · {{ subtitle() }}</span>
       </p>
+      <app-partner-links
+        class="mt-2 block empty:hidden"
+        [partners]="partners()"
+        [label]="partnerLabel()"
+        [linkedinLabel]="linkedinLabel()"
+        [newTabLabel]="newTabLabel()"
+      ></app-partner-links>
     </div>
 
     <div class="text-left sm:text-right">
