@@ -124,26 +124,28 @@ export const pt: Dictionary = {
         ],
       },
       {
-        title: 'Plataforma de Consultoria',
-        subtitle: 'Projeto Freelancer',
+        title: 'Matriz do DNA',
+        subtitle: 'Plataforma de Formação de Empresárias · Freelancer',
         role: 'Desenvolvedor',
-        period: 'Jan 2026 — Mar 2026',
+        period: 'Jan 2026 — Atual',
         location: 'Remoto',
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA Generativa', 'CI/CD'],
+        badge: 'Em construção',
+        techs: ['Angular', 'NestJS', 'Gemini', 'Serverless', 'CI/CD'],
         paths: [
           {
             path: 'Plataforma',
-            description: 'Desenvolvimento de plataforma de consultoria utilizando Angular e NestJS.',
+            description:
+              'Desenvolvimento, com Angular e NestJS, da plataforma de uma empresária que forma outras empresárias.',
           },
           {
-            path: 'IA Generativa',
+            path: 'Conteúdo com Gemini',
             description:
-              'Módulo que automatizou a criação de material personalizado, reduzindo o tempo de produção de 3 horas para 1 minuto.',
+              'Módulo de IA generativa com Gemini que personaliza o material de cada aluna, reduzindo o tempo de produção de 3 horas para 1 minuto.',
           },
           {
             path: 'Serverless & CI/CD',
             description:
-              'Arquitetura modular Serverless com alta disponibilidade e custo zero de ociosidade, além de esteiras de CI/CD para deploy automatizado e gestão de qualidade de código.',
+              'Mesma arquitetura modular Serverless da BF Academy, com alta disponibilidade, custo zero de ociosidade e esteiras de CI/CD.',
           },
         ],
       },

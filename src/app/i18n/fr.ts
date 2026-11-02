@@ -127,26 +127,28 @@ export const fr: Dictionary = {
         ],
       },
       {
-        title: 'Plateforme de consultation',
-        subtitle: 'Projet à la pige',
+        title: 'Matriz do DNA',
+        subtitle: 'Plateforme de formation pour entrepreneures · Pige',
         role: 'Développeur',
-        period: 'janv. 2026 — mars 2026',
+        period: 'janv. 2026 — aujourd’hui',
         location: 'À distance',
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'CI/CD'],
+        badge: 'En cours',
+        techs: ['Angular', 'NestJS', 'Gemini', 'Serverless', 'CI/CD'],
         paths: [
           {
             path: 'Plateforme',
-            description: 'Développement d’une plateforme de consultation avec Angular et NestJS.',
+            description:
+              'Développement, avec Angular et NestJS, de la plateforme d’une entrepreneure qui forme d’autres entrepreneures.',
           },
           {
-            path: 'IA générative',
+            path: 'Contenu avec Gemini',
             description:
-              'Module qui a automatisé la création de matériel personnalisé, réduisant le temps de production de 3 heures à 1 minute.',
+              'Module d’IA générative avec Gemini qui personnalise le matériel de chaque élève, réduisant le temps de production de 3 heures à 1 minute.',
           },
           {
             path: 'Sans serveur et CI/CD',
             description:
-              'Architecture modulaire sans serveur à haute disponibilité et sans coût d’inactivité, avec des pipelines CI/CD pour le déploiement automatisé et la gestion de la qualité du code.',
+              'Même architecture modulaire sans serveur que BF Academy, à haute disponibilité, sans coût d’inactivité et avec des pipelines CI/CD.',
           },
         ],
       },
