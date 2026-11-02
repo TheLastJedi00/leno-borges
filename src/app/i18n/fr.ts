@@ -208,7 +208,7 @@ export const fr: Dictionary = {
         location: 'À distance',
         url: projectUrls.bfAcademy,
         badge: 'Cofondateur',
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'FinOps', 'CI/CD'],
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'Vercel', 'CI/CD'],
         paths: [
           {
             path: 'LMS de bout en bout',
@@ -221,9 +221,9 @@ export const fr: Dictionary = {
               'Module qui a automatisé la création de matériel pédagogique, réduisant le temps de production de 5 jours à 2 minutes.',
           },
           {
-            path: 'FinOps',
+            path: 'Cloud Run → Vercel',
             description:
-              'Architecture modulaire fondée sur des services sans serveur, maintenant les coûts d’infrastructure près de 0 %, avec des pipelines CI/CD pour le déploiement automatisé.',
+              'Migration d’un service de Cloud Run vers Vercel pour réduire les coûts d’hébergement, dans une architecture modulaire sans serveur avec des pipelines CI/CD.',
           },
         ],
       },
