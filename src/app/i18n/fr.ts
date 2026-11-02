@@ -64,7 +64,7 @@ export const fr: Dictionary = {
         location: 'À distance',
         badge: 'En cours',
         url: projectUrls.ligaDev,
-        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'FinOps', 'CI/CD'],
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA générative', 'CI/CD'],
         paths: [
           {
             path: 'Cours de programmation',
@@ -77,9 +77,9 @@ export const fr: Dictionary = {
               'Bâtie sur la même architecture que BF Academy, avec Angular au frontal et NestJS en arrière-plan.',
           },
           {
-            path: 'IA générative et FinOps',
+            path: 'IA générative et sans serveur',
             description:
-              'Matériel personnalisé généré par l’IA et infrastructure sans serveur au coût quasi nul, avec des pipelines CI/CD.',
+              'Matériel personnalisé généré par l’IA sur une infrastructure sans serveur, avec des pipelines CI/CD.',
           },
         ],
       },
@@ -104,7 +104,7 @@ export const fr: Dictionary = {
           },
           {
             path: 'Sans serveur',
-            description: 'Architecture sans serveur à haute disponibilité, sans coût de serveur inactif.',
+            description: 'Architecture sans serveur à haute disponibilité.',
           },
         ],
       },
@@ -196,7 +196,7 @@ export const fr: Dictionary = {
           {
             path: 'Sans serveur et CI/CD',
             description:
-              'Même architecture modulaire sans serveur que BF Academy, à haute disponibilité, sans coût d’inactivité et avec des pipelines CI/CD.',
+              'Même architecture modulaire sans serveur que BF Academy, à haute disponibilité et avec des pipelines CI/CD.',
           },
         ],
       },
