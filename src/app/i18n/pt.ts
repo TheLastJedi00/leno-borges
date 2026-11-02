@@ -1,4 +1,5 @@
 import type { Dictionary } from './dictionary';
+import { projectUrls } from '../pages/home/home.data';
 
 export const pt: Dictionary = {
   meta: {
@@ -53,6 +54,8 @@ export const pt: Dictionary = {
     title: 'Experiência',
     lead: 'Liderança técnica e engenharia ponta a ponta de soluções SaaS e EdTech, automação com IA e formação de novos devs.',
     techsLabel: 'Tecnologias',
+    visit: 'Visitar',
+    newTab: '(abre em nova aba)',
     items: [
       {
         title: 'Tichr',
@@ -60,6 +63,7 @@ export const pt: Dictionary = {
         role: 'Desenvolvedor Fullstack',
         period: 'Abr 2026 — Presente',
         location: 'Remoto',
+        url: projectUrls.tichr,
         badge: 'Atual',
         techs: [
           'Angular 20 (Signals)',
@@ -149,6 +153,7 @@ export const pt: Dictionary = {
         role: 'Cofundador · Software Developer',
         period: 'Out 2025 — Atual',
         location: 'Remoto',
+        url: projectUrls.bfAcademy,
         badge: 'Cofundador',
         techs: ['Angular', 'NestJS', 'Serverless', 'IA Generativa', 'FinOps', 'CI/CD'],
         paths: [

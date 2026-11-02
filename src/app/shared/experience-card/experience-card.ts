@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TechIcon } from '../tech-icon/tech-icon';
+import { displayUrl } from '../../pages/home/home.data';
 
 @Component({
   selector: 'app-experience-card',
@@ -19,4 +20,14 @@ export class ExperienceCard {
   badge = input<string>();
   techs = input<string[]>();
   techsLabel = input<string>();
+
+  /** Página oficial do sistema; sem valor, o botão não é renderizado. */
+  url = input<string>();
+  visitLabel = input<string>();
+  newTabLabel = input<string>();
+
+  protected readonly urlText = computed(() => {
+    const url = this.url();
+    return url ? displayUrl(url) : '';
+  });
 }

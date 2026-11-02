@@ -1,4 +1,5 @@
 import type { Dictionary } from './dictionary';
+import { projectUrls } from '../pages/home/home.data';
 
 // Inglês canadense; termos de mercado de Barrie/GTA (ver .specs/002 - Ajustes/context.md)
 export const en: Dictionary = {
@@ -54,6 +55,8 @@ export const en: Dictionary = {
     title: 'Experience',
     lead: 'Technical leadership and end-to-end engineering of SaaS and EdTech solutions, AI automation and developer training.',
     techsLabel: 'Technologies',
+    visit: 'Visit',
+    newTab: '(opens in a new tab)',
     items: [
       {
         title: 'Tichr',
@@ -61,6 +64,7 @@ export const en: Dictionary = {
         role: 'Full-Stack Developer',
         period: 'Apr 2026 — Present',
         location: 'Remote',
+        url: projectUrls.tichr,
         badge: 'Current',
         techs: [
           'Angular 20 (Signals)',
@@ -149,6 +153,7 @@ export const en: Dictionary = {
         role: 'Co-founder · Software Developer',
         period: 'Oct 2025 — Present',
         location: 'Remote',
+        url: projectUrls.bfAcademy,
         badge: 'Co-founder',
         techs: ['Angular', 'NestJS', 'Serverless', 'Generative AI', 'FinOps', 'CI/CD'],
         paths: [
