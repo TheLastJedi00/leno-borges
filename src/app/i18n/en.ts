@@ -1,5 +1,5 @@
 import type { Dictionary } from './dictionary';
-import { projectUrls } from '../pages/home/home.data';
+import { partners, projectUrls } from '../pages/home/home.data';
 
 // Inglês canadense; termos de mercado de Barrie/GTA (ver .specs/002 - Ajustes/context.md)
 export const en: Dictionary = {
@@ -83,6 +83,7 @@ export const en: Dictionary = {
       },
       {
         title: 'Delcastanher',
+        partners: [partners.lidianeDelcastanher],
         subtitle: 'Administrative Services · Freelance project',
         role: 'Full-Stack Developer',
         period: 'Since Sep 2026',
@@ -148,6 +149,7 @@ export const en: Dictionary = {
       },
       {
         title: 'ProWay',
+        partners: [partners.proway],
         subtitle: 'Education, Developer Training & Consulting',
         role: 'Technical Instructor',
         period: 'Since Jan 2026',
@@ -173,6 +175,7 @@ export const en: Dictionary = {
       },
       {
         title: 'Matriz do DNA',
+        partners: [partners.paulaMarjorie],
         subtitle: 'Training Platform for Women Entrepreneurs · Freelance',
         role: 'Developer',
         period: 'Since Jan 2026',
@@ -199,6 +202,7 @@ export const en: Dictionary = {
       },
       {
         title: 'BF Academy',
+        partners: [partners.barbaraFarias],
         subtitle: 'EdTech & proprietary LMS',
         role: 'Co-founder · Software Developer',
         period: 'Since Oct 2025',
@@ -275,6 +279,7 @@ export const en: Dictionary = {
       {
         title: 'AMS Support Bootcamp',
         institution: 'T-Systems / ProWay',
+        partners: [partners.tsystems, partners.proway],
         period: 'Dec 2025',
         modules: [
           {
