@@ -17,7 +17,7 @@ Uma branch `feat/<fase>` por fase, com um commit por tarefa. Ao final, merge na 
 - [x] Subir em `localhost:4200` e homologar no Chrome: linha de parceria nos 5 itens nos 3 idiomas, links abrindo o LinkedIn correto em nova aba (incluindo o da Bárbara, com acento), ausência da linha nos demais cards, foco/contraste e quebra em 375px
 
 ## Decisões tomadas na execução
-- O código da spec é commitado na `release/005-parceiros` antes das fases, e cada `feat/` sai dela
+- O documento da spec é commitado na `release/005-parceiros` antes das fases, e cada `feat/` sai dela
 - `partner-links` recebe `class="block empty:hidden"` no host, para não sobrar margem nos cards sem parceiro
 - Na formação, o aviso de nova aba reaproveita `experience.newTab`, como previsto no context.md
 - O redimensionamento da janela do Chrome para 375px não pegou na homologação (viewport ficou em 2048px). A linha usa `flex-wrap` e não gerou scroll horizontal no desktop; **conferir no celular**
