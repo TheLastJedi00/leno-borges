@@ -31,5 +31,7 @@ No linter is configured; formatting follows the Prettier config in `package.json
 
 - `src/app/app.spec.ts` checks for `<router-outlet>` presence under `provideZonelessChangeDetection()`.
 - Keep small accent text on `accent-soft` (plain `accent` sits at the 4.5:1 AA limit on `surface`).
+- **Copy rules (all languages):** no em dash (`—`) in user-facing text; use a comma, `·` or a preposition instead (periods read "Desde Abr 2026" / "Out 2025 a Nov 2025", EN "Since…" / "… to …", FR "Depuis…" / "De… à…"). Don't use "FinOps" or promise "zero/near-zero cost": describe the concrete decision instead (e.g. "Cloud Run → Vercel to lower hosting costs"). See `.specs/004 - Ajustes de Copy/context.md`.
+- Experience cards can link to the live system: add the URL to `projectUrls` in `home.data.ts` and set `url: projectUrls.<key>` on the item in all three dictionaries; the button label comes from `displayUrl()`.
 
 [REGRAS](./.claude/RULES.md)
