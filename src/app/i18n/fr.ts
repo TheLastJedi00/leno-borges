@@ -314,6 +314,7 @@ export const fr: Dictionary = {
     items: [
       { name: 'Portugais', level: 'Langue maternelle' },
       { name: 'Anglais', level: 'Intermédiaire (B1)' },
+      { name: 'Français', level: 'Débutant (A1)' },
     ],
   },
   contact: {
