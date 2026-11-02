@@ -58,6 +58,33 @@ export const pt: Dictionary = {
     newTab: '(abre em nova aba)',
     items: [
       {
+        title: 'Liga Dev',
+        subtitle: 'Curso de Programação Próprio',
+        role: 'Fundador',
+        period: '2026 — Atual',
+        location: 'Remoto',
+        badge: 'Em construção',
+        url: projectUrls.ligaDev,
+        techs: ['Angular', 'NestJS', 'Serverless', 'IA Generativa', 'FinOps', 'CI/CD'],
+        paths: [
+          {
+            path: 'Curso de programação',
+            description:
+              'Criação de um curso próprio de programação, unindo a experiência de instrutor técnico a uma plataforma própria.',
+          },
+          {
+            path: 'Plataforma',
+            description:
+              'Construída sobre a mesma arquitetura da BF Academy, com Angular no front-end e NestJS no back-end.',
+          },
+          {
+            path: 'IA Generativa & FinOps',
+            description:
+              'Geração de material personalizado com IA e infraestrutura Serverless de custo próximo de zero, com esteiras de CI/CD.',
+          },
+        ],
+      },
+      {
         title: 'Tichr',
         subtitle: 'Plataforma SaaS Educacional Multiplano',
         role: 'Desenvolvedor Fullstack',
