@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DOCUMENT,
   DestroyRef,
   computed,
   effect,
@@ -26,12 +27,17 @@ const IDLE_MS = 3000;
   providers: [PlayerState],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './player.html',
+  host: {
+    '(document:keydown)': 'onKey($event)',
+    '(document:fullscreenchange)': 'fullscreen.set(!!document.fullscreenElement)',
+  },
 })
 export class Player {
   private readonly i18n = inject(I18n);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  readonly document = inject(DOCUMENT);
   readonly state = inject(PlayerState);
   readonly t = this.i18n.t;
   readonly lang = this.i18n.lang;
@@ -58,6 +64,8 @@ export class Player {
   /** Barra de controles visível (some após alguns segundos sem mouse). */
   readonly awake = signal(true);
   private idleTimer: ReturnType<typeof setTimeout> | undefined;
+  readonly fullscreen = signal(false);
+  private swipeStart: { x: number; y: number } | null = null;
 
   constructor() {
     this.i18n.usePageMeta((d) => ({
@@ -119,5 +127,98 @@ export class Player {
     this.awake.set(true);
     clearTimeout(this.idleTimer);
     this.idleTimer = setTimeout(() => this.awake.set(false), IDLE_MS);
+  }
+
+  /** Atalhos do apresentador. Teclas dentro de um exercício ficam com o exercício. */
+  onKey(event: KeyboardEvent) {
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('[data-kit-exercise]')) return;
+    const onControl = !!target?.closest('button, a, input, select, textarea');
+    const syntaxes = this.found?.lesson.syntaxes ?? [];
+
+    switch (event.key) {
+      case 'ArrowRight':
+      case 'PageDown':
+        this.state.next();
+        break;
+      case ' ':
+        if (onControl) return;
+        this.state.next();
+        break;
+      case 'ArrowLeft':
+      case 'PageUp':
+        this.state.prev();
+        break;
+      case 'Home':
+        this.state.first();
+        break;
+      case 'End':
+        this.state.last();
+        break;
+      case 'f':
+      case 'F':
+        this.toggleFullscreen();
+        break;
+      case 'n':
+      case 'N':
+        this.openPresenter();
+        break;
+      case 'r':
+      case 'R':
+        this.state.toggleMode();
+        break;
+      case '1':
+      case '2':
+      case '3': {
+        const syntax = syntaxes[Number(event.key) - 1];
+        if (!syntax) return;
+        this.state.setSyntax(syntax);
+        break;
+      }
+      default:
+        return;
+    }
+    event.preventDefault();
+  }
+
+  /** Clique no palco avança (exceto em controles e exercícios). */
+  onStageClick(event: MouseEvent) {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('button, a, input, select, [data-kit-exercise]')) return;
+    this.state.next();
+  }
+
+  onPointerDown(event: PointerEvent) {
+    this.swipeStart = event.pointerType === 'mouse' ? null : { x: event.clientX, y: event.clientY };
+  }
+
+  onPointerUp(event: PointerEvent) {
+    const start = this.swipeStart;
+    this.swipeStart = null;
+    if (!start) return;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) this.state.next();
+    else this.state.prev();
+  }
+
+  toggleFullscreen() {
+    if (this.document.fullscreenElement) {
+      this.document.exitFullscreen?.();
+    } else {
+      this.document.documentElement.requestFullscreen?.().catch(() => undefined);
+    }
+  }
+
+  /** Abre a janela do apresentador (notas, próximo slide, cronômetro), sincronizada por canal. */
+  openPresenter() {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree([lessonPath(this.trackSlug, this.lessonSlug), 'apresentador'], {
+        queryParams: { sintaxe: this.state.syntax(), roteiro: this.state.mode() },
+      }),
+    );
+    this.document.defaultView?.open(url, 'kit-apresentador', 'popup,width=1180,height=760');
   }
 }

@@ -17,7 +17,12 @@
     ></div>
   </div>
 
-  <div class="relative grid min-h-0 flex-1 place-items-center p-3 sm:p-6 sm:pb-20">
+  <div
+    class="relative grid min-h-0 flex-1 touch-pan-y place-items-center p-3 select-none sm:p-6 sm:pb-20"
+    (click)="onStageClick($event)"
+    (pointerdown)="onPointerDown($event)"
+    (pointerup)="onPointerUp($event)"
+  >
     @if (state.current(); as slide) {
       <kit-stage class="w-[min(100%,calc((100dvh-7.5rem)*16/9))]">
         @for (s of [slide]; track s.id) {
@@ -100,6 +105,34 @@
           class="grid h-9 w-9 place-items-center rounded-full bg-surface text-paper shadow-raised transition-[color,box-shadow,opacity] hover:text-accent-soft active:shadow-inset disabled:opacity-40"
         >
           <span aria-hidden="true">›</span>
+        </button>
+        <button
+          type="button"
+          (click)="openPresenter()"
+          [attr.aria-label]="p.presenter"
+          [title]="p.presenter + ' (N)'"
+          class="ml-1 hidden h-9 w-9 place-items-center rounded-full bg-surface text-muted shadow-raised transition-[color,box-shadow] hover:text-paper active:shadow-inset sm:grid"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="12" rx="2" />
+            <path d="M8 20h8M12 16v4M7 8h6M7 12h4" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          (click)="toggleFullscreen()"
+          [attr.aria-label]="fullscreen() ? p.exitFullscreen : p.fullscreen"
+          [title]="(fullscreen() ? p.exitFullscreen : p.fullscreen) + ' (F)'"
+          [attr.aria-pressed]="fullscreen()"
+          class="grid h-9 w-9 place-items-center rounded-full bg-surface text-muted shadow-raised transition-[color,box-shadow] hover:text-paper active:shadow-inset"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            @if (fullscreen()) {
+              <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" />
+            } @else {
+              <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+            }
+          </svg>
         </button>
       </div>
     </div>
