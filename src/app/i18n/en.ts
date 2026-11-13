@@ -1,5 +1,5 @@
 import type { Dictionary } from './dictionary';
-import { partners, projectUrls } from '../pages/home/home.data';
+import { kitPaths, partners, projectUrls } from '../pages/home/home.data';
 
 // Inglês canadense; termos de mercado de Barrie/GTA (ver .specs/002 - Ajustes/context.md)
 export const en: Dictionary = {
@@ -150,6 +150,7 @@ export const en: Dictionary = {
       {
         title: 'ProWay',
         partners: [partners.proway],
+        kitPath: kitPaths.root,
         subtitle: 'Education, Developer Training & Consulting',
         role: 'Technical Instructor',
         period: 'Since Jan 2026',

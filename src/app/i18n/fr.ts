@@ -1,5 +1,5 @@
 import type { Dictionary } from './dictionary';
-import { partners, projectUrls } from '../pages/home/home.data';
+import { kitPaths, partners, projectUrls } from '../pages/home/home.data';
 
 // Français canadien (OQLF) : « courriel », « infonuagique », espace insécable avant « : » et
 // espace fine avant « ? ». À faire relire par un locuteur natif avant publication.
@@ -152,6 +152,7 @@ export const fr: Dictionary = {
       {
         title: 'ProWay',
         partners: [partners.proway],
+        kitPath: kitPaths.root,
         subtitle: 'Éducation, formation de développeurs et consultation',
         role: 'Formateur technique',
         period: 'Depuis janv. 2026',
