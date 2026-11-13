@@ -1,5 +1,5 @@
 import type { BySyntax, ChestShape, ChestState, Deck } from '../../kit.data';
-import { code } from './code';
+import { code, only } from './code';
 
 // Aula 1 da trilha Lógica de Programação. Conteúdo em PT; roteiro em .specs/006 - Kit de Ensino/context.md
 // Metáfora: baú = variável, etiqueta = nome, item = valor, formato do baú = tipo.
@@ -574,6 +574,178 @@ export const deck: Deck = {
         'Dinâmica: mais liberdade, erros aparecem com o programa rodando',
         'Estática: o compilador pega o erro antes, ótimo em projetos grandes',
         'TypeScript existe justamente para trazer essa checagem ao JavaScript',
+      ],
+    },
+
+    // 17 · A
+    {
+      id: 'aspas',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: '"5" não é 5',
+      code: code.quotes,
+      steps: [
+        {
+          caption: 'Com aspas, 5 é texto. Texto + número junta os dois.',
+          lines: 1,
+          activeLine: 1,
+          output: '55',
+        },
+        {
+          caption: 'Sem aspas, é conta de verdade.',
+          lines: 2,
+          activeLine: 2,
+          output: '55\n10',
+        },
+      ],
+      notes: [
+        'O + tem dois papéis: somar números e juntar textos (concatenar)',
+        'Bug clássico: valor digitado em formulário chega como texto',
+        'Para converter: Number("5") em JS/TS, Integer.parseInt("5") em Java',
+      ],
+    },
+
+    // 18 · A
+    {
+      id: 'ponto-flutuante',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: '0.1 + 0.2',
+      code: code.float,
+      steps: [
+        { caption: 'Quanto dá essa conta?', output: null },
+        {
+          caption: 'Decimais são guardados em binário, e alguns não cabem de forma exata.',
+          output: '0.30000000000000004',
+        },
+      ],
+      notes: [
+        'Pedir o palpite da turma antes de revelar',
+        'Acontece em quase todas as linguagens (padrão IEEE 754)',
+        '0,1 em binário é uma dízima, como 1/3 em decimal',
+        'Dinheiro: guardar em centavos inteiros ou usar BigDecimal (Java)',
+      ],
+    },
+
+    // 19 · A
+    {
+      id: 'tamanho',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: 'O baú tem tamanho',
+      code: code.size,
+      steps: [
+        {
+          caption: {
+            js: 'Existe um maior número inteiro guardado com segurança.',
+            ts: 'Existe um maior número inteiro guardado com segurança.',
+            java: 'O int vai até 2.147.483.647.',
+          },
+          lines: 1,
+          activeLine: 1,
+          chests: { java: [chest('maximo', 'int', { open: true, label: 'maximo', item: '2147483647' })] },
+          output: { js: '9007199254740991', ts: '9007199254740991' },
+        },
+        {
+          caption: {
+            js: 'Passando dele, as contas perdem precisão: + 1 não muda nada.',
+            ts: 'Passando dele, as contas perdem precisão: + 1 não muda nada.',
+            java: 'Somando 1, o baú transborda e volta para o menor número.',
+          },
+          lines: 3,
+          activeLine: { js: 2, ts: 2, java: 3 },
+          chests: {
+            java: [chest('maximo', 'int', { open: true, label: 'maximo', item: '-2147483648', error: true })],
+          },
+          output: { js: '9007199254740991\n9007199254740992', ts: '9007199254740991\n9007199254740992', java: '-2147483648' },
+        },
+        {
+          caption: {
+            js: 'Para números gigantes existe o BigInt, com n no final.',
+            ts: 'Para números gigantes existe o bigint, com n no final.',
+            java: 'Para números maiores, existe o long (e o BigInteger).',
+          },
+          activeLine: { js: 3, ts: 3, java: null },
+          output: {
+            js: '9007199254740991\n9007199254740992\n9007199254740993n',
+            ts: '9007199254740991\n9007199254740992\n9007199254740993n',
+            java: '-2147483648',
+          },
+        },
+      ],
+      notes: [
+        'Cada tipo reserva um tamanho fixo de memória (int: 32 bits)',
+        'Overflow: o contador "dá a volta", como um odômetro antigo',
+        'Caso real: em 2014, o vídeo Gangnam Style passou de 2.147.483.647 views e o YouTube trocou o contador para 64 bits',
+        'TS: BigInt exige target ES2020 ou mais novo',
+      ],
+    },
+
+    // 20 · A (só JS/TS)
+    {
+      id: 'typeof-null',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      syntaxes: ['js', 'ts'],
+      title: 'typeof null',
+      code: only.typeofNull,
+      steps: [
+        { caption: 'typeof diz o tipo de um valor.', lines: 2, output: 'number\nstring' },
+        {
+          caption: 'E null? Responde "object": um erro da primeira versão da linguagem.',
+          lines: 3,
+          activeLine: 3,
+          output: 'number\nstring\nobject',
+        },
+      ],
+      notes: [
+        'Bug de 1995, mantido para não quebrar sites que já dependiam dele',
+        'Uma proposta para corrigir foi recusada justamente por compatibilidade',
+        'Para testar null, compare direto: valor === null',
+      ],
+    },
+
+    // 21 · A (só Java)
+    {
+      id: 'char-string',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      syntaxes: ['java'],
+      title: 'char e String',
+      code: only.charString,
+      steps: [
+        {
+          caption: 'Aspas simples guardam um caractere: char.',
+          lines: 1,
+          activeLine: 1,
+          chests: [chest('letra', 'text', { open: true, label: 'letra', item: "'A'", typeName: 'char' })],
+        },
+        {
+          caption: 'Aspas duplas guardam texto: String.',
+          lines: 2,
+          activeLine: 2,
+          chests: [
+            chest('letra', 'text', { open: true, label: 'letra', item: "'A'", typeName: 'char' }),
+            chest('nome', 'text', { open: true, label: 'nome', item: '"Ana"' }),
+          ],
+        },
+        {
+          caption: 'Trocar as aspas troca o tipo, e o compilador recusa.',
+          lines: 3,
+          activeLine: 3,
+          output: 'error: incompatible types: String cannot be converted to char',
+          outputTone: 'error',
+        },
+      ],
+      notes: [
+        'char é tipo primitivo (minúsculo); String é classe (maiúscula)',
+        'Em JS/TS aspas simples e duplas são equivalentes; em Java não',
+        'Por baixo, um char é um número (código Unicode): \'A\' é 65',
       ],
     },
 

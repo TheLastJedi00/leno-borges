@@ -201,7 +201,7 @@ export const tracks: Track[] = [
       {
         slug: 'variaveis-e-tipos',
         syntaxes: ['js', 'ts', 'java'],
-        counts: { essencial: 10, completo: 21 },
+        counts: { essencial: 10, completo: 25 },
         load: () => import('./decks/variaveis-e-tipos/deck.pt').then((m) => m.deck),
       },
     ],
