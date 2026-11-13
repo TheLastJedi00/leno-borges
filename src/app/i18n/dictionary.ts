@@ -5,6 +5,7 @@ import type {
   Metric,
   SkillGroup,
 } from '../pages/home/home.data';
+import type { LessonId, Mode, TrackId } from '../kit/kit.data';
 
 export type Lang = 'en' | 'fr' | 'pt';
 
@@ -52,4 +53,77 @@ export interface Dictionary {
     whatsappMessage: string;
   };
   footer: { location: string; rights: string };
+  /** Kit de Ensino: interface trilíngue; o conteúdo das aulas fica no deck (PT). */
+  kit: {
+    /** Botão interno no card de experiência que leva ao kit. */
+    cardButton: string;
+    meta: { title: string; description: string; lessonSuffix: string };
+    /** Aviso exibido em EN/FR: o conteúdo das aulas está em português. */
+    ptOnly: string;
+    catalog: {
+      eyebrow: string;
+      title: string;
+      intro: string;
+      back: string;
+      duration: string;
+      slides: string;
+      essentialSlides: string;
+      totalSlides: string;
+      syntax: string;
+      mode: string;
+      present: string;
+    };
+    modes: Record<Mode, string>;
+    modeHints: Record<Mode, string>;
+    tracks: Record<
+      TrackId,
+      {
+        title: string;
+        description: string;
+        lessons: Record<LessonId, { title: string; summary: string; duration: string }>;
+      }
+    >;
+    player: {
+      loading: string;
+      controls: string;
+      back: string;
+      prev: string;
+      next: string;
+      fullscreen: string;
+      exitFullscreen: string;
+      presenter: string;
+      syntax: string;
+      mode: string;
+      /** "<slide> <n> <of> <total>". */
+      slide: string;
+      of: string;
+      slideRole: string;
+      progress: string;
+    };
+    presenter: {
+      title: string;
+      current: string;
+      next: string;
+      end: string;
+      notes: string;
+      noNotes: string;
+      timer: string;
+      start: string;
+      pause: string;
+      reset: string;
+      hint: string;
+    };
+    exercise: {
+      correct: string;
+      wrong: string;
+      reset: string;
+      sortHint: string;
+      items: string;
+      placedIn: string;
+      done: string;
+      choose: string;
+      reveal: string;
+      answer: string;
+    };
+  };
 }
