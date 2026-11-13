@@ -10,6 +10,9 @@ import { CoverView } from './cover-view';
   host: { class: 'absolute inset-0 block' },
   template: `
     @let s = slide();
+    @if (s.description) {
+      <p class="sr-only">{{ s.description }}</p>
+    }
     @if (s.tag) {
       <span
         class="absolute top-10 right-12 z-10 rounded-full bg-accent/10 px-4 py-1.5 font-mono text-[15px] uppercase tracking-wider text-accent-soft"

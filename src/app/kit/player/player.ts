@@ -62,6 +62,14 @@ export class Player {
     MODES.map((m) => ({ value: m, label: this.t().kit.modes[m], title: this.t().kit.modeHints[m] })),
   );
 
+  /** "Slide 3 de 16: título", rótulo do palco e anúncio da troca de slide. */
+  readonly slideLabel = computed(() => {
+    const slide = this.state.current();
+    if (!slide) return '';
+    const p = this.t().kit.player;
+    return `${p.slide} ${this.state.pos().index + 1} ${p.of} ${this.state.total()}: ${slide.title}`;
+  });
+
   /** Barra de controles visível (some após alguns segundos sem mouse). */
   readonly awake = signal(true);
   private idleTimer: ReturnType<typeof setTimeout> | undefined;

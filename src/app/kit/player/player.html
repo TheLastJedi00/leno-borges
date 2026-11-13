@@ -24,7 +24,12 @@
     (pointerup)="onPointerUp($event)"
   >
     @if (state.current(); as slide) {
-      <kit-stage class="w-[min(100%,calc((100dvh-7.5rem)*16/9))]">
+      <kit-stage
+        class="w-[min(100%,calc((100dvh-7.5rem)*16/9))]"
+        role="region"
+        [attr.aria-roledescription]="p.slideRole"
+        [attr.aria-label]="slideLabel()"
+      >
         @for (s of [slide]; track s.id) {
           <kit-slide-view
             animate.enter="kit-slide-in"
@@ -38,6 +43,7 @@
     } @else {
       <p class="font-mono text-sm text-faint">{{ p.loading }}</p>
     }
+    <p class="sr-only" aria-live="polite" aria-atomic="true">{{ slideLabel() }}</p>
   </div>
 
   <!-- Barra de controles -->

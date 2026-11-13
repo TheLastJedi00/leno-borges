@@ -35,7 +35,8 @@
             }
           </span>
         </div>
-        <kit-stage>
+        <!-- Miniaturas só para ver: a navegação fica nos botões e no teclado -->
+        <kit-stage inert>
           <kit-slide-view
             [slide]="current"
             [step]="state.pos().step"
@@ -87,7 +88,7 @@
         <section [attr.aria-label]="pr.next">
           <p class="mb-2 font-mono text-xs uppercase tracking-wider text-faint">{{ pr.next }}</p>
           @if (state.upcoming(); as upcoming) {
-            <kit-stage class="opacity-80">
+            <kit-stage class="opacity-80" inert aria-hidden="true">
               <kit-slide-view
                 [slide]="upcoming"
                 [step]="nextSteps()"
