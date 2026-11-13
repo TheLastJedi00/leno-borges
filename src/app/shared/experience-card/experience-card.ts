@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TechIcon } from '../tech-icon/tech-icon';
 import { PartnerLinks } from '../partner-links/partner-links';
 import { displayUrl, type Partner } from '../../pages/home/home.data';
 
 @Component({
   selector: 'app-experience-card',
-  imports: [TechIcon, PartnerLinks],
+  imports: [RouterLink, TechIcon, PartnerLinks],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './experience-card.html',
   styleUrl: './experience-card.css',
@@ -26,6 +27,10 @@ export class ExperienceCard {
   url = input<string>();
   visitLabel = input<string>();
   newTabLabel = input<string>();
+
+  /** Rota interna (Kit de Ensino); sem valor, o botão interno não é renderizado. */
+  kitPath = input<string>();
+  kitLabel = input<string>();
 
   /** Parceiros do projeto; sem valor, a linha de parceria não é renderizada. */
   partners = input<Partner[]>();

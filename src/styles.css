@@ -29,6 +29,12 @@
   --shadow-inset:
     inset 3px 3px 7px rgb(0 0 0 / 0.5), inset -2px -2px 6px rgb(255 255 255 / 0.03);
 
+  /* Kit de Ensino: cores da metáfora (etiqueta = nome, item = valor; o baú/tipo usa accent) */
+  --color-kit-name: #f2c46d;
+  --color-kit-value: #5fd4a8;
+  --color-kit-error: #ff6b6b;
+  --color-kit-keyword: #c3a6ff;
+
   --animate-rise: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 
   @keyframes rise {
@@ -77,6 +83,63 @@
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Kit de Ensino: animações compartilhadas pelos slides (classes usadas com animate.enter/leave) */
+@layer components {
+  .kit-rise {
+    animation: kit-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .kit-fade {
+    animation: kit-fade 0.4s ease both;
+  }
+
+  .kit-slide-in {
+    animation: kit-slide-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .kit-slide-out {
+    animation: kit-slide-out 0.3s ease both;
+  }
+
+  /* Código: token do papel em destaque e linha em execução */
+  .kit-token-focus {
+    background-color: color-mix(in oklab, currentColor 16%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, currentColor 16%, transparent);
+  }
+
+  .kit-line-active {
+    background-color: color-mix(in oklab, var(--color-accent) 14%, transparent);
+    box-shadow: inset 4px 0 0 var(--color-accent);
+  }
+
+  @keyframes kit-rise {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+  }
+
+  @keyframes kit-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes kit-slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(32px);
+    }
+  }
+
+  @keyframes kit-slide-out {
+    to {
+      opacity: 0;
+      transform: translateX(-32px);
     }
   }
 }

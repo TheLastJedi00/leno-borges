@@ -15,6 +15,8 @@ export interface Experience {
   badge?: string;
   /** Página oficial do sistema (de `projectUrls`); sem valor, o card não mostra o botão. */
   url?: string;
+  /** Rota interna do site (de `kitPaths`); mostra o botão do Kit de Ensino, na mesma aba. */
+  kitPath?: string;
   techs: string[];
   paths: ExperiencePath[];
   /** Parceiros do projeto (de `partners`); sem valor, o card não mostra a linha de parceria. */
@@ -79,6 +81,11 @@ export const projectUrls = {
   delcastanher: 'https://www.delcastanher.srv.br',
   tichr: 'https://www.tichr.com.br',
   bfAcademy: 'https://www.barbarafarias.com.br/academy',
+};
+
+/** Rotas internas exibidas como botão nos cards (neutras de idioma). */
+export const kitPaths = {
+  root: '/kit',
 };
 
 /** Parceiros dos projetos (nomes próprios, neutros de idioma). URLs sem parâmetros de rastreio. */

@@ -60,20 +60,37 @@
     </ul>
   }
 
-  @if (url(); as href) {
-    <a
-      [href]="href"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="group/link mt-6 inline-flex max-w-full items-center gap-2 rounded-full bg-raised px-4 py-2 font-mono text-xs text-accent-soft shadow-raised transition-[color,box-shadow] hover:text-paper active:shadow-inset"
-    >
-      <span class="break-all">{{ visitLabel() }} {{ urlText() }}</span>
-      <span
-        aria-hidden="true"
-        class="transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 motion-reduce:transition-none"
-        >↗</span
-      >
-      <span class="sr-only">{{ newTabLabel() }}</span>
-    </a>
+  @if (url() || kitPath()) {
+    <div class="mt-6 flex flex-wrap gap-3">
+      @if (url(); as href) {
+        <a
+          [href]="href"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group/link inline-flex max-w-full items-center gap-2 rounded-full bg-raised px-4 py-2 font-mono text-xs text-accent-soft shadow-raised transition-[color,box-shadow] hover:text-paper active:shadow-inset"
+        >
+          <span class="break-all">{{ visitLabel() }} {{ urlText() }}</span>
+          <span
+            aria-hidden="true"
+            class="transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 motion-reduce:transition-none"
+            >↗</span
+          >
+          <span class="sr-only">{{ newTabLabel() }}</span>
+        </a>
+      }
+      @if (kitPath(); as path) {
+        <a
+          [routerLink]="path"
+          class="group/kit inline-flex max-w-full items-center gap-2 rounded-full bg-raised px-4 py-2 font-mono text-xs text-accent-soft shadow-raised transition-[color,box-shadow] hover:text-paper active:shadow-inset"
+        >
+          <span>{{ kitLabel() }}</span>
+          <span
+            aria-hidden="true"
+            class="transition-transform group-hover/kit:translate-x-0.5 motion-reduce:transition-none"
+            >→</span
+          >
+        </a>
+      }
+    </div>
   }
 </article>

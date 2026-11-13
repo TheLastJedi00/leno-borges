@@ -1,5 +1,5 @@
 import type { Dictionary } from './dictionary';
-import { partners, projectUrls } from '../pages/home/home.data';
+import { kitPaths, partners, projectUrls } from '../pages/home/home.data';
 
 export const pt: Dictionary = {
   meta: {
@@ -149,6 +149,7 @@ export const pt: Dictionary = {
       {
         title: 'ProWay',
         partners: [partners.proway],
+        kitPath: kitPaths.root,
         subtitle: 'Educação, Formação de Devs & Consultoria',
         role: 'Instrutor Técnico',
         period: 'Desde Jan 2026',
@@ -333,5 +334,89 @@ export const pt: Dictionary = {
   footer: {
     location: 'Barrie & GTA, Canadá · Blumenau, SC, Brasil',
     rights: 'Todos os direitos reservados.',
+  },
+  kit: {
+    cardButton: 'Kit de ensino',
+    meta: {
+      title: 'Kit de ensino · Leno Borges',
+      description:
+        'Apresentações interativas de programação, gratuitas e sem login: lógica de programação com exemplos em JavaScript, TypeScript e Java.',
+      lessonSuffix: ' · Kit de ensino · Leno Borges',
+    },
+    ptOnly: 'Conteúdo das aulas disponível em português.',
+    catalog: {
+      eyebrow: 'Material de ensino',
+      title: 'Kit de ensino',
+      intro:
+        'Apresentações interativas que uso nas minhas aulas, livres para qualquer pessoa assistir, sem login. Escolha a linguagem da turma e o roteiro, de uma revisão rápida a uma aula completa.',
+      back: 'Voltar ao portfólio',
+      duration: 'Duração',
+      slides: 'Slides',
+      essentialSlides: 'essenciais',
+      totalSlides: 'no total',
+      syntax: 'Sintaxe',
+      mode: 'Roteiro',
+      present: 'Apresentar',
+    },
+    modes: { essencial: 'Essencial', completo: 'Completo' },
+    modeHints: {
+      essencial: 'Só o necessário para fechar o tema, cerca de 10 min',
+      completo: 'Com aprofundamentos, curiosidades e exercícios',
+    },
+    tracks: {
+      'logica-de-programacao': {
+        title: 'Lógica de Programação',
+        description: 'A base para começar a programar em qualquer linguagem.',
+        lessons: {
+          'variaveis-e-tipos': {
+            title: 'Variáveis e Tipos de Dados',
+            summary:
+              'Como um programa guarda, nomeia e reconhece informações, explicado com baús, etiquetas e itens.',
+            duration: '10 min a 4 h',
+          },
+        },
+      },
+    },
+    player: {
+      loading: 'Carregando aula…',
+      controls: 'Controles da apresentação',
+      back: 'Voltar ao kit',
+      prev: 'Anterior',
+      next: 'Próximo',
+      fullscreen: 'Tela cheia',
+      exitFullscreen: 'Sair da tela cheia',
+      presenter: 'Abrir janela do apresentador',
+      syntax: 'Sintaxe',
+      mode: 'Roteiro',
+      slide: 'Slide',
+      of: 'de',
+      slideRole: 'slide',
+      progress: 'Progresso da apresentação',
+    },
+    presenter: {
+      title: 'Apresentador',
+      current: 'Agora',
+      next: 'Próximo',
+      end: 'Fim da aula',
+      notes: 'Tópicos da fala',
+      noNotes: 'Sem tópicos neste slide.',
+      timer: 'Tempo',
+      start: 'Iniciar',
+      pause: 'Pausar',
+      reset: 'Zerar',
+      hint: 'Esta janela controla a apresentação. A turma vê só a janela principal.',
+    },
+    exercise: {
+      correct: 'Certo!',
+      wrong: 'Ainda não. Tente outro.',
+      reset: 'Reiniciar',
+      sortHint: 'Arraste cada item para o baú certo, ou clique no item e depois no baú.',
+      items: 'Itens',
+      placedIn: 'guardado em',
+      done: 'Todos os itens no lugar!',
+      choose: 'Escolha uma resposta',
+      reveal: 'Ver a execução',
+      answer: 'Resposta',
+    },
   },
 };

@@ -1,0 +1,136 @@
+@let k = t().kit;
+@let pr = k.presenter;
+@let p = k.player;
+<main class="min-h-dvh bg-ink p-4 text-muted sm:p-6">
+  <header class="flex flex-wrap items-center justify-between gap-4">
+    <div class="min-w-0">
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent-soft">{{ pr.title }}</p>
+      <h1 class="truncate font-display text-xl font-semibold text-paper">{{ lessonTitle() }}</h1>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <kit-segmented
+        [label]="p.syntax"
+        [options]="syntaxOptions()"
+        [value]="state.syntax()"
+        (changed)="setSyntax($event)"
+      ></kit-segmented>
+      <kit-segmented
+        [label]="p.mode"
+        [options]="modeOptions()"
+        [value]="state.mode()"
+        (changed)="setMode($event)"
+      ></kit-segmented>
+    </div>
+  </header>
+
+  @if (state.current(); as current) {
+    <div class="mt-5 grid gap-5 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <section [attr.aria-label]="pr.current">
+        <div class="mb-2 flex items-baseline justify-between font-mono text-xs">
+          <span class="uppercase tracking-wider text-faint">{{ pr.current }}</span>
+          <span class="text-muted">
+            <span class="text-paper">{{ state.pos().index + 1 }}</span> / {{ state.total() }}
+            @if (state.steps() > 1) {
+              <span class="text-faint"> · {{ state.pos().step + 1 }}/{{ state.steps() }}</span>
+            }
+          </span>
+        </div>
+        <!-- Miniaturas só para ver: a navegação fica nos botões e no teclado -->
+        <kit-stage inert>
+          <kit-slide-view
+            [slide]="current"
+            [step]="state.pos().step"
+            [syntax]="state.syntax()"
+          ></kit-slide-view>
+        </kit-stage>
+
+        <div class="mt-4 flex items-center gap-2">
+          <button
+            type="button"
+            (click)="state.prev()"
+            [disabled]="state.isFirst()"
+            class="rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-paper shadow-raised transition-[color,box-shadow,opacity] hover:text-accent-soft active:shadow-inset disabled:opacity-40"
+          >
+            <span aria-hidden="true">‹</span> {{ p.prev }}
+          </button>
+          <button
+            type="button"
+            (click)="state.next()"
+            [disabled]="state.isLast()"
+            class="rounded-full bg-accent-deep px-5 py-2.5 text-sm font-semibold text-white shadow-raised transition-[filter,box-shadow,opacity] hover:brightness-110 active:shadow-inset disabled:opacity-40"
+          >
+            {{ p.next }} <span aria-hidden="true">›</span>
+          </button>
+        </div>
+      </section>
+
+      <div class="grid content-start gap-5">
+        <section
+          class="rounded-2xl bg-surface p-5 shadow-raised"
+          [attr.aria-label]="pr.notes"
+          aria-live="polite"
+        >
+          <h2 class="font-mono text-xs uppercase tracking-[0.2em] text-faint">{{ pr.notes }}</h2>
+          @if (current.notes.length) {
+            <ul class="mt-4 grid gap-2.5">
+              @for (n of current.notes; track $index) {
+                <li class="flex gap-3 text-[17px] leading-snug text-paper">
+                  <span aria-hidden="true" class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>
+                  {{ n }}
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="mt-4 text-sm text-faint">{{ pr.noNotes }}</p>
+          }
+        </section>
+
+        <section [attr.aria-label]="pr.next">
+          <p class="mb-2 font-mono text-xs uppercase tracking-wider text-faint">{{ pr.next }}</p>
+          @if (state.upcoming(); as upcoming) {
+            <kit-stage class="opacity-80" inert aria-hidden="true">
+              <kit-slide-view
+                [slide]="upcoming"
+                [step]="nextSteps()"
+                [syntax]="state.syntax()"
+              ></kit-slide-view>
+            </kit-stage>
+          } @else {
+            <div
+              class="grid aspect-video place-items-center rounded-2xl bg-surface font-display text-xl text-faint shadow-inset"
+            >
+              {{ pr.end }}
+            </div>
+          }
+        </section>
+
+        <section class="flex items-center justify-between gap-4 rounded-2xl bg-surface p-5 shadow-raised">
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-faint">{{ pr.timer }}</p>
+            <p class="mt-1 font-mono text-4xl text-paper tabular-nums" role="timer">{{ clock() }}</p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              (click)="toggleTimer()"
+              class="rounded-full bg-raised px-4 py-2 font-mono text-xs text-accent-soft shadow-raised hover:text-paper active:shadow-inset"
+            >
+              {{ running() ? pr.pause : pr.start }}
+            </button>
+            <button
+              type="button"
+              (click)="resetTimer()"
+              class="rounded-full bg-raised px-4 py-2 font-mono text-xs text-faint shadow-raised hover:text-paper active:shadow-inset"
+            >
+              {{ pr.reset }}
+            </button>
+          </div>
+        </section>
+
+        <p class="text-xs text-faint">{{ pr.hint }}</p>
+      </div>
+    </div>
+  } @else {
+    <p class="mt-10 font-mono text-sm text-faint">{{ p.loading }}</p>
+  }
+</main>

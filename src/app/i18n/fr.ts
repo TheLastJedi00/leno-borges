@@ -1,5 +1,5 @@
 import type { Dictionary } from './dictionary';
-import { partners, projectUrls } from '../pages/home/home.data';
+import { kitPaths, partners, projectUrls } from '../pages/home/home.data';
 
 // Français canadien (OQLF) : « courriel », « infonuagique », espace insécable avant « : » et
 // espace fine avant « ? ». À faire relire par un locuteur natif avant publication.
@@ -152,6 +152,7 @@ export const fr: Dictionary = {
       {
         title: 'ProWay',
         partners: [partners.proway],
+        kitPath: kitPaths.root,
         subtitle: 'Éducation, formation de développeurs et consultation',
         role: 'Formateur technique',
         period: 'Depuis janv. 2026',
@@ -336,5 +337,89 @@ export const fr: Dictionary = {
   footer: {
     location: 'Barrie et RGT, Canada · Blumenau, SC, Brésil',
     rights: 'Tous droits réservés.',
+  },
+  kit: {
+    cardButton: 'Trousse pédagogique',
+    meta: {
+      title: 'Trousse pédagogique · Leno Borges',
+      description:
+        'Présentations interactives de programmation, gratuites et sans connexion : logique de programmation avec des exemples en JavaScript, TypeScript et Java.',
+      lessonSuffix: ' · Trousse pédagogique · Leno Borges',
+    },
+    ptOnly: 'Le contenu des cours est offert en portugais.',
+    catalog: {
+      eyebrow: 'Matériel pédagogique',
+      title: 'Trousse pédagogique',
+      intro:
+        'Des présentations interactives que j’utilise dans mes cours, accessibles à tous, sans connexion. Choisissez le langage du groupe et le parcours, d’une révision rapide à un cours complet.',
+      back: 'Retour au portfolio',
+      duration: 'Durée',
+      slides: 'Diapositives',
+      essentialSlides: 'essentielles',
+      totalSlides: 'au total',
+      syntax: 'Syntaxe',
+      mode: 'Parcours',
+      present: 'Présenter',
+    },
+    modes: { essencial: 'Essentiel', completo: 'Complet' },
+    modeHints: {
+      essencial: 'Juste ce qu’il faut pour couvrir le sujet, environ 10 min',
+      completo: 'Avec approfondissements, anecdotes et exercices',
+    },
+    tracks: {
+      'logica-de-programacao': {
+        title: 'Logique de programmation',
+        description: 'La base pour commencer à programmer dans n’importe quel langage.',
+        lessons: {
+          'variaveis-e-tipos': {
+            title: 'Variables et types de données',
+            summary:
+              'Comment un programme conserve, nomme et reconnaît l’information, expliqué avec des coffres, des étiquettes et des objets.',
+            duration: '10 min à 4 h',
+          },
+        },
+      },
+    },
+    player: {
+      loading: 'Chargement du cours…',
+      controls: 'Commandes de la présentation',
+      back: 'Retour à la trousse',
+      prev: 'Précédente',
+      next: 'Suivante',
+      fullscreen: 'Plein écran',
+      exitFullscreen: 'Quitter le plein écran',
+      presenter: 'Ouvrir la fenêtre du présentateur',
+      syntax: 'Syntaxe',
+      mode: 'Parcours',
+      slide: 'Diapositive',
+      of: 'sur',
+      slideRole: 'diapositive',
+      progress: 'Progression de la présentation',
+    },
+    presenter: {
+      title: 'Présentateur',
+      current: 'Maintenant',
+      next: 'Suivante',
+      end: 'Fin du cours',
+      notes: 'Points à aborder',
+      noNotes: 'Aucun point pour cette diapositive.',
+      timer: 'Temps',
+      start: 'Démarrer',
+      pause: 'Pause',
+      reset: 'Remettre à zéro',
+      hint: 'Cette fenêtre contrôle la présentation. Le groupe ne voit que la fenêtre principale.',
+    },
+    exercise: {
+      correct: 'Bravo !',
+      wrong: 'Pas encore. Essayez-en un autre.',
+      reset: 'Recommencer',
+      sortHint: 'Glissez chaque objet dans le bon coffre, ou cliquez sur l’objet puis sur le coffre.',
+      items: 'Objets',
+      placedIn: 'rangé dans',
+      done: 'Tous les objets sont à leur place !',
+      choose: 'Choisissez une réponse',
+      reveal: 'Voir l’exécution',
+      answer: 'Réponse',
+    },
   },
 };
