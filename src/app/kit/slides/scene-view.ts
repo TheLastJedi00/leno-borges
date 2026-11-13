@@ -11,9 +11,12 @@ const FOCUS_BY_ROLE: Partial<Record<string, ChestState['focus']>> = {
   t: 'type',
 };
 
-export function chestsFor(state: SceneStep): ChestState[] {
-  const derived = state.highlight ? FOCUS_BY_ROLE[state.highlight] : undefined;
-  return (state.chests ?? []).map((c) => (c.focus || !derived ? c : { ...c, focus: derived }));
+export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
+  const highlight = pick(state.highlight, syntax);
+  const derived = highlight ? FOCUS_BY_ROLE[highlight] : undefined;
+  return (pick(state.chests, syntax) ?? []).map((c) =>
+    c.focus || !derived ? c : { ...c, focus: derived },
+  );
 }
 
 /** Slide de cena: baús animados por etapa, com código e saída opcionais ao lado. */
@@ -47,15 +50,15 @@ export function chestsFor(state: SceneStep): ChestState[] {
               [markup]="markup"
               [syntax]="syntax()"
               [visible]="st.lines"
-              [highlight]="st.highlight"
-              [activeLine]="st.activeLine"
+              [highlight]="highlight()"
+              [activeLine]="activeLine()"
               [fontSize]="chests().length ? 26 : 30"
             ></kit-code>
             @if (output(); as out) {
               @for (o of [out]; track o) {
                 <div
                   class="kit-rise flex gap-4 rounded-xl bg-ink px-6 py-4 font-mono text-[24px] whitespace-pre-wrap shadow-inset"
-                  [class]="st.outputTone === 'error' ? 'text-kit-error' : 'text-paper'"
+                  [class]="outputTone() === 'error' ? 'text-kit-error' : 'text-paper'"
                 >
                   <span aria-hidden="true" class="text-faint">›</span><span>{{ o }}</span>
                 </div>
@@ -73,7 +76,10 @@ export class SceneView {
   syntax = input.required<Syntax>();
 
   readonly state = computed(() => sceneAt(this.slide().steps, this.step()));
-  readonly chests = computed(() => chestsFor(this.state()));
+  readonly chests = computed(() => chestsFor(this.state(), this.syntax()));
+  readonly activeLine = computed(() => pick(this.state().activeLine, this.syntax()));
+  readonly outputTone = computed(() => pick(this.state().outputTone, this.syntax()));
+  readonly highlight = computed(() => pick(this.state().highlight, this.syntax()));
   readonly code = computed(() => pick(this.slide().code, this.syntax()));
   readonly caption = computed(() => pick(this.state().caption, this.syntax()));
   readonly output = computed(() => pick(this.state().output ?? undefined, this.syntax()));

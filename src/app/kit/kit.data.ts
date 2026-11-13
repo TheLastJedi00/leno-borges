@@ -79,15 +79,15 @@ export interface ChestState {
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
-  chests?: ChestState[];
+  chests?: BySyntax<ChestState[]>;
   /** Quantas linhas do código estão visíveis. */
   lines?: number;
   /** Papel de token em destaque no código (as demais partes ficam apagadas). */
-  highlight?: TokenRole | null;
+  highlight?: BySyntax<TokenRole | null>;
   /** Linha em destaque (base 1), usada para acompanhar a execução. */
-  activeLine?: number | null;
+  activeLine?: BySyntax<number | null>;
   output?: BySyntax | null;
-  outputTone?: 'ok' | 'error';
+  outputTone?: BySyntax<'ok' | 'error'>;
 }
 
 interface SlideBase {
@@ -201,7 +201,7 @@ export const tracks: Track[] = [
       {
         slug: 'variaveis-e-tipos',
         syntaxes: ['js', 'ts', 'java'],
-        counts: { essencial: 1, completo: 1 },
+        counts: { essencial: 10, completo: 25 },
         load: () => import('./decks/variaveis-e-tipos/deck.pt').then((m) => m.deck),
       },
     ],

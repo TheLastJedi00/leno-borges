@@ -26,7 +26,7 @@ Uma branch `feat/<fase>` por fase, com um commit por tarefa. Ao final, merge na 
 - [ ] 4.3 Componentes de exercício: classificar itens em baús (arrastar e soltar com alternativa por clique e teclado) e prever o valor final, com feedback, `aria-live` e botão reiniciar
 
 ## Fase 5, `feat/kit-variaveis`, aula Variáveis e Tipos de Dados
-- [ ] 5.1 Escrever `deck.pt.ts` com os 9 slides essenciais (1, 2, 4, 5, 7, 9, 13, 14, 22, 26), etapas e tópicos de fala
+- [ ] 5.1 Escrever `deck.pt.ts` com os 10 slides essenciais (1, 2, 4, 5, 7, 9, 13, 14, 22, 26), etapas e tópicos de fala
 - [ ] 5.2 Escrever `code.ts` com os trechos em JS, TS e Java de todos os slides de código, com teste de paridade entre sintaxes
 - [ ] 5.3 Adicionar os aprofundamentos (3, 6, 8, 10, 11, 12, 15, 16, 23, 24, 25) com etapas e tópicos
 - [ ] 5.4 Adicionar as curiosidades (17, 18, 19, 20 só JS/TS, 21 só Java) e conferir cada fato nas três linguagens

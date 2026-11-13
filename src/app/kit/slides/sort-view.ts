@@ -44,7 +44,7 @@ import { Chest } from '../ui/chest/chest';
         }
       </ul>
 
-      <div class="mt-4 flex flex-1 items-end justify-center gap-10">
+      <div class="mt-4 flex flex-1 items-end justify-center gap-4">
         @for (bin of s.bins; track bin.id) {
           <div class="flex flex-col items-center gap-3">
             <button
@@ -56,6 +56,7 @@ import { Chest } from '../ui/chest/chest';
               class="rounded-3xl p-3 transition-[background-color] hover:bg-accent/5"
             >
               <kit-chest
+                class="[zoom:0.8]"
                 [state]="{
                   id: bin.id,
                   shape: bin.shape,
