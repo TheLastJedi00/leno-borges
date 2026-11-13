@@ -85,9 +85,9 @@ export interface SceneStep {
   /** Papel de token em destaque no código (as demais partes ficam apagadas). */
   highlight?: BySyntax<TokenRole | null>;
   /** Linha em destaque (base 1), usada para acompanhar a execução. */
-  activeLine?: number | null;
+  activeLine?: BySyntax<number | null>;
   output?: BySyntax | null;
-  outputTone?: 'ok' | 'error';
+  outputTone?: BySyntax<'ok' | 'error'>;
 }
 
 interface SlideBase {
@@ -201,7 +201,7 @@ export const tracks: Track[] = [
       {
         slug: 'variaveis-e-tipos',
         syntaxes: ['js', 'ts', 'java'],
-        counts: { essencial: 10, completo: 10 },
+        counts: { essencial: 10, completo: 21 },
         load: () => import('./decks/variaveis-e-tipos/deck.pt').then((m) => m.deck),
       },
     ],

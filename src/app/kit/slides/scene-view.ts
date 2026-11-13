@@ -51,14 +51,14 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
               [syntax]="syntax()"
               [visible]="st.lines"
               [highlight]="highlight()"
-              [activeLine]="st.activeLine"
+              [activeLine]="activeLine()"
               [fontSize]="chests().length ? 26 : 30"
             ></kit-code>
             @if (output(); as out) {
               @for (o of [out]; track o) {
                 <div
                   class="kit-rise flex gap-4 rounded-xl bg-ink px-6 py-4 font-mono text-[24px] whitespace-pre-wrap shadow-inset"
-                  [class]="st.outputTone === 'error' ? 'text-kit-error' : 'text-paper'"
+                  [class]="outputTone() === 'error' ? 'text-kit-error' : 'text-paper'"
                 >
                   <span aria-hidden="true" class="text-faint">›</span><span>{{ o }}</span>
                 </div>
@@ -77,6 +77,8 @@ export class SceneView {
 
   readonly state = computed(() => sceneAt(this.slide().steps, this.step()));
   readonly chests = computed(() => chestsFor(this.state(), this.syntax()));
+  readonly activeLine = computed(() => pick(this.state().activeLine, this.syntax()));
+  readonly outputTone = computed(() => pick(this.state().outputTone, this.syntax()));
   readonly highlight = computed(() => pick(this.state().highlight, this.syntax()));
   readonly code = computed(() => pick(this.slide().code, this.syntax()));
   readonly caption = computed(() => pick(this.state().caption, this.syntax()));

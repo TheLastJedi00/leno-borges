@@ -29,7 +29,7 @@ import { chestsFor } from './scene-view';
           class="w-[560px] shrink-0 self-start"
           [markup]="code()"
           [syntax]="syntax()"
-          [activeLine]="trace()?.activeLine"
+          [activeLine]="activeLine()"
           [fontSize]="26"
         ></kit-code>
 
@@ -94,6 +94,7 @@ export class PredictView {
   readonly trace = computed(() =>
     this.step() > 0 ? sceneAt(this.slide().trace, this.step() - 1) : null,
   );
+  readonly activeLine = computed(() => pick(this.trace()?.activeLine, this.syntax()));
   readonly finished = computed(() => this.step() >= this.slide().trace.length);
 
   choose(i: number) {

@@ -58,6 +58,41 @@ export const deck: Deck = {
       ],
     },
 
+    // 3 · A
+    {
+      id: 'memoria',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'A memória é um depósito de baús',
+      description: 'Uma fileira de baús vazios aparece, cada um com um número de endereço acima.',
+      steps: [
+        {
+          caption: 'A memória do computador é um depósito enorme de baús.',
+          chests: [
+            { id: 'm1', shape: 'any' },
+            { id: 'm2', shape: 'any' },
+            { id: 'm3', shape: 'any' },
+            { id: 'm4', shape: 'any' },
+          ],
+        },
+        {
+          caption: 'Cada baú tem um endereço: um número que diz onde ele fica.',
+          chests: [
+            { id: 'm1', shape: 'any', address: '0x01A0', focus: 'address' },
+            { id: 'm2', shape: 'any', address: '0x01A4', focus: 'address' },
+            { id: 'm3', shape: 'any', address: '0x01A8', focus: 'address' },
+            { id: 'm4', shape: 'any', address: '0x01AC', focus: 'address' },
+          ],
+        },
+      ],
+      notes: [
+        'Memória RAM: rápida e temporária, apaga quando o programa fecha',
+        'Endereços costumam ser escritos em hexadecimal (0x...)',
+        'Um computador comum tem bilhões de posições de memória',
+      ],
+    },
+
     // 4 · E
     {
       id: 'guardar-valor',
@@ -119,6 +154,33 @@ export const deck: Deck = {
       ],
     },
 
+    // 6 · A
+    {
+      id: 'apelido',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: 'A etiqueta é um apelido',
+      description: 'Um baú com o endereço 0x7FFE4A recebe a etiqueta idade.',
+      steps: [
+        {
+          caption: 'Para a máquina, o baú é só um endereço.',
+          chests: [idade({ typeName: undefined, open: true, item: '25', address: '0x7FFE4A', focus: 'address' })],
+        },
+        {
+          caption: 'O nome existe para nós. Na hora de rodar, o computador troca o nome pelo endereço.',
+          chests: [
+            idade({ typeName: undefined, open: true, item: '25', address: '0x7FFE4A', label: 'idade', focus: 'label' }),
+          ],
+        },
+      ],
+      notes: [
+        'Ninguém quer decorar 0x7FFE4A: nomes são para pessoas',
+        'O compilador ou interpretador faz a tradução nome → endereço',
+        'Por isso o nome não muda o desempenho: pode usar nomes longos e claros',
+      ],
+    },
+
     // 7 · E
     {
       id: 'bau-codigo',
@@ -157,6 +219,36 @@ export const deck: Deck = {
       ],
     },
 
+    // 8 · A
+    {
+      id: 'ler',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'Ler o valor',
+      description: 'O programa chama o baú pela etiqueta idade e mostra o 25 na tela.',
+      code: code.read,
+      steps: [
+        {
+          caption: 'Para usar o valor, chamamos o baú pela etiqueta.',
+          lines: 1,
+          chests: [idade({ open: true, item: '25', label: 'idade' })],
+        },
+        { lines: 2, activeLine: 2, highlight: 'n' },
+        {
+          caption: 'O programa abre o baú e usa o item. O valor continua guardado.',
+          highlight: null,
+          output: '25',
+          chests: [idade({ open: true, item: '25', label: 'idade', focus: 'item' })],
+        },
+      ],
+      notes: [
+        'console.log (JS/TS) e System.out.println (Java) mostram valores na tela',
+        'Ler não esvazia o baú: dá para ler quantas vezes quiser',
+        'Sem aspas: idade é o baú; "idade" seria o texto idade',
+      ],
+    },
+
     // 9 · E
     {
       id: 'trocar',
@@ -188,6 +280,129 @@ export const deck: Deck = {
         'Na segunda linha não tem let nem tipo: o baú já existe',
         'O valor antigo some, não fica guardado em lugar nenhum',
         'Origem do nome: o conteúdo varia durante o programa',
+      ],
+    },
+
+    // 10 · A
+    {
+      id: 'atualizar',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'Usar o próprio valor para mudar',
+      description: 'O baú pontos começa com 0, ganha 10, depois mais 10 e depois mais 1, terminando com 21.',
+      code: code.update,
+      steps: [
+        {
+          caption: 'Começamos com zero pontos.',
+          lines: 1,
+          activeLine: 1,
+          chests: [chest('pontos', 'int', { open: true, item: '0', label: 'pontos' })],
+        },
+        {
+          caption: 'Lê o valor atual, soma 10 e guarda de volta no mesmo baú.',
+          lines: 2,
+          activeLine: 2,
+          chests: [chest('pontos', 'int', { open: true, item: '10', label: 'pontos', focus: 'item' })],
+        },
+        {
+          caption: 'O atalho += faz a mesma coisa.',
+          lines: 3,
+          activeLine: 3,
+          chests: [chest('pontos', 'int', { open: true, item: '20', label: 'pontos', focus: 'item' })],
+        },
+        {
+          caption: '++ soma 1. Muito usado para contar.',
+          lines: 4,
+          activeLine: 4,
+          chests: [chest('pontos', 'int', { open: true, item: '21', label: 'pontos', focus: 'item' })],
+        },
+      ],
+      notes: [
+        'Ler a linha 2 da direita para a esquerda: primeiro calcula, depois guarda',
+        'Em matemática pontos = pontos + 10 seria absurdo; aqui é uma ordem',
+        'Também existem -=, *=, /= e --',
+      ],
+    },
+
+    // 11 · A
+    {
+      id: 'constante',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'Baú trancado: constantes',
+      description: 'O baú PI, com 3.14, recebe um cadeado. Tentar trocar o valor gera um erro.',
+      code: code.constant,
+      steps: [
+        {
+          caption: { js: 'const cria um baú trancado.', ts: 'const cria um baú trancado.', java: 'final tranca o baú.' },
+          lines: 1,
+          activeLine: 1,
+          chests: [chest('pi', 'decimal', { open: true, item: '3.14', label: 'PI', locked: true })],
+        },
+        {
+          caption: 'Tentar trocar o item gera erro.',
+          lines: 2,
+          activeLine: 2,
+          chests: [chest('pi', 'decimal', { open: true, item: '3.14', label: 'PI', locked: true, error: true })],
+          output: {
+            js: 'TypeError: Assignment to constant variable.',
+            ts: "error: Cannot assign to 'PI' because it is a constant.",
+            java: 'error: cannot assign a value to final variable PI',
+          },
+          outputTone: 'error',
+        },
+      ],
+      notes: [
+        'Use constante para o que não deve mudar: taxas, limites, configurações',
+        'JS/TS: prefira const e use let só quando o valor precisa mudar',
+        'Convenção: constantes fixas em MAIÚSCULAS',
+        'JS: o erro só aparece ao rodar; TS e Java avisam antes',
+      ],
+    },
+
+    // 12 · A
+    {
+      id: 'vazio',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'Baú sem nada dentro',
+      description: 'Um baú com a etiqueta nome é criado sem item dentro.',
+      code: code.empty,
+      steps: [
+        {
+          caption: 'Dá para criar o baú sem guardar nada.',
+          lines: 1,
+          activeLine: 1,
+          chests: [chest('nome', 'text', { open: true, label: 'nome' })],
+        },
+        {
+          caption: {
+            js: 'Em JavaScript, o baú vazio guarda undefined.',
+            ts: 'TypeScript avisa antes de rodar: o baú ainda está vazio.',
+            java: 'Java não deixa usar uma variável local sem valor.',
+          },
+          lines: 2,
+          activeLine: 2,
+          chests: {
+            js: [chest('nome', 'text', { open: true, label: 'nome', item: 'undefined', typeName: 'undefined' })],
+            ts: [chest('nome', 'text', { open: true, label: 'nome', error: true })],
+            java: [chest('nome', 'text', { open: true, label: 'nome', error: true })],
+          },
+          output: {
+            js: 'undefined',
+            ts: "error: Variable 'nome' is used before being assigned.",
+            java: 'error: variable nome might not have been initialized',
+          },
+          outputTone: { js: 'ok', ts: 'error', java: 'error' },
+        },
+      ],
+      notes: [
+        'Declarar = criar o baú; inicializar = guardar o primeiro valor',
+        'JS: undefined é "ainda não tem valor"; null é "vazio de propósito"',
+        'Boa prática: já guardar um valor ao criar',
       ],
     },
 
@@ -275,6 +490,93 @@ export const deck: Deck = {
       ],
     },
 
+    // 15 · A
+    {
+      id: 'exercicio-tipos',
+      kind: 'sort',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'Cada item no seu baú',
+      lead: 'Em qual formato de baú cabe cada valor?',
+      bins: [
+        { id: 'text', shape: 'text', label: { js: 'texto', ts: 'string', java: 'String' } },
+        { id: 'int', shape: 'int', label: { js: 'inteiro', ts: 'number (inteiro)', java: 'int' } },
+        { id: 'decimal', shape: 'decimal', label: { js: 'decimal', ts: 'number (decimal)', java: 'double' } },
+        { id: 'bool', shape: 'bool', label: { js: 'verdadeiro/falso', ts: 'boolean', java: 'boolean' } },
+      ],
+      items: [
+        { value: '"Ana"', bin: 'text' },
+        { value: '42', bin: 'int' },
+        { value: '3.14', bin: 'decimal' },
+        { value: 'true', bin: 'bool' },
+        { value: '"42"', bin: 'text' },
+        { value: '-7', bin: 'int' },
+        { value: '0.5', bin: 'decimal' },
+        { value: 'false', bin: 'bool' },
+      ],
+      notes: [
+        'Deixar a turma decidir cada item em voz alta antes de soltar',
+        'Pegadinha: "42" com aspas é texto',
+        'Negativo continua inteiro; 0.5 é decimal mesmo começando com zero',
+        'JS/TS: inteiro e decimal são o mesmo tipo (number), mas a ideia de formato vale',
+      ],
+    },
+
+    // 16 · A
+    {
+      id: 'tipo-errado',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'Item errado no baú errado',
+      description: 'Tentamos guardar o texto "vinte" no baú idade, que guarda números.',
+      code: code.mismatch,
+      steps: [
+        {
+          caption: 'O baú idade guarda um número.',
+          lines: 1,
+          activeLine: 1,
+          chests: [idade({ open: true, item: '25', label: 'idade' })],
+        },
+        {
+          caption: {
+            js: 'JavaScript aceita: o baú se adapta e passa a guardar texto.',
+            ts: 'TypeScript recusa antes de rodar: o formato não bate.',
+            java: 'Java recusa na compilação: o formato não bate.',
+          },
+          lines: 2,
+          activeLine: 2,
+          chests: {
+            js: [chest('idade', 'text', { open: true, item: '"vinte"', label: 'idade', focus: 'type' })],
+            ts: [idade({ open: true, item: '25', label: 'idade', error: true })],
+            java: [idade({ open: true, item: '25', label: 'idade', error: true })],
+          },
+          output: {
+            ts: "error: Type 'string' is not assignable to type 'number'.",
+            java: 'error: incompatible types: String cannot be converted to int',
+          },
+          outputTone: 'error',
+        },
+        {
+          caption: {
+            js: 'typeof mostra o tipo do valor guardado agora.',
+            ts: 'O erro aparece no editor, antes de alguém usar o programa.',
+            java: 'O erro aparece antes de o programa rodar.',
+          },
+          lines: 3,
+          activeLine: { js: 3 },
+          output: { js: 'string', ts: "error: Type 'string' is not assignable to type 'number'.", java: 'error: incompatible types: String cannot be converted to int' },
+          outputTone: { js: 'ok', ts: 'error', java: 'error' },
+        },
+      ],
+      notes: [
+        'Tipagem dinâmica (JS) x estática (TS, Java)',
+        'Dinâmica: mais liberdade, erros aparecem com o programa rodando',
+        'Estática: o compilador pega o erro antes, ótimo em projetos grandes',
+        'TypeScript existe justamente para trazer essa checagem ao JavaScript',
+      ],
+    },
+
     // 22 · E
     {
       id: 'boas-etiquetas',
@@ -300,6 +602,139 @@ export const deck: Deck = {
         'Nome bom economiza comentário',
         'Regras (o que não compila) x convenções (o que a equipe combina)',
         'Maiúsculas e minúsculas contam: idade e Idade são baús diferentes',
+      ],
+    },
+
+    // 23 · A
+    {
+      id: 'convencoes',
+      kind: 'cards',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'Convenções pelo mundo',
+      lead: 'Cada linguagem tem o seu jeito combinado de escrever nomes.',
+      columns: 2,
+      cards: [
+        { title: 'camelCase', value: '{n:idadeDoAluno}', text: 'Variáveis em JS, TS e Java.' },
+        { title: 'PascalCase', value: '{t:ContaBancaria}', text: 'Classes e tipos (aulas futuras).' },
+        { title: 'UPPER_CASE', value: '{n:TAXA_MAXIMA}', text: 'Constantes fixas.' },
+        { title: 'snake_case', value: '{n:idade_do_aluno}', text: 'Python, Ruby e bancos de dados.' },
+      ],
+      notes: [
+        'Convenção não é regra do compilador: é acordo da equipe',
+        'Código com estilo único parece escrito por uma pessoa só',
+        'Linters e formatadores (ESLint, Prettier, Checkstyle) ajudam a manter o padrão',
+      ],
+    },
+
+    // 24 · A
+    {
+      id: 'exercicio-valor-final',
+      kind: 'predict',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'Qual o valor final?',
+      question: 'Depois das quatro linhas, quanto vale b?',
+      code: code.predict,
+      options: ['10', '15', '20', '5'],
+      answer: 1,
+      explanation: 'b copiou o 5 de a. Mudar a depois não muda b. No fim, b = 5 + 10 = 15.',
+      trace: [
+        {
+          activeLine: 1,
+          chests: [chest('a', 'int', { open: true, label: 'a', item: '5', focus: 'item' })],
+        },
+        {
+          activeLine: 2,
+          chests: [
+            chest('a', 'int', { open: true, label: 'a', item: '5' }),
+            chest('b', 'int', { open: true, label: 'b', item: '5', focus: 'item' }),
+          ],
+        },
+        {
+          activeLine: 3,
+          chests: [
+            chest('a', 'int', { open: true, label: 'a', item: '10', focus: 'item' }),
+            chest('b', 'int', { open: true, label: 'b', item: '5' }),
+          ],
+        },
+        {
+          activeLine: 4,
+          chests: [
+            chest('a', 'int', { open: true, label: 'a', item: '10' }),
+            chest('b', 'int', { open: true, label: 'b', item: '15', focus: 'item' }),
+          ],
+        },
+      ],
+      notes: [
+        'Dar 30 segundos para cada pessoa decidir sozinha',
+        'Votação com a mão antes de revelar',
+        'Erro comum: achar que b acompanha a (b recebeu uma cópia do valor)',
+        'Revelar linha a linha com a seta',
+      ],
+    },
+
+    // 25 · A
+    {
+      id: 'desafio-troca',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Desafio',
+      title: 'Troque os itens de dois baús',
+      description: 'Para trocar maçã e uva entre os baús a e b, um terceiro baú aux guarda a maçã temporariamente.',
+      code: code.swap,
+      steps: [
+        {
+          caption: 'Como trocar o conteúdo de a e b?',
+          lines: 2,
+          activeLine: null,
+          chests: [
+            chest('a', 'text', { open: true, label: 'a', item: '"maçã"' }),
+            chest('b', 'text', { open: true, label: 'b', item: '"uva"' }),
+          ],
+        },
+        {
+          caption: 'Se fizer a = b direto, a maçã se perde.',
+          chests: [
+            chest('a', 'text', { open: true, label: 'a', item: '"uva"', error: true }),
+            chest('b', 'text', { open: true, label: 'b', item: '"uva"' }),
+          ],
+        },
+        {
+          caption: 'Solução: um baú auxiliar guarda a maçã antes.',
+          lines: 3,
+          activeLine: 3,
+          chests: [
+            chest('a', 'text', { open: true, label: 'a', item: '"maçã"' }),
+            chest('b', 'text', { open: true, label: 'b', item: '"uva"' }),
+            chest('aux', 'text', { open: true, label: 'aux', item: '"maçã"', focus: 'item' }),
+          ],
+        },
+        {
+          caption: 'Agora a pode receber a uva.',
+          lines: 4,
+          activeLine: 4,
+          chests: [
+            chest('a', 'text', { open: true, label: 'a', item: '"uva"', focus: 'item' }),
+            chest('b', 'text', { open: true, label: 'b', item: '"uva"' }),
+            chest('aux', 'text', { open: true, label: 'aux', item: '"maçã"' }),
+          ],
+        },
+        {
+          caption: 'E b recebe a maçã guardada em aux. Trocados!',
+          lines: 5,
+          activeLine: 5,
+          chests: [
+            chest('a', 'text', { open: true, label: 'a', item: '"uva"' }),
+            chest('b', 'text', { open: true, label: 'b', item: '"maçã"', focus: 'item' }),
+            chest('aux', 'text', { open: true, label: 'aux', item: '"maçã"' }),
+          ],
+        },
+      ],
+      notes: [
+        'Pedir a solução para a turma antes de mostrar a etapa 3',
+        'Analogia: trocar o líquido de dois copos exige um terceiro copo',
+        'JS/TS tem atalho: [a, b] = [b, a] (desestruturação, aula futura)',
       ],
     },
 
