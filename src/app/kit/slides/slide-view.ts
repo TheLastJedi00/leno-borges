@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import type { Slide, Syntax } from '../kit.data';
 import { CoverView } from './cover-view';
+import { SceneView } from './scene-view';
+import { CardsView } from './cards-view';
+import { TableView } from './table-view';
 
 /** Moldura comum de um slide (título, selo de aprofundamento) e escolha do layout pelo `kind`. */
 @Component({
   selector: 'kit-slide-view',
-  imports: [CoverView],
+  imports: [CoverView, SceneView, CardsView, TableView],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'absolute inset-0 block' },
   template: `
@@ -23,6 +26,15 @@ import { CoverView } from './cover-view';
     @switch (s.kind) {
       @case ('cover') {
         <kit-cover-view [slide]="s" [syntax]="syntax()"></kit-cover-view>
+      }
+      @case ('scene') {
+        <kit-scene-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-scene-view>
+      }
+      @case ('cards') {
+        <kit-cards-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-cards-view>
+      }
+      @case ('table') {
+        <kit-table-view [slide]="s" [syntax]="syntax()"></kit-table-view>
       }
       @default {
         <div class="flex h-full flex-col px-16 pt-14 pb-12">

@@ -33,6 +33,7 @@
   --color-kit-name: #f2c46d;
   --color-kit-value: #5fd4a8;
   --color-kit-error: #ff6b6b;
+  --color-kit-keyword: #c3a6ff;
 
   --animate-rise: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 
@@ -102,6 +103,17 @@
 
   .kit-slide-out {
     animation: kit-slide-out 0.3s ease both;
+  }
+
+  /* Código: token do papel em destaque e linha em execução */
+  .kit-token-focus {
+    background-color: color-mix(in oklab, currentColor 16%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, currentColor 16%, transparent);
+  }
+
+  .kit-line-active {
+    background-color: color-mix(in oklab, var(--color-accent) 14%, transparent);
+    box-shadow: inset 4px 0 0 var(--color-accent);
   }
 
   @keyframes kit-rise {
