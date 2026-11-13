@@ -7,7 +7,8 @@ export interface DeckKeyActions {
 
 /**
  * Atalhos comuns ao player e à janela do apresentador. Devolve `true` quando a tecla foi usada.
- * Teclas dentro de um exercício ficam com o exercício; espaço sobre um botão aciona o botão.
+ * Teclas dentro de um exercício ficam com o exercício (menos PageUp/PageDown, do passador);
+ * espaço sobre um botão aciona o botão.
  */
 export function handleDeckKey(
   event: KeyboardEvent,
@@ -16,7 +17,9 @@ export function handleDeckKey(
 ): boolean {
   if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return false;
   const target = event.target as HTMLElement | null;
-  if (target?.closest?.('[data-kit-exercise]')) return false;
+  // Passadores de slide enviam PageUp/PageDown: esses continuam valendo dentro do exercício
+  const inExercise = !!target?.closest?.('[data-kit-exercise]');
+  if (inExercise && event.key !== 'PageDown' && event.key !== 'PageUp') return false;
   const onControl = !!target?.closest?.('button, a, input, select, textarea');
   const syntaxes = state.lesson()?.syntaxes ?? [];
 

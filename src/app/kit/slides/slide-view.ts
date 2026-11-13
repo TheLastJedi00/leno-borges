@@ -1,11 +1,16 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import type { Slide, Syntax } from '../kit.data';
 import { CoverView } from './cover-view';
+import { SceneView } from './scene-view';
+import { CardsView } from './cards-view';
+import { TableView } from './table-view';
+import { SortView } from './sort-view';
+import { PredictView } from './predict-view';
 
 /** Moldura comum de um slide (título, selo de aprofundamento) e escolha do layout pelo `kind`. */
 @Component({
   selector: 'kit-slide-view',
-  imports: [CoverView],
+  imports: [CoverView, SceneView, CardsView, TableView, SortView, PredictView],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'absolute inset-0 block' },
   template: `
@@ -22,14 +27,22 @@ import { CoverView } from './cover-view';
     }
     @switch (s.kind) {
       @case ('cover') {
-        <kit-cover-view [slide]="s"></kit-cover-view>
+        <kit-cover-view [slide]="s" [syntax]="syntax()"></kit-cover-view>
       }
-      @default {
-        <div class="flex h-full flex-col px-16 pt-14 pb-12">
-          <h2 class="font-display text-[52px] leading-tight font-semibold tracking-tight text-paper">
-            {{ s.title }}
-          </h2>
-        </div>
+      @case ('scene') {
+        <kit-scene-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-scene-view>
+      }
+      @case ('cards') {
+        <kit-cards-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-cards-view>
+      }
+      @case ('table') {
+        <kit-table-view [slide]="s" [syntax]="syntax()"></kit-table-view>
+      }
+      @case ('sort') {
+        <kit-sort-view [slide]="s" [syntax]="syntax()"></kit-sort-view>
+      }
+      @case ('predict') {
+        <kit-predict-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-predict-view>
       }
     }
   `,

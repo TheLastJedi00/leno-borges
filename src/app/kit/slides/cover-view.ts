@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import type { CoverSlide } from '../kit.data';
+import type { CoverSlide, Syntax } from '../kit.data';
+import { Chest } from '../ui/chest/chest';
 
 @Component({
   selector: 'kit-cover-view',
+  imports: [Chest],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -27,10 +29,17 @@ import type { CoverSlide } from '../kit.data';
       <p class="kit-rise mt-8 max-w-[760px] text-[30px] text-muted" style="animation-delay: 160ms">
         {{ s.subtitle }}
       </p>
-      <ng-content />
+      <kit-chest
+        aria-hidden="true"
+        class="kit-rise absolute right-28 bottom-28 scale-[1.6]"
+        style="animation-delay: 260ms"
+        [state]="{ id: 'capa', shape: 'any', label: 'aula' }"
+        [syntax]="syntax()"
+      ></kit-chest>
     </div>
   `,
 })
 export class CoverView {
   slide = input.required<CoverSlide>();
+  syntax = input.required<Syntax>();
 }
