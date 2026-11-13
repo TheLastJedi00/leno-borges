@@ -5,6 +5,13 @@
 export type Syntax = 'js' | 'ts' | 'java';
 export const SYNTAXES: readonly Syntax[] = ['js', 'ts', 'java'];
 
+/** Nomes das linguagens (marcas, neutros de idioma). `long` casa com o mapa do `tech-icon`. */
+export const syntaxNames: Record<Syntax, { short: string; long: string }> = {
+  js: { short: 'JS', long: 'JavaScript' },
+  ts: { short: 'TS', long: 'TypeScript' },
+  java: { short: 'Java', long: 'Java' },
+};
+
 /** Roteiro da apresentação: só os slides essenciais ou todos (essenciais + aprofundamentos). */
 export type Mode = 'essencial' | 'completo';
 export const MODES: readonly Mode[] = ['essencial', 'completo'];
