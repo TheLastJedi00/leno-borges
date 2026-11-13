@@ -47,7 +47,6 @@ Uma branch `feat/<fase>` por fase, com um commit por tarefa. Ao final, merge na 
 - Dentro de exercício, PageUp/PageDown continuam navegando (passadores de slide enviam essas teclas); as demais teclas ficam com o exercício
 - A janela do apresentador abre em modo "seguir": não publica o próprio estado inicial, espera a janela da turma responder ou o apresentador navegar
 - Roteiro essencial tem **10** slides (o context.md dizia 9 por erro de contagem; corrigido)
-- No roteiro, o slide 24 virou exercício de previsão com 4 opções e a execução revelada linha a linha
 - O aviso "conteúdo em português" na barra do player virou um selo `PT` com o texto em `title` e `sr-only`, para a barra não quebrar em duas linhas
 - Bundle inicial: 350,98 kB → 385,68 kB brutos (94,87 → 104,02 kB transferidos). Nenhum componente do kit entra no inicial; o acréscimo vem dos textos do kit nos três dicionários e do suporte a rotas lazy e `animate.enter`
 - O redimensionamento da janela do Chrome para 390px não pegou na homologação (viewport ficou em 2048px), como na spec 005. O palco escala por largura e a barra usa `flex-wrap`; **conferir no celular**
