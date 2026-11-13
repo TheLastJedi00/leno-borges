@@ -17,6 +17,7 @@ import { SlideView } from '../slides/slide-view';
 import { isMode, isSyntax, prefs, resolveMode, resolveSyntax } from '../kit-prefs';
 import { MODES, findLesson, lessonPath, syntaxNames, type TrackId, type LessonId } from '../kit.data';
 import { PlayerState } from './player-state';
+import { handleDeckKey } from './deck-keys';
 
 const IDLE_MS = 3000;
 
@@ -129,57 +130,11 @@ export class Player {
     this.idleTimer = setTimeout(() => this.awake.set(false), IDLE_MS);
   }
 
-  /** Atalhos do apresentador. Teclas dentro de um exercício ficam com o exercício. */
   onKey(event: KeyboardEvent) {
-    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
-    const target = event.target as HTMLElement | null;
-    if (target?.closest('[data-kit-exercise]')) return;
-    const onControl = !!target?.closest('button, a, input, select, textarea');
-    const syntaxes = this.found?.lesson.syntaxes ?? [];
-
-    switch (event.key) {
-      case 'ArrowRight':
-      case 'PageDown':
-        this.state.next();
-        break;
-      case ' ':
-        if (onControl) return;
-        this.state.next();
-        break;
-      case 'ArrowLeft':
-      case 'PageUp':
-        this.state.prev();
-        break;
-      case 'Home':
-        this.state.first();
-        break;
-      case 'End':
-        this.state.last();
-        break;
-      case 'f':
-      case 'F':
-        this.toggleFullscreen();
-        break;
-      case 'n':
-      case 'N':
-        this.openPresenter();
-        break;
-      case 'r':
-      case 'R':
-        this.state.toggleMode();
-        break;
-      case '1':
-      case '2':
-      case '3': {
-        const syntax = syntaxes[Number(event.key) - 1];
-        if (!syntax) return;
-        this.state.setSyntax(syntax);
-        break;
-      }
-      default:
-        return;
-    }
-    event.preventDefault();
+    handleDeckKey(event, this.state, {
+      fullscreen: () => this.toggleFullscreen(),
+      presenter: () => this.openPresenter(),
+    });
   }
 
   /** Clique no palco avança (exceto em controles e exercícios). */

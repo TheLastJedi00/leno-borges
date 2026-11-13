@@ -96,12 +96,14 @@ export class PlayerState {
 
   private channel: BroadcastChannel | null = null;
   private lastRemote = '';
+  /** Enquanto `true`, não publica (janela que acabou de abrir espera o estado da outra). */
+  private muted = false;
 
   constructor() {
     // Publica cada mudança local; a mudança que acabou de chegar de outra janela não volta para ela
     effect(() => {
       const message = this.snapshot();
-      if (!message) return;
+      if (!message || this.muted) return;
       if (JSON.stringify(message) === this.lastRemote) return;
       untracked(() => this.channel?.postMessage(message));
     });
@@ -116,24 +118,29 @@ export class PlayerState {
   }
 
   next() {
+    this.muted = false;
     this.pos.update((p) => nextPosition(this.slides(), p));
   }
 
   prev() {
+    this.muted = false;
     this.pos.update((p) => prevPosition(this.slides(), p));
   }
 
   first() {
+    this.muted = false;
     this.pos.set({ index: 0, step: 0 });
   }
 
   last() {
+    this.muted = false;
     const slides = this.slides();
     const index = Math.max(0, slides.length - 1);
     this.pos.set({ index, step: slides[index] ? stepCount(slides[index]) - 1 : 0 });
   }
 
   goTo(index: number, step = 0) {
+    this.muted = false;
     const i = clampIndex(index, this.total());
     const slide = this.slides()[i];
     const s = slide ? Math.min(Math.max(0, step), stepCount(slide) - 1) : 0;
@@ -141,12 +148,14 @@ export class PlayerState {
   }
 
   setSyntax(syntax: Syntax) {
+    this.muted = false;
     if (syntax === this.syntax() || !this.lesson()?.syntaxes.includes(syntax)) return;
     this.reposition(() => this.syntax.set(syntax));
     prefs.saveSyntax(syntax);
   }
 
   setMode(mode: Mode) {
+    this.muted = false;
     if (mode === this.mode()) return;
     this.reposition(() => this.mode.set(mode));
     prefs.saveMode(mode);
@@ -168,9 +177,13 @@ export class PlayerState {
     this.goTo(index, same ? step : 0);
   }
 
-  /** Liga a sincronização com outras janelas da mesma aula. */
-  connect(name: string) {
+  /**
+   * Liga a sincronização com outras janelas da mesma aula. Com `follow`, a janela não publica
+   * o próprio estado inicial: espera a outra responder ou o apresentador navegar.
+   */
+  connect(name: string, follow = false) {
     if (typeof BroadcastChannel === 'undefined') return;
+    this.muted = follow;
     const channel = new BroadcastChannel(name);
     this.channel = channel;
     channel.onmessage = (event: MessageEvent<SyncMessage>) => this.receive(event.data);
