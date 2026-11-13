@@ -1,4 +1,4 @@
-import { DOCUMENT, Injectable, computed, effect, inject, signal } from '@angular/core';
+import { DOCUMENT, DestroyRef, Injectable, computed, effect, inject, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import type { Dictionary, Lang } from './dictionary';
 import { en } from './en';
@@ -9,6 +9,9 @@ const STORAGE_KEY = 'lang';
 const dictionaries: Record<Lang, Dictionary> = { en, fr, pt };
 
 export const LANGS: Lang[] = ['en', 'fr', 'pt'];
+
+/** Título e descrição de uma página, calculados a partir do dicionário ativo. */
+export type PageMeta = (d: Dictionary) => { title: string; description: string };
 
 function isLang(value: unknown): value is Lang {
   return LANGS.includes(value as Lang);
@@ -32,13 +35,24 @@ export class I18n {
 
   readonly lang = signal<Lang>(readStoredLang());
   readonly t = computed(() => dictionaries[this.lang()]);
+  /** Meta da página atual; sem valor, valem os da home (`meta` do dicionário). */
+  private readonly pageMeta = signal<PageMeta | null>(null);
 
   constructor() {
     effect(() => {
-      const { meta } = this.t();
-      this.document.documentElement.lang = meta.htmlLang;
-      this.title.setTitle(meta.title);
-      this.meta.updateTag({ name: 'description', content: meta.description });
+      const d = this.t();
+      const page = this.pageMeta()?.(d) ?? d.meta;
+      this.document.documentElement.lang = d.meta.htmlLang;
+      this.title.setTitle(page.title);
+      this.meta.updateTag({ name: 'description', content: page.description });
+    });
+  }
+
+  /** Define a meta da página enquanto o componente que chamou existir. */
+  usePageMeta(meta: PageMeta, destroyRef = inject(DestroyRef)) {
+    this.pageMeta.set(meta);
+    destroyRef.onDestroy(() => {
+      if (this.pageMeta() === meta) this.pageMeta.set(null);
     });
   }
 
