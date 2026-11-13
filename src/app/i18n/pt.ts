@@ -1,5 +1,5 @@
 import type { Dictionary } from './dictionary';
-import { partners, projectUrls } from '../pages/home/home.data';
+import { kitPaths, partners, projectUrls } from '../pages/home/home.data';
 
 export const pt: Dictionary = {
   meta: {
@@ -149,6 +149,7 @@ export const pt: Dictionary = {
       {
         title: 'ProWay',
         partners: [partners.proway],
+        kitPath: kitPaths.root,
         subtitle: 'Educação, Formação de Devs & Consultoria',
         role: 'Instrutor Técnico',
         period: 'Desde Jan 2026',
