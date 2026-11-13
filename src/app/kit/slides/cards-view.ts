@@ -35,7 +35,7 @@ const TONE: Record<string, string> = {
             [class.translate-y-6]="i > step()"
             [attr.aria-hidden]="i > step()"
           >
-            <p class="font-display text-[30px] leading-tight font-semibold text-paper">
+            <p class="font-display text-[34px] leading-tight font-semibold text-paper">
               @if (card.tone === 'good') {
                 <span class="text-kit-value" aria-hidden="true">✓ </span>
               } @else if (card.tone === 'bad') {
@@ -44,14 +44,14 @@ const TONE: Record<string, string> = {
               {{ card.title }}
             </p>
             @if (card.value) {
-              <p class="mt-4 font-mono text-[30px] break-words">
+              <p class="mt-5 font-mono text-[40px] leading-tight break-words">
                 @for (tok of card.value; track $index) {
                   <span [class]="tok.role ? role[tok.role] : 'text-muted'">{{ tok.text }}</span>
                 }
               </p>
             }
             @if (card.text) {
-              <p class="mt-3 text-[22px] leading-snug text-muted">{{ card.text }}</p>
+              <p class="mt-4 text-[24px] leading-snug text-muted">{{ card.text }}</p>
             }
           </li>
         }

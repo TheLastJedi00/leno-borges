@@ -3,11 +3,11 @@ import { type ChestShape, type ChestState, type Syntax, pick } from '../../kit.d
 
 /** Largura do baú (px no palco 1280×720) e marca de canto por formato (tipo). */
 const SHAPES: Record<ChestShape, { width: number; glyph: string }> = {
-  text: { width: 290, glyph: 'Aa' },
-  int: { width: 220, glyph: '123' },
-  decimal: { width: 220, glyph: '1.5' },
-  bool: { width: 190, glyph: 'V/F' },
-  any: { width: 240, glyph: '*' },
+  text: { width: 330, glyph: 'Aa' },
+  int: { width: 260, glyph: '123' },
+  decimal: { width: 260, glyph: '1.5' },
+  bool: { width: 230, glyph: 'V/F' },
+  any: { width: 280, glyph: '*' },
 };
 
 /**
@@ -34,7 +34,7 @@ const SHAPES: Record<ChestShape, { width: number; glyph: string }> = {
         <span class="address" [class.is-focus]="c.focus === 'address'">{{ c.address }}</span>
       }
 
-      <div class="box" [style.height.px]="width() * 0.62">
+      <div class="box" [style.height.px]="width() * 0.6">
         <div class="mouth"></div>
 
         @if (c.item; as item) {

@@ -68,7 +68,7 @@ import { chestsFor } from './scene-view';
           @if (trace(); as tr) {
             <kit-chest-row
               class="kit-fade origin-top scale-[0.8]"
-              [chests]="chestsFor(tr)"
+              [chests]="chestsFor(tr, syntax())"
               [syntax]="syntax()"
             ></kit-chest-row>
           }

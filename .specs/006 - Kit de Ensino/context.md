@@ -128,7 +128,7 @@ export interface Slide {
 
 - Header do site mantido (logo leva para a home, toggle `EN | FR | PT` funciona).
 - Título e introdução curta do kit, link "voltar ao portfólio".
-- Uma seção por trilha; cada aula é um card neumórfico com título, resumo, faixa de duração ("10 min a 4 h"), quantidade de slides de cada roteiro (ex.: "9 essenciais · 25 no total") e as sintaxes disponíveis (chips com o `tech-icon` de JavaScript, TypeScript e Java).
+- Uma seção por trilha; cada aula é um card neumórfico com título, resumo, faixa de duração ("10 min a 4 h"), quantidade de slides de cada roteiro (ex.: "10 essenciais · 25 no total") e as sintaxes disponíveis (chips com o `tech-icon` de JavaScript, TypeScript e Java).
 - O card da aula tem seletores de sintaxe e de roteiro e o botão "Apresentar", que abre o player já com `?sintaxe=` e `?roteiro=`.
 - Só aparecem aulas publicadas (sem "em breve").
 
@@ -176,7 +176,7 @@ export interface Slide {
 
 Texto curto em cada slide; a explicação vem da animação e dos tópicos das notas. Exemplos genéricos do dia a dia (placar, nome, preço, idade), sem contexto de turma.
 
-- **Essencial (E):** 9 slides, cerca de 10 min. Fecha o tema sozinho: o que é variável, nome, valor, tipo e como se escreve na linguagem escolhida.
+- **Essencial (E):** 10 slides, cerca de 10 min. Fecha o tema sozinho: o que é variável, nome, valor, tipo e como se escreve na linguagem escolhida.
 - **Completo (E + A):** 26 slides. Os aprofundamentos (A) entram entre os essenciais, no ponto em que o assunto pede, e trazem detalhes, curiosidades e exercícios. Uma aula de 4 h usa o roteiro Completo como espinha e preenche o tempo com prática ao vivo nos exercícios e no editor.
 - Slides marcados com uma sintaxe só aparecem quando ela está ativa (campo `syntaxes?: Syntax[]` no `Slide`); os demais valem para as três.
 
@@ -209,7 +209,7 @@ Texto curto em cada slide; a explicação vem da animação e dos tópicos das n
 | 25 | A | Desafio: troque os itens de dois baús | Trocar valores de `a` e `b`; a animação mostra a necessidade de um terceiro baú auxiliar |
 | 26 | E | Resumo | Baú = variável, etiqueta = nome, item = valor, formato = tipo |
 
-Os números são a ordem no roteiro Completo. No Essencial, o player numera de 1 a 9 só os slides E. Slides 20 e 21 dependem da sintaxe, então o total visível no Completo é 25.
+Os números são a ordem no roteiro Completo. No Essencial, o player numera de 1 a 10 só os slides E. Slides 20 e 21 dependem da sintaxe, então o total visível no Completo é 25.
 
 ### Diferenças por sintaxe (o que muda nos slides de código)
 
