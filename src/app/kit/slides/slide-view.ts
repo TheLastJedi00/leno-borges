@@ -22,7 +22,7 @@ import { CoverView } from './cover-view';
     }
     @switch (s.kind) {
       @case ('cover') {
-        <kit-cover-view [slide]="s"></kit-cover-view>
+        <kit-cover-view [slide]="s" [syntax]="syntax()"></kit-cover-view>
       }
       @default {
         <div class="flex h-full flex-col px-16 pt-14 pb-12">
