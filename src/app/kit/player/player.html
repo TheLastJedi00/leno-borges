@@ -1,0 +1,146 @@
+@let d = t();
+@let k = d.kit;
+@let p = k.player;
+<div class="fixed inset-0 flex flex-col overflow-hidden bg-ink text-muted" (mousemove)="wake()">
+  <!-- Progresso -->
+  <div
+    class="h-1 w-full shrink-0 bg-line/40"
+    role="progressbar"
+    [attr.aria-label]="p.progress"
+    aria-valuemin="1"
+    [attr.aria-valuemax]="state.total()"
+    [attr.aria-valuenow]="state.pos().index + 1"
+  >
+    <div
+      class="h-full bg-accent transition-[width] duration-500 ease-out"
+      [style.width.%]="state.progress() * 100"
+    ></div>
+  </div>
+
+  <div
+    class="relative grid min-h-0 flex-1 touch-pan-y place-items-center p-3 select-none sm:p-6 sm:pb-20"
+    (click)="onStageClick($event)"
+    (pointerdown)="onPointerDown($event)"
+    (pointerup)="onPointerUp($event)"
+  >
+    @if (state.current(); as slide) {
+      <kit-stage
+        class="w-[min(100%,calc((100dvh-7.5rem)*16/9))]"
+        role="region"
+        [attr.aria-roledescription]="p.slideRole"
+        [attr.aria-label]="slideLabel()"
+      >
+        @for (s of [slide]; track s.id) {
+          <kit-slide-view
+            animate.enter="kit-slide-in"
+            animate.leave="kit-slide-out"
+            [slide]="s"
+            [step]="state.pos().step"
+            [syntax]="state.syntax()"
+          ></kit-slide-view>
+        }
+      </kit-stage>
+    } @else {
+      <p class="font-mono text-sm text-faint">{{ p.loading }}</p>
+    }
+    <p class="sr-only" aria-live="polite" aria-atomic="true">{{ slideLabel() }}</p>
+  </div>
+
+  <!-- Barra de controles -->
+  <div
+    class="z-20 shrink-0 border-t border-line/60 bg-ink/90 px-3 py-3 backdrop-blur-md transition-opacity duration-300 focus-within:opacity-100 hover:opacity-100 sm:absolute sm:inset-x-0 sm:bottom-0 sm:px-6"
+    [class.sm:opacity-0]="!awake()"
+    role="toolbar"
+    [attr.aria-label]="p.controls"
+  >
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-3">
+      <div class="flex min-w-0 items-center gap-3">
+        <a
+          routerLink="/kit"
+          class="inline-flex shrink-0 items-center gap-2 rounded-full bg-surface px-3.5 py-2 font-mono text-xs text-faint shadow-raised transition-colors hover:text-paper"
+        >
+          <span aria-hidden="true">←</span>
+          <span class="hidden md:inline">{{ p.back }}</span>
+          <span class="sr-only md:hidden">{{ p.back }}</span>
+        </a>
+        <p class="hidden truncate font-display text-sm font-medium text-paper lg:block">
+          {{ lessonTitle() }}
+        </p>
+        @if (lang() !== 'pt') {
+          <span class="hidden font-mono text-[11px] text-faint xl:inline" [title]="k.ptOnly">
+            PT · {{ k.ptOnly }}
+          </span>
+        }
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <kit-segmented
+          [label]="p.syntax"
+          [options]="syntaxOptions()"
+          [value]="state.syntax()"
+          (changed)="setSyntax($event)"
+        ></kit-segmented>
+        <kit-segmented
+          [label]="p.mode"
+          [options]="modeOptions()"
+          [value]="state.mode()"
+          (changed)="setMode($event)"
+        ></kit-segmented>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          (click)="state.prev()"
+          [disabled]="state.isFirst()"
+          [attr.aria-label]="p.prev"
+          [title]="p.prev"
+          class="grid h-9 w-9 place-items-center rounded-full bg-surface text-paper shadow-raised transition-[color,box-shadow,opacity] hover:text-accent-soft active:shadow-inset disabled:opacity-40"
+        >
+          <span aria-hidden="true">‹</span>
+        </button>
+        <p class="min-w-[4.5rem] text-center font-mono text-xs text-muted">
+          <span class="text-paper">{{ state.pos().index + 1 }}</span> / {{ state.total() }}
+        </p>
+        <button
+          type="button"
+          (click)="state.next()"
+          [disabled]="state.isLast()"
+          [attr.aria-label]="p.next"
+          [title]="p.next"
+          class="grid h-9 w-9 place-items-center rounded-full bg-surface text-paper shadow-raised transition-[color,box-shadow,opacity] hover:text-accent-soft active:shadow-inset disabled:opacity-40"
+        >
+          <span aria-hidden="true">›</span>
+        </button>
+        <button
+          type="button"
+          (click)="openPresenter()"
+          [attr.aria-label]="p.presenter"
+          [title]="p.presenter + ' (N)'"
+          class="ml-1 hidden h-9 w-9 place-items-center rounded-full bg-surface text-muted shadow-raised transition-[color,box-shadow] hover:text-paper active:shadow-inset sm:grid"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="12" rx="2" />
+            <path d="M8 20h8M12 16v4M7 8h6M7 12h4" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          (click)="toggleFullscreen()"
+          [attr.aria-label]="fullscreen() ? p.exitFullscreen : p.fullscreen"
+          [title]="(fullscreen() ? p.exitFullscreen : p.fullscreen) + ' (F)'"
+          [attr.aria-pressed]="fullscreen()"
+          class="grid h-9 w-9 place-items-center rounded-full bg-surface text-muted shadow-raised transition-[color,box-shadow] hover:text-paper active:shadow-inset"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            @if (fullscreen()) {
+              <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" />
+            } @else {
+              <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+            }
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
