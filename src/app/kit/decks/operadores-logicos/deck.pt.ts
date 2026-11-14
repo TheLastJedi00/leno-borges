@@ -1,10 +1,17 @@
-import type { Deck } from '../../kit.data';
-import { code } from './code';
+import type { ChestState, Deck } from '../../kit.data';
+import { chest } from '../chests';
+import { code, only } from './code';
 
 // Aula 4 da trilha Lógica de Programação. Conteúdo em PT; roteiro em
 // .specs/008 - Operadores Relacionais e Logicos/context.md
 // Metáfora: cada resposta true/false é um interruptor; a lâmpada é o resultado. && liga em série,
 // || em paralelo e ! passa por um inversor.
+
+/** Baú aberto com a etiqueta igual ao id. */
+const int = (id: string, item: string, extra: Partial<ChestState> = {}) =>
+  chest(id, 'int', { open: true, label: id, item, ...extra });
+const bool = (id: string, item: string, extra: Partial<ChestState> = {}) =>
+  chest(id, 'bool', { open: true, label: id, item, ...extra });
 
 const DRIVE = ['maior', 'cnh'];
 const SHIPPING = ['vip', 'cupom'];
@@ -157,6 +164,28 @@ export const deck: Deck = {
       ],
     },
 
+    // 7 · A
+    {
+      id: 'exercicio-lampada',
+      kind: 'circuit',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'Acenda a lâmpada',
+      lead: 'Ligue e desligue os interruptores até cumprir o objetivo de cada desafio.',
+      challenges: [
+        { mode: 'and', labels: DRIVE, start: [true, false], goal: true },
+        { mode: 'or', labels: SHIPPING, start: [false, false], goal: true },
+        { mode: 'not', labels: ['logado'], start: [true], goal: true },
+        { mode: 'or', labels: SHIPPING, start: [true, true], goal: false },
+        { mode: 'and', labels: DRIVE, start: [true, true], goal: false },
+      ],
+      notes: [
+        'Chamar alguém da turma para mexer nos interruptores',
+        'Antes de clicar, pedir para a pessoa dizer qual interruptor vai mexer e por quê',
+        'Desafio 4: apagar um || exige desligar os dois; desafio 5: apagar um && basta desligar um',
+      ],
+    },
+
     // 8 · E
     {
       id: 'com-relacionais',
@@ -238,6 +267,229 @@ export const deck: Deck = {
         'Mesma ideia da aula 2: && é como a multiplicação, || como a soma',
         'O ! vem antes de todos: !a && b é (!a) && b',
         'Código claro usa parênteses mesmo quando não precisa',
+      ],
+    },
+
+    // 11 · A
+    {
+      id: 'exercicio-qual-true',
+      kind: 'predict',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'Qual baú guarda true?',
+      question: 'Com n valendo 7, qual baú guarda true?',
+      code: code.predictTrue,
+      options: ['a', 'b', 'c', 'Nenhum'],
+      answer: 0,
+      explanation: 'a: 7 > 5 e 7 < 10, as duas true. b: 7 < 5 e 7 > 8 são false. c: n é 7, e o ! inverte para false.',
+      trace: [
+        { activeLine: 1, chests: [int('n', '7', { focus: 'item' })] },
+        { activeLine: 2, chests: [int('n', '7'), bool('a', 'true', { focus: 'item' })] },
+        {
+          activeLine: 3,
+          chests: [int('n', '7'), bool('a', 'true'), bool('b', 'false', { focus: 'item' })],
+        },
+        {
+          activeLine: 4,
+          chests: [
+            int('n', '7'),
+            bool('a', 'true'),
+            bool('b', 'false'),
+            bool('c', 'false', { focus: 'item' }),
+          ],
+        },
+      ],
+      notes: [
+        '30 segundos para cada pessoa decidir sozinha, depois votação',
+        'Quem marcou c esqueceu de aplicar o ! no fim',
+        'Revelar linha a linha com a seta',
+      ],
+    },
+
+    // 12 · A
+    {
+      id: 'curto-circuito',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'Curto-circuito',
+      code: code.shortCircuit,
+      steps: [
+        {
+          caption: {
+            js: '&& para no primeiro false: com x 0, 10 / x nem é calculado.',
+            ts: '&& para no primeiro false: com x 0, 10 / x nem é calculado.',
+            java: '&& para no primeiro false: com x 0, a divisão por zero nem acontece.',
+          },
+          lines: 2,
+          activeLine: 2,
+          output: 'false',
+        },
+        {
+          caption: '|| para no primeiro true: o resto já não muda a resposta.',
+          lines: 3,
+          activeLine: 3,
+          output: 'false\ntrue',
+        },
+      ],
+      notes: [
+        'A ordem importa: a pergunta que protege vem primeiro (x != 0)',
+        'Java: sem essa proteção, 10 / 0 para o programa (aula 2)',
+        'JS/TS: sem proteção, 10 / 0 vira Infinity e Infinity > 2 dá true, uma resposta errada',
+        'Também economiza tempo: a segunda pergunta só roda quando precisa',
+      ],
+    },
+
+    // 13 · A (só Java)
+    {
+      id: 'java-sem-curto',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      syntaxes: ['java'],
+      title: '& e | sem curto-circuito',
+      code: only.javaNoShortCircuit,
+      steps: [
+        {
+          caption: 'Com &&, a divisão nem acontece.',
+          lines: 2,
+          activeLine: 2,
+          output: 'false',
+        },
+        {
+          caption: 'Com um & só, o Java calcula os dois lados sempre, e divide por zero.',
+          lines: 3,
+          activeLine: 3,
+          output: 'false\nException in thread "main" java.lang.ArithmeticException: / by zero',
+          outputTone: 'error',
+        },
+      ],
+      notes: [
+        '& e | com boolean dão o mesmo resultado que && e ||, mas sem curto-circuito',
+        'Quase sempre se usa && e ||',
+        'Com números, & e | fazem contas com os bits (outra história)',
+      ],
+    },
+
+    // 14 · A (só JS/TS)
+    {
+      id: 'valor-padrao',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      syntaxes: ['js', 'ts'],
+      title: '|| devolve um valor',
+      code: only.fallback,
+      steps: [
+        {
+          caption: '|| devolve o primeiro valor que conta como verdadeiro. Texto vazio conta como falso.',
+          lines: 2,
+          activeLine: 2,
+          output: 'Visitante',
+        },
+        {
+          caption: 'Cuidado: 0 também conta como falso…',
+          lines: 4,
+          activeLine: 4,
+          output: 'Visitante\n10',
+        },
+        {
+          caption: '…?? só troca null e undefined: o 0 fica.',
+          lines: 5,
+          activeLine: 5,
+          output: 'Visitante\n10\n0',
+        },
+      ],
+      notes: [
+        'Contam como falso: false, 0, "", null, undefined e NaN; todo o resto conta como verdadeiro',
+        'nome || "Visitante" é um jeito curto de dar um valor padrão',
+        'Para números e textos que podem ser 0 ou "", prefira ??',
+        'Java não tem isso: && e || só aceitam boolean',
+      ],
+    },
+
+    // 15 · A
+    {
+      id: 'de-morgan',
+      kind: 'truth',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'De Morgan',
+      lead: 'Negar um && vira um || com cada parte negada.',
+      head: ['{n:a}', '{n:b}', '!({n:a} && {n:b})', '!{n:a} || !{n:b}'],
+      rows: [
+        [true, true, false, false],
+        [true, false, true, true],
+        [false, true, true, true],
+        [false, false, true, true],
+      ],
+      results: [2, 3],
+      footnote: 'As duas colunas são iguais em todas as linhas. Vale também: !(a || b) é !a && !b.',
+      notes: [
+        'Exemplo: "não pode dirigir" = !(maior && cnh) = !maior || !cnh',
+        'Útil para simplificar condições com muitos !',
+        'Leis de Augustus De Morgan, matemático do século 19',
+      ],
+    },
+
+    // 16 · A
+    {
+      id: 'ou-exclusivo',
+      kind: 'cards',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: 'OU exclusivo',
+      lead: 'Às vezes "ou" quer dizer um ou outro, mas não os dois.',
+      columns: 3,
+      cards: [
+        { title: 'OU comum', value: '{n:a} || {n:b}', text: 'true com um ou com os dois true.' },
+        {
+          title: 'OU exclusivo',
+          value: { js: '{n:a} !== {n:b}', ts: '{n:a} !== {n:b}', java: '{n:a} ^ {n:b}' },
+          text: 'true só quando um é true e o outro é false.',
+        },
+        { title: '^ não é potência', value: '{v:2} ^ {v:10}', text: 'Dá 8: é uma conta com os bits do número.', tone: 'bad' },
+      ],
+      notes: [
+        'Exemplo: interruptor de escada, dois interruptores para a mesma lâmpada',
+        'JS/TS: com boolean, a !== b funciona como OU exclusivo',
+        'Java: a ^ b com boolean; a != b também funciona',
+        'Retoma a aula 2: potência é ** (JS/TS) ou Math.pow (Java)',
+      ],
+    },
+
+    // 17 · A
+    {
+      id: 'desafio-bissexto',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Desafio',
+      title: 'Ano bissexto',
+      code: code.leapYear,
+      steps: [
+        {
+          caption: 'Três perguntas: o ano é divisível por 4, por 100 e por 400?',
+          lines: 4,
+          activeLine: null,
+        },
+        {
+          caption: 'Bissexto: divisível por 4 e não por 100, ou divisível por 400.',
+          lines: 5,
+          activeLine: 5,
+        },
+        {
+          caption: '2024 é bissexto. Troque o ano: 1900 dá false e 2000 dá true.',
+          lines: 6,
+          activeLine: 6,
+          output: 'true',
+        },
+      ],
+      notes: [
+        'Pedir para a turma escrever a regra antes da etapa 2',
+        '1900: divisível por 4 e por 100, e não por 400, então não é bissexto',
+        '2000: divisível por 400, então é bissexto',
+        'Junta as três aulas: % (aula 2), === e == (aula 3), && || ! (aula 4)',
+        'TS: bissexto não precisa do tipo escrito, ele vem da conta (inferência)',
       ],
     },
 

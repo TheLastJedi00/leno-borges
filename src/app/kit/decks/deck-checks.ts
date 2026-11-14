@@ -95,3 +95,26 @@ export function jsOutputProblems(deck: Deck): string[] {
   }
   return problems;
 }
+
+/**
+ * Tabelas-verdade: as colunas de entrada dão nome às variáveis (`a`, `b`) e cada coluna de
+ * resultado é calculada de verdade em JavaScript, linha por linha.
+ */
+export function truthProblems(deck: Deck): string[] {
+  const problems: string[] = [];
+  for (const slide of deck.slides) {
+    if (slide.kind !== 'truth') continue;
+    const head = (pick(slide.head, 'js') ?? []).map((h) => plainCode(h));
+    const inputs = head.filter((_, c) => !slide.results.includes(c));
+    slide.rows.forEach((row, r) => {
+      const values = row.filter((_, c) => !slide.results.includes(c));
+      for (const c of slide.results) {
+        const actual = Function(...inputs, `return (${head[c]})`)(...values) as boolean;
+        if (actual !== row[c]) {
+          problems.push(`${slide.id}, linha ${r + 1}: ${head[c]} dá ${actual}, a tabela mostra ${row[c]}`);
+        }
+      }
+    });
+  }
+  return problems;
+}
