@@ -133,6 +133,8 @@ export interface SceneStep {
   highlight?: BySyntax<TokenRole | null>;
   /** Linha em destaque (base 1), usada para acompanhar a execução. */
   activeLine?: BySyntax<number | null>;
+  /** Linhas (base 1) que não rodam nesta etapa: ficam apagadas, mostrando o caminho da execução. */
+  skip?: BySyntax<number[]> | null;
   output?: BySyntax | null;
   outputTone?: BySyntax<'ok' | 'error'>;
   /** Balança da comparação; `null` tira a balança da cena. */

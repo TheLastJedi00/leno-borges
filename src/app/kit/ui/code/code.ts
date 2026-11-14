@@ -36,6 +36,7 @@ export const ROLE_CLASS: Record<TokenRole, string> = {
         [class.opacity-0]="visible() !== undefined && i >= visible()!"
         [class.kit-line-active]="activeLine() === i + 1"
         [class.opacity-40]="activeLine() && activeLine() !== i + 1 && (visible() === undefined || i < visible()!)"
+        [class.kit-line-skip]="skipped().includes(i + 1)"
       >@for (tok of line; track $index) {<span
         class="rounded-md transition-[opacity,background-color,box-shadow] duration-300"
         [class]="tok.role ? roleClass[tok.role] : ''"
@@ -52,6 +53,8 @@ export class Code {
   visible = input<number | undefined>(undefined);
   highlight = input<TokenRole | null | undefined>(null);
   activeLine = input<number | null | undefined>(null);
+  /** Linhas (base 1) que não rodam: ficam apagadas. */
+  skipped = input<readonly number[]>([]);
   fontSize = input(28);
 
   readonly roleClass = ROLE_CLASS;

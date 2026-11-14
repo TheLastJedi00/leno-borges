@@ -95,6 +95,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
               [visible]="st.lines"
               [highlight]="highlight()"
               [activeLine]="activeLine()"
+              [skipped]="skipped()"
               [fontSize]="hasFigure() ? 26 : 30"
             ></kit-code>
             @if (output(); as out) {
@@ -142,6 +143,7 @@ export class SceneView {
     off: this.t().kit.exercise.lampOff,
   }));
   readonly activeLine = computed(() => pick(this.state().activeLine, this.syntax()));
+  readonly skipped = computed(() => pick(this.state().skip ?? undefined, this.syntax()) ?? []);
   readonly outputTone = computed(() => pick(this.state().outputTone, this.syntax()));
   readonly highlight = computed(() => pick(this.state().highlight, this.syntax()));
   readonly code = computed(() => pick(this.slide().code, this.syntax()));
