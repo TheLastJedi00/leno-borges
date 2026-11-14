@@ -455,6 +455,11 @@ export const fr: Dictionary = {
       solved: 'Réussi !',
       nextChallenge: 'Défi suivant',
       allDone: 'Tous les défis sont réussis !',
+      branchHint: 'Choisissez une valeur et observez le chemin que suit le programme.',
+      goalOutput: 'Objectif : faire afficher',
+      goalNothing: 'Objectif : que le programme n’affiche rien.',
+      valueOf: 'Valeur de',
+      nothingPrinted: '(rien ne s’affiche)',
     },
   },
 };
