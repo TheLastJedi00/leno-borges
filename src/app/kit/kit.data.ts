@@ -17,7 +17,7 @@ export type Mode = 'essencial' | 'completo';
 export const MODES: readonly Mode[] = ['essencial', 'completo'];
 
 export type TrackId = 'logica-de-programacao';
-export type LessonId = 'variaveis-e-tipos';
+export type LessonId = 'variaveis-e-tipos' | 'operadores-aritmeticos';
 
 export interface Lesson {
   slug: LessonId;
@@ -163,13 +163,33 @@ export interface PredictSlide extends SlideBase {
   trace: SceneStep[];
 }
 
+/** Uma linha da conta: a expressão como está nesta etapa. */
+export interface ExprStep {
+  /** Mesma marcação do código; `[[ ]]` marca o trecho calculado nesta etapa. */
+  expr: BySyntax<CodeMarkup>;
+  caption?: BySyntax;
+  /** Começa uma conta nova (as linhas anteriores saem). */
+  reset?: boolean;
+  /** Substitui a linha anterior em vez de acrescentar (ex.: destacar o trecho antes de calcular). */
+  replace?: boolean;
+  /** Linha com o resultado final da conta. */
+  result?: boolean;
+}
+
+/** Avaliação de expressão passo a passo: cada etapa acrescenta uma linha à "escada" da conta. */
+export interface ExprSlide extends SlideBase {
+  kind: 'expr';
+  steps: ExprStep[];
+}
+
 export type Slide =
   | CoverSlide
   | SceneSlide
   | CardsSlide
   | TableSlide
   | SortSlide
-  | PredictSlide;
+  | PredictSlide
+  | ExprSlide;
 
 export interface Deck {
   slides: Slide[];
@@ -183,6 +203,7 @@ export function stepCount(slide: Slide): number {
     case 'sort':
       return 1;
     case 'scene':
+    case 'expr':
       return Math.max(1, slide.steps.length);
     case 'cards':
       return Math.max(1, slide.cards.length);
@@ -204,6 +225,12 @@ export const tracks: Track[] = [
         counts: { essencial: 10, completo: 25 },
         load: () => import('./decks/variaveis-e-tipos/deck.pt').then((m) => m.deck),
       },
+      {
+        slug: 'operadores-aritmeticos',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 22 },
+        load: () => import('./decks/operadores-aritmeticos/deck.pt').then((m) => m.deck),
+      },
     ],
   },
 ];
@@ -215,6 +242,17 @@ export function findLesson(
   const track = tracks.find((t) => t.slug === trackSlug);
   const lesson = track?.lessons.find((l) => l.slug === lessonSlug);
   return track && lesson ? { track, lesson } : undefined;
+}
+
+/** Aula seguinte na mesma trilha (convite "seguir para a próxima aula" no fim da apresentação). */
+export function nextLesson(
+  trackSlug: string | null | undefined,
+  lessonSlug: string | null | undefined,
+  list: Track[] = tracks,
+): Lesson | undefined {
+  const lessons = list.find((t) => t.slug === trackSlug)?.lessons ?? [];
+  const index = lessons.findIndex((l) => l.slug === lessonSlug);
+  return index >= 0 ? lessons[index + 1] : undefined;
 }
 
 export function lessonPath(track: TrackId, lesson: LessonId): string {

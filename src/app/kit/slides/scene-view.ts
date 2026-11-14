@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { type ChestState, type SceneSlide, type SceneStep, type Syntax, pick } from '../kit.data';
 import { ChestRow } from '../ui/chest/chest-row';
+import { chestWidth } from '../ui/chest/chest';
 import { Code } from '../ui/code/code';
 import { sceneAt } from '../ui/code/code-markup';
 
@@ -10,6 +11,25 @@ const FOCUS_BY_ROLE: Partial<Record<string, ChestState['focus']>> = {
   v: 'item',
   t: 'type',
 };
+
+/** Espaço do palco 1280×720 ao lado do código (padding 2×64, código 600, vão 48) e vão entre baús. */
+const ROW_SPACE = 1280 - 128 - 600 - 48;
+const CHEST_GAP = 48;
+/** Abaixo disso, os baús ficam pequenos demais numa linha só: melhor quebrar em duas. */
+const MIN_ONE_ROW_ZOOM = 0.65;
+
+/**
+ * Escala dos baús ao lado do código: cabem numa linha ou, se ficarem pequenos demais, em duas.
+ * Uma folga de 3% evita quebra de linha por arredondamento.
+ */
+export function chestZoom(widths: number[]): number {
+  if (widths.length < 2) return 1;
+  const row = (list: number[]) => list.reduce((a, b) => a + b, 0) + CHEST_GAP * (list.length - 1);
+  const oneRow = ROW_SPACE / row(widths);
+  if (oneRow >= MIN_ONE_ROW_ZOOM) return Math.min(1, oneRow * 0.97);
+  const half = Math.ceil(widths.length / 2);
+  return Math.min(1, (ROW_SPACE / Math.max(row(widths.slice(0, half)), row(widths.slice(half)))) * 0.97);
+}
 
 export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
   const highlight = pick(state.highlight, syntax);
@@ -42,7 +62,12 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
         [class.justify-center]="!code() || !chests().length"
       >
         @if (chests().length) {
-          <kit-chest-row class="flex-1" [chests]="chests()" [syntax]="syntax()"></kit-chest-row>
+          <kit-chest-row
+            class="flex-1"
+            [style.zoom]="zoom()"
+            [chests]="chests()"
+            [syntax]="syntax()"
+          ></kit-chest-row>
         }
         @if (code(); as markup) {
           <div class="grid shrink-0 gap-4" [style.width.px]="chests().length ? 600 : 860">
@@ -77,6 +102,16 @@ export class SceneView {
 
   readonly state = computed(() => sceneAt(this.slide().steps, this.step()));
   readonly chests = computed(() => chestsFor(this.state(), this.syntax()));
+  /** Mesma escala em todas as etapas do slide (a da etapa com mais baús), sem pular de tamanho. */
+  readonly zoom = computed(() => {
+    if (!this.code()) return 1;
+    const steps = this.slide().steps;
+    return Math.min(
+      ...steps.map((_, i) =>
+        chestZoom(chestsFor(sceneAt(steps, i), this.syntax()).map((c) => chestWidth(c.shape))),
+      ),
+    );
+  });
   readonly activeLine = computed(() => pick(this.state().activeLine, this.syntax()));
   readonly outputTone = computed(() => pick(this.state().outputTone, this.syntax()));
   readonly highlight = computed(() => pick(this.state().highlight, this.syntax()));

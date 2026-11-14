@@ -26,7 +26,7 @@ import { Chest } from '../ui/chest/chest';
       >
         {{ s.title }}
       </h1>
-      <p class="kit-rise mt-8 max-w-[760px] text-[30px] text-muted" style="animation-delay: 160ms">
+      <p class="kit-rise mt-8 max-w-[640px] text-[30px] text-muted" style="animation-delay: 160ms">
         {{ s.subtitle }}
       </p>
       <kit-chest

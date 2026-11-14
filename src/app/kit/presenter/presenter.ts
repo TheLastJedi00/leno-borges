@@ -6,13 +6,22 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { I18n } from '../../i18n/i18n';
 import { Stage } from '../ui/stage/stage';
 import { Segmented } from '../ui/segmented/segmented';
 import { SlideView } from '../slides/slide-view';
 import { isMode, isSyntax, prefs, resolveMode, resolveSyntax } from '../kit-prefs';
-import { MODES, findLesson, stepCount, syntaxNames, type LessonId, type TrackId } from '../kit.data';
+import {
+  MODES,
+  findLesson,
+  lessonPath,
+  nextLesson,
+  stepCount,
+  syntaxNames,
+  type LessonId,
+  type TrackId,
+} from '../kit.data';
 import { PlayerState } from '../player/player-state';
 import { handleDeckKey } from '../player/deck-keys';
 
@@ -31,15 +40,20 @@ import { handleDeckKey } from '../player/deck-keys';
 export class Presenter {
   private readonly i18n = inject(I18n);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   readonly state = inject(PlayerState);
   readonly t = this.i18n.t;
 
   readonly trackSlug = this.route.snapshot.paramMap.get('trilha') as TrackId;
   readonly lessonSlug = this.route.snapshot.paramMap.get('aula') as LessonId;
   private readonly found = findLesson(this.trackSlug, this.lessonSlug);
+  private readonly upNext = nextLesson(this.trackSlug, this.lessonSlug);
 
   readonly lessonTitle = computed(
     () => this.t().kit.tracks[this.trackSlug]?.lessons[this.lessonSlug]?.title ?? '',
+  );
+  readonly upNextTitle = computed(() =>
+    this.upNext ? (this.t().kit.tracks[this.trackSlug]?.lessons[this.upNext.slug]?.title ?? '') : '',
   );
   readonly syntaxOptions = computed(() =>
     (this.found?.lesson.syntaxes ?? []).map((s) => ({ value: s, label: syntaxNames[s].short })),
@@ -82,9 +96,22 @@ export class Presenter {
     const syntax = resolveSyntax(query.get('sintaxe'), prefs.syntax(), lesson.syntaxes);
     const mode = resolveMode(query.get('roteiro'), prefs.mode());
     const deck = await lesson.load();
-    this.state.init(deck, lesson, syntax, mode, 0);
+    this.state.init(deck, lesson, syntax, mode, 0, this.upNext);
+    this.state.onFollow = () => this.followNext();
     // Ao conectar, pede o estado à janela da turma (se ela estiver aberta)
     this.state.connect(`kit:${this.trackSlug}/${this.lessonSlug}`, true);
+  }
+
+  /** Segue junto com a turma: abre a janela do apresentador da próxima aula. */
+  private followNext() {
+    const upNext = this.upNext;
+    if (!upNext) return;
+    this.router.navigate([lessonPath(this.trackSlug, upNext.slug), 'apresentador'], {
+      queryParams: {
+        sintaxe: resolveSyntax(this.state.syntax(), prefs.syntax(), upNext.syntaxes),
+        roteiro: this.state.mode(),
+      },
+    });
   }
 
   onKey(event: KeyboardEvent) {

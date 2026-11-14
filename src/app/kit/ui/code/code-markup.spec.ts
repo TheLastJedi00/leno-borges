@@ -1,4 +1,4 @@
-import { parseCode, plainCode, sceneAt } from './code-markup';
+import { parseCode, parseExpr, plainCode, sceneAt } from './code-markup';
 
 describe('code-markup', () => {
   it('separa tokens com papel e texto puro', () => {
@@ -22,5 +22,16 @@ describe('code-markup', () => {
   it('cada etapa herda a anterior', () => {
     const state = sceneAt([{ caption: 'a', lines: 1 }, { lines: 2 }, { highlight: 'n' }], 2);
     expect(state).toEqual({ caption: 'a', lines: 2, highlight: 'n' });
+  });
+
+  it('separa o trecho em destaque da expressão', () => {
+    const parts = parseExpr('{v:2} + [[{v:3} * {v:4}]]');
+    expect(parts.map((p) => p.focus)).toEqual([false, true]);
+    expect(parts[1].tokens).toEqual([{ text: '3', role: 'v' }, { text: ' * ' }, { text: '4', role: 'v' }]);
+    expect(plainCode('{v:2} + [[{v:3} * {v:4}]]')).toBe('2 + 3 * 4');
+  });
+
+  it('expressão sem destaque é uma parte só', () => {
+    expect(parseExpr('{v:14}')).toEqual([{ tokens: [{ text: '14', role: 'v' }], focus: false }]);
   });
 });

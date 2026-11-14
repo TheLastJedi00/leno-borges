@@ -374,6 +374,12 @@ export const en: Dictionary = {
               'How a program stores, names and recognizes information, explained with chests, labels and items.',
             duration: '10 min to 4 h',
           },
+          'operadores-aritmeticos': {
+            title: 'Arithmetic Operators',
+            summary:
+              'How to do math with stored values: the five operators, the order of operations and assignment shortcuts.',
+            duration: '10 min to 3 h',
+          },
         },
       },
     },
@@ -392,6 +398,14 @@ export const en: Dictionary = {
       of: 'of',
       slideRole: 'slide',
       progress: 'Presentation progress',
+      end: {
+        badge: 'End of lesson',
+        question: 'Continue to the next lesson?',
+        nextLabel: 'Next lesson',
+        follow: 'Continue',
+        stay: 'Stay on this lesson',
+        hint: '→ or Enter to continue · Esc to stay',
+      },
     },
     presenter: {
       title: 'Presenter',

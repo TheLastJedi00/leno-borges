@@ -6,11 +6,12 @@ import { CardsView } from './cards-view';
 import { TableView } from './table-view';
 import { SortView } from './sort-view';
 import { PredictView } from './predict-view';
+import { ExprView } from './expr-view';
 
 /** Moldura comum de um slide (título, selo de aprofundamento) e escolha do layout pelo `kind`. */
 @Component({
   selector: 'kit-slide-view',
-  imports: [CoverView, SceneView, CardsView, TableView, SortView, PredictView],
+  imports: [CoverView, SceneView, CardsView, TableView, SortView, PredictView, ExprView],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'absolute inset-0 block' },
   template: `
@@ -43,6 +44,9 @@ import { PredictView } from './predict-view';
       }
       @case ('predict') {
         <kit-predict-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-predict-view>
+      }
+      @case ('expr') {
+        <kit-expr-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-expr-view>
       }
     }
   `,

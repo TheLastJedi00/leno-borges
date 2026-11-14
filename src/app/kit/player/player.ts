@@ -8,6 +8,8 @@ import {
   inject,
   signal,
   untracked,
+  viewChild,
+  type ElementRef,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { I18n } from '../../i18n/i18n';
@@ -15,7 +17,16 @@ import { Segmented } from '../ui/segmented/segmented';
 import { Stage } from '../ui/stage/stage';
 import { SlideView } from '../slides/slide-view';
 import { isMode, isSyntax, prefs, resolveMode, resolveSyntax } from '../kit-prefs';
-import { MODES, findLesson, lessonPath, syntaxNames, type TrackId, type LessonId } from '../kit.data';
+import {
+  MODES,
+  findLesson,
+  lessonPath,
+  nextLesson,
+  syntaxNames,
+  tracks,
+  type LessonId,
+  type TrackId,
+} from '../kit.data';
 import { PlayerState } from './player-state';
 import { handleDeckKey } from './deck-keys';
 
@@ -46,10 +57,22 @@ export class Player {
   readonly trackSlug = this.route.snapshot.paramMap.get('trilha') as TrackId;
   readonly lessonSlug = this.route.snapshot.paramMap.get('aula') as LessonId;
   private readonly found = findLesson(this.trackSlug, this.lessonSlug);
+  private readonly upNext = nextLesson(this.trackSlug, this.lessonSlug);
 
   readonly lessonTitle = computed(
     () => this.t().kit.tracks[this.trackSlug]?.lessons[this.lessonSlug]?.title ?? '',
   );
+
+  /** Título e número ("1.2") da próxima aula da trilha, mostrados no convite do fim. */
+  readonly upNextTitle = computed(() =>
+    this.upNext ? (this.t().kit.tracks[this.trackSlug]?.lessons[this.upNext.slug]?.title ?? '') : '',
+  );
+  readonly upNextNumber = computed(() => {
+    const track = this.found?.track;
+    if (!track || !this.upNext) return '';
+    return `${tracks.indexOf(track) + 1}.${track.lessons.indexOf(this.upNext) + 1}`;
+  });
+  private readonly followButton = viewChild<ElementRef<HTMLButtonElement>>('followButton');
 
   readonly syntaxOptions = computed(() =>
     (this.found?.lesson.syntaxes ?? []).map((s, i) => ({
@@ -95,6 +118,9 @@ export class Player {
       if (!this.state.deck()) return;
       untracked(() => this.syncUrl(slide, sintaxe, roteiro));
     });
+
+    // Convite aberto: foco em "Seguir", assim Enter, espaço ou o passador seguem direto
+    effect(() => this.followButton()?.nativeElement.focus());
   }
 
   private async load() {
@@ -105,7 +131,8 @@ export class Player {
     const mode = resolveMode(query.get('roteiro'), prefs.mode());
     const index = Number(this.route.snapshot.paramMap.get('slide')) - 1;
     const deck = await lesson.load();
-    this.state.init(deck, lesson, syntax, mode, index);
+    this.state.init(deck, lesson, syntax, mode, index, this.upNext);
+    this.state.onFollow = () => this.followNext();
     this.state.connect(`kit:${this.trackSlug}/${this.lessonSlug}`);
   }
 
@@ -121,6 +148,18 @@ export class Player {
     this.router.navigate([lessonPath(this.trackSlug, this.lessonSlug), slide], {
       queryParams: { sintaxe, roteiro },
       replaceUrl: true,
+    });
+  }
+
+  /** Abre a próxima aula no slide 1, com a mesma sintaxe (se ela existir lá) e o mesmo roteiro. */
+  private followNext() {
+    const upNext = this.upNext;
+    if (!upNext) return;
+    this.router.navigate([lessonPath(this.trackSlug, upNext.slug), 1], {
+      queryParams: {
+        sintaxe: resolveSyntax(this.state.syntax(), prefs.syntax(), upNext.syntaxes),
+        roteiro: this.state.mode(),
+      },
     });
   }
 
@@ -148,7 +187,7 @@ export class Player {
   /** Clique no palco avança (exceto em controles e exercícios). */
   onStageClick(event: MouseEvent) {
     const target = event.target as HTMLElement | null;
-    if (target?.closest('button, a, input, select, [data-kit-exercise]')) return;
+    if (target?.closest('button, a, input, select, [data-kit-exercise], [data-kit-end]')) return;
     this.state.next();
   }
 
