@@ -348,7 +348,7 @@ export interface CircuitSlide extends SlideBase {
 export interface BranchChoice {
   /** Valor como aparece no código (`8`, `"verde"`). */
   value: string;
-  /** Respostas dos losangos com esse valor (fluxograma). */
+  /** Respostas dos losangos com esse valor (fluxograma). A triagem acha o `case` sozinha. */
   answers?: boolean[];
   /** O que o programa imprime com esse valor; `""` quando nada aparece. */
   output: BySyntax;
@@ -368,6 +368,8 @@ export interface BranchSlide extends SlideBase {
   code: BySyntax<CodeMarkup>;
   /** Fluxograma sem as respostas (vêm do valor escolhido). */
   flow?: BySyntax<Omit<FlowState, 'answers'>>;
+  /** Triagem sem o valor (vem do valor escolhido). */
+  sorter?: BySyntax<Omit<SorterState, 'value' | 'dropped'>>;
   choices: BranchChoice[];
   /** Valor escolhido no começo (índice em `choices`). */
   start?: number;

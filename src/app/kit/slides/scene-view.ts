@@ -5,6 +5,7 @@ import { chestWidth } from '../ui/chest/chest';
 import { Scale } from '../ui/scale/scale';
 import { Circuit } from '../ui/circuit/circuit';
 import { Flow, flowLayout } from '../ui/flow/flow';
+import { Sorter, sorterLayout } from '../ui/switch/sorter';
 import { I18n } from '../../i18n/i18n';
 import { Code } from '../ui/code/code';
 import { codeWithValue, parseCode, sceneAt } from '../ui/code/code-markup';
@@ -36,7 +37,7 @@ const FIGURE_H = 410;
 const FIGURE_W_ALONE = 1100;
 
 /**
- * Escala do fluxograma: o maior que couber na área (ao lado do código ou sozinho), sem passar
+ * Escala do fluxograma (e da triagem do switch): o maior que couber na área (ao lado do código ou sozinho), sem passar
  * de 1,3. Calculada com o maior desenho do slide, para não mudar de tamanho entre etapas.
  */
 export function flowZoom(sizes: { width: number; height: number }[], withCode: boolean): number {
@@ -70,7 +71,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
 /** Slide de cena: baús animados por etapa, com código e saída opcionais ao lado. */
 @Component({
   selector: 'kit-scene-view',
-  imports: [ChestRow, Code, Scale, Circuit, Flow],
+  imports: [ChestRow, Code, Scale, Circuit, Flow, Sorter],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -104,6 +105,9 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
             }
             @if (flow(); as fl) {
               <kit-flow class="kit-fade" [style.zoom]="flowZoom()" [state]="fl"></kit-flow>
+            }
+            @if (sorter(); as so) {
+              <kit-switch class="kit-fade" [style.zoom]="sorterZoom()" [state]="so"></kit-switch>
             }
             @if (chests().length) {
               <kit-chest-row
@@ -171,8 +175,22 @@ export class SceneView {
       .map((f) => flowLayout(f));
     return flowZoom(sizes, !!this.code());
   });
+  readonly sorter = computed(() => pick(this.state().sorter ?? undefined, this.syntax()));
+  readonly sorterZoom = computed(() => {
+    const steps = this.slide().steps;
+    const sizes = steps
+      .map((_, i) => pick(sceneAt(steps, i).sorter ?? undefined, this.syntax()))
+      .filter((s) => !!s)
+      .map((s) => sorterLayout({ ...s, dropped: true, value: s.value }));
+    return flowZoom(sizes, !!this.code());
+  });
   readonly hasFigure = computed(
-    () => !!this.compare() || !!this.circuit() || !!this.flow() || this.chests().length > 0,
+    () =>
+      !!this.compare() ||
+      !!this.circuit() ||
+      !!this.flow() ||
+      !!this.sorter() ||
+      this.chests().length > 0,
   );
   private readonly t = inject(I18n).t;
   readonly lampText = computed(() => ({
