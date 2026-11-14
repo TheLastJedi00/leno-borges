@@ -46,9 +46,23 @@ export function parseExpr(markup: CodeMarkup): ExprPart[] {
   return parts;
 }
 
+/** Código com o valor no lugar de `@@` (cenas e exercício que trocam o valor de uma variável). */
+export function codeWithValue(markup: CodeMarkup, value: string | undefined): CodeMarkup {
+  return value === undefined ? markup : markup.replaceAll('@@', value);
+}
+
 /** Texto puro do trecho (sem marcação), útil para leitor de tela e testes. */
 export function plainCode(markup: CodeMarkup): string {
   return markup.replace(TOKEN, '$2').replace(FOCUS, '$1');
+}
+
+/**
+ * Estados que encerram cada execução da cena: a última etapa de cada valor (`value`) seguido.
+ * Sem `value`, é só a última etapa. Usado para conferir a saída de cada execução.
+ */
+export function finishedRuns(steps: SceneStep[]): SceneStep[] {
+  const states = steps.map((_, i) => sceneAt(steps, i));
+  return states.filter((s, i) => i === states.length - 1 || states[i + 1].value !== s.value);
 }
 
 /** Estado da etapa `step`: cada etapa herda a anterior e sobrescreve só o que declara. */

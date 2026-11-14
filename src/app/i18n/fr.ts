@@ -395,6 +395,12 @@ export const fr: Dictionary = {
               'Comment combiner et inverser des questions vraies ou fausses avec &&, || et !, expliqué avec des interrupteurs et une ampoule.',
             duration: '10 min à 3 h',
           },
+          condicionais: {
+            title: 'Structures conditionnelles',
+            summary:
+              'Comment un programme choisit le code à exécuter avec if, else et else if, expliqué avec un organigramme qui éclaire le chemin suivi.',
+            duration: '10 min à 3 h',
+          },
         },
       },
     },

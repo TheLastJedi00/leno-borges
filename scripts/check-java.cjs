@@ -38,7 +38,7 @@ execFileSync(process.execPath, [
   ...slugs.map((s) => path.join(decksDir, s, 'deck.pt.ts')),
 ], { stdio: 'inherit' });
 const { pick } = require(path.join(out, 'kit.data.js'));
-const { plainCode, sceneAt } = require(path.join(out, 'ui/code/code-markup.js'));
+const { codeWithValue, finishedRuns, plainCode } = require(path.join(out, 'ui/code/code-markup.js'));
 
 const clean = (s) => String(s).replace(/\r/g, '');
 
@@ -61,7 +61,7 @@ function runJava(code) {
     return { kind: 'compile', lines: errors };
   }
   try {
-    const stdout = execFileSync(java, ['-Dstdout.encoding=UTF-8', '-cp', dir, 'Main'], { stdio: 'pipe' });
+    const stdout = execFileSync(java, ['-Dfile.encoding=UTF-8', '-Dsun.stdout.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-cp', dir, 'Main'], { stdio: 'pipe' });
     return { kind: 'ok', lines: clean(stdout).trimEnd().split('\n').filter((l, i, a) => a.length > 1 || l) };
   } catch (e) {
     const exception = clean(e.stderr).split('\n').find((l) => l.startsWith('Exception'));
@@ -81,7 +81,7 @@ for (const slug of slugs) {
       // Exercício "escolha o valor": roda o código com cada valor.
       for (const choice of slide.choices) {
         const expected = pick(choice.output, 'java') ?? '';
-        const result = runJava(plainCode(markup).replaceAll('@@', choice.value));
+        const result = runJava(plainCode(codeWithValue(markup, choice.value)));
         checked++;
         if (result.kind !== 'ok' || result.lines.join('\n') !== expected) {
           problems++;
@@ -93,24 +93,28 @@ for (const slug of slugs) {
       continue;
     }
     const steps = slide.kind === 'predict' ? slide.trace : slide.kind === 'scene' ? slide.steps : [];
-    const last = sceneAt(steps, Math.max(0, steps.length - 1));
-    const expected = pick(last.output ?? undefined, 'java');
-    const result = runJava(plainCode(markup));
-    checked++;
-    let ok;
-    if (result.kind === 'compile') {
-      // Slides em etapas mostram o erro da linha visível: basta ser um dos erros do javac.
-      ok = expected !== undefined && result.lines.includes(expected.trim());
-    } else if (expected === undefined) {
-      ok = result.kind === 'ok' && result.lines.join('') === '';
-    } else {
-      ok = result.lines.join('\n') === expected;
-    }
-    if (!ok) {
-      problems++;
-      console.log(`\n✗ ${slug} / ${slide.id}`);
-      console.log(`  slide: ${JSON.stringify(expected)}`);
-      console.log(`  javac/java (${result.kind}): ${JSON.stringify(result.lines.join('\n'))}`);
+    // Uma execução por valor (`value`) da cena; sem valor, a última etapa.
+    const runs = steps.length ? finishedRuns(steps) : [{}];
+    for (const run of runs) {
+      const expected = pick(run.output ?? undefined, 'java');
+      const result = runJava(plainCode(codeWithValue(markup, run.value)));
+      checked++;
+      let ok;
+      if (result.kind === 'compile') {
+        // Slides em etapas mostram o erro da linha visível: basta ser um dos erros do javac.
+        ok = expected !== undefined && result.lines.includes(expected.trim());
+      } else if (expected === undefined) {
+        // Sem saída no slide: basta compilar e rodar sem erro.
+        ok = result.kind === 'ok';
+      } else {
+        ok = result.lines.join('\n') === expected;
+      }
+      if (!ok) {
+        problems++;
+        console.log(`\n✗ ${slug} / ${slide.id}${run.value === undefined ? '' : `, valor ${run.value}`}`);
+        console.log(`  slide: ${JSON.stringify(expected)}`);
+        console.log(`  javac/java (${result.kind}): ${JSON.stringify(result.lines.join('\n'))}`);
+      }
     }
   }
 }

@@ -1,7 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { I18n } from '../../i18n/i18n';
 import { type SortSlide, type Syntax, pick } from '../kit.data';
-import { Chest } from '../ui/chest/chest';
+import { Chest, chestWidth } from '../ui/chest/chest';
+
+/** Largura livre do palco para os baús (1280 - padding 128). */
+const ROW_W = 1152;
+
+/** Escala dos baús: 0,8, ou menos quando não cabem lado a lado com o padding e o vão. */
+export function binZoom(widths: number[]): number {
+  const fixed = 24 * widths.length + 16 * Math.max(0, widths.length - 1);
+  const total = widths.reduce((a, b) => a + b, 0);
+  return total ? Math.min(0.8, ((ROW_W - fixed) / total) * 0.97) : 0.8;
+}
 
 /**
  * Exercício "cada item no seu baú": arrastar e soltar, ou clicar no item e depois no baú
@@ -56,7 +66,7 @@ import { Chest } from '../ui/chest/chest';
               class="rounded-3xl p-3 transition-[background-color] hover:bg-accent/5"
             >
               <kit-chest
-                class="[zoom:0.8]"
+                [style.zoom]="binZoom()"
                 [state]="{
                   id: bin.id,
                   shape: bin.shape,
@@ -107,6 +117,8 @@ export class SortView {
   readonly t = inject(I18n).t;
 
   /** valor → baú onde foi guardado */
+  /** Baús em 0,8, menores quando não cabem lado a lado (botão com padding 24, vão 16). */
+  readonly binZoom = computed(() => binZoom(this.slide().bins.map((b) => chestWidth(b.shape))));
   readonly placed = signal<Record<string, string>>({});
   readonly selected = signal<string | null>(null);
   readonly wrongBin = signal<string | null>(null);

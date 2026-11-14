@@ -392,6 +392,12 @@ export const pt: Dictionary = {
               'Como juntar e inverter perguntas de verdadeiro ou falso com &&, || e !, explicado com interruptores e uma lâmpada.',
             duration: '10 min a 3 h',
           },
+          condicionais: {
+            title: 'Condicionais',
+            summary:
+              'Como o programa escolhe qual código roda com if, else e else if, explicado com um fluxograma que acende o caminho seguido.',
+            duration: '10 min a 3 h',
+          },
         },
       },
     },

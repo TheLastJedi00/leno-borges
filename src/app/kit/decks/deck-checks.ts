@@ -9,7 +9,13 @@ import {
   stepCount,
 } from '../kit.data';
 import { visibleSlides } from '../player/player-state';
-import { parseCode, parseExpr, plainCode, sceneAt } from '../ui/code/code-markup';
+import {
+  codeWithValue,
+  finishedRuns,
+  parseCode,
+  parseExpr,
+  plainCode,
+} from '../ui/code/code-markup';
 
 // Conferências comuns a todos os decks, usadas pelos testes de cada aula. Funções puras (sem
 // Jasmine) que devolvem a lista de problemas encontrados: o teste espera a lista vazia.
@@ -89,11 +95,15 @@ export function jsOutputProblems(deck: Deck): string[] {
   for (const slide of deck.slides) {
     if (slide.kind !== 'scene' || !slide.code) continue;
     if (slide.syntaxes && !slide.syntaxes.includes('js')) continue;
-    const last = sceneAt(slide.steps, slide.steps.length - 1);
-    const expected = pick(last.output ?? undefined, 'js');
-    if (expected === undefined || pick(last.outputTone, 'js') === 'error') continue;
-    const actual = runJs(plainCode(pick(slide.code, 'js') ?? ''));
-    if (actual !== expected) problems.push(`${slide.id}: imprime ${JSON.stringify(actual)}, o slide mostra ${JSON.stringify(expected)}`);
+    for (const run of finishedRuns(slide.steps)) {
+      const expected = pick(run.output ?? undefined, 'js');
+      if (expected === undefined || pick(run.outputTone, 'js') === 'error') continue;
+      const actual = runJs(plainCode(codeWithValue(pick(slide.code, 'js') ?? '', run.value)));
+      if (actual !== expected) {
+        const at = run.value === undefined ? '' : ` com ${run.value}`;
+        problems.push(`${slide.id}${at}: imprime ${JSON.stringify(actual)}, o slide mostra ${JSON.stringify(expected)}`);
+      }
+    }
   }
   return problems;
 }
@@ -146,7 +156,7 @@ export function branchProblems(deck: Deck): string[] {
     const flow = pick(slide.flow, 'js');
     for (const choice of slide.choices) {
       const expected = pick(choice.output, 'js') ?? '';
-      const actual = runJs(code.replaceAll('@@', choice.value));
+      const actual = runJs(codeWithValue(code, choice.value));
       if (actual !== expected) {
         problems.push(`${slide.id}, valor ${choice.value}: imprime ${JSON.stringify(actual)}, o slide mostra ${JSON.stringify(expected)}`);
       }

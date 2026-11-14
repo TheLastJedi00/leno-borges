@@ -7,7 +7,7 @@ import { Circuit } from '../ui/circuit/circuit';
 import { Flow, flowLayout } from '../ui/flow/flow';
 import { I18n } from '../../i18n/i18n';
 import { Code } from '../ui/code/code';
-import { sceneAt } from '../ui/code/code-markup';
+import { codeWithValue, parseCode, sceneAt } from '../ui/code/code-markup';
 
 /** Destacar um papel no código acende a parte correspondente do baú. */
 const FOCUS_BY_ROLE: Partial<Record<string, ChestState['focus']>> = {
@@ -21,6 +21,16 @@ const ROW_SPACE = 1280 - 128 - 600 - 48;
 const CHEST_GAP = 48;
 /** Abaixo disso, os baús ficam pequenos demais numa linha só: melhor quebrar em duas. */
 const MIN_ONE_ROW_ZOOM = 0.65;
+/**
+ * Tamanho da fonte do código: menor quando o trecho é comprido, para o código e a saída caberem
+ * na altura livre do palco (~476px com uma linha de legenda). Até 6 linhas sozinho e até 7 ao
+ * lado de uma ilustração, fica como sempre foi (30 e 26).
+ */
+export function codeFontSize(lines: number, withFigure: boolean): number {
+  if (withFigure) return lines <= 7 ? 26 : lines <= 8 ? 24 : 22;
+  return lines <= 6 ? 30 : lines <= 7 ? 26 : lines <= 8 ? 24 : 22;
+}
+
 /** Área da ilustração no palco: altura livre abaixo do título e da legenda, largura sem código. */
 const FIGURE_H = 410;
 const FIGURE_W_ALONE = 1100;
@@ -114,7 +124,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
               [highlight]="highlight()"
               [activeLine]="activeLine()"
               [skipped]="skipped()"
-              [fontSize]="hasFigure() ? 26 : 30"
+              [fontSize]="fontSize()"
             ></kit-code>
             @if (output(); as out) {
               @for (o of [out]; track o) {
@@ -173,7 +183,13 @@ export class SceneView {
   readonly skipped = computed(() => pick(this.state().skip ?? undefined, this.syntax()) ?? []);
   readonly outputTone = computed(() => pick(this.state().outputTone, this.syntax()));
   readonly highlight = computed(() => pick(this.state().highlight, this.syntax()));
-  readonly code = computed(() => pick(this.slide().code, this.syntax()));
+  readonly code = computed(() => {
+    const markup = pick(this.slide().code, this.syntax());
+    return markup === undefined ? undefined : codeWithValue(markup, this.state().value);
+  });
+  readonly fontSize = computed(() =>
+    codeFontSize(parseCode(this.code() ?? '').length, this.hasFigure()),
+  );
   readonly caption = computed(() => pick(this.state().caption, this.syntax()));
   readonly output = computed(() => pick(this.state().output ?? undefined, this.syntax()));
 }
