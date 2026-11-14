@@ -232,6 +232,18 @@ export interface ExprSlide extends SlideBase {
   steps: ExprStep[];
 }
 
+/** Tabela-verdade: uma linha a mais por etapa (a primeira etapa já mostra a primeira linha). */
+export interface TruthSlide extends SlideBase {
+  kind: 'truth';
+  lead?: BySyntax;
+  /** Cabeçalho de cada coluna, com a marcação de código (`{n:a} && {n:b}`). */
+  head: BySyntax<string[]>;
+  rows: boolean[][];
+  /** Colunas de resultado (índices), destacadas; as demais são as entradas. */
+  results: number[];
+  footnote?: BySyntax;
+}
+
 export type Slide =
   | CoverSlide
   | SceneSlide
@@ -239,7 +251,8 @@ export type Slide =
   | TableSlide
   | SortSlide
   | PredictSlide
-  | ExprSlide;
+  | ExprSlide
+  | TruthSlide;
 
 export interface Deck {
   slides: Slide[];
@@ -257,6 +270,8 @@ export function stepCount(slide: Slide): number {
       return Math.max(1, slide.steps.length);
     case 'cards':
       return Math.max(1, slide.cards.length);
+    case 'truth':
+      return Math.max(1, slide.rows.length);
     case 'predict':
       return 1 + slide.trace.length;
   }
