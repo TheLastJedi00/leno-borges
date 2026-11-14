@@ -1,4 +1,7 @@
-import { chestZoom, flowZoom } from './scene-view';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import type { SceneSlide } from '../kit.data';
+import { SceneView, chestZoom, flowZoom } from './scene-view';
 
 describe('chestZoom', () => {
   it('um baú não muda de tamanho', () => {
@@ -31,5 +34,36 @@ describe('flowZoom', () => {
 
   it('usa o maior desenho do slide', () => {
     expect(flowZoom([{ width: 300, height: 200 }, { width: 600, height: 200 }], true)).toBe(504 / 600);
+  });
+});
+
+describe('SceneView com gaveteiro', () => {
+  const slide: SceneSlide = {
+    id: 'l',
+    kind: 'scene',
+    depth: 'core',
+    title: 't',
+    notes: ['n'],
+    code: '{k:let} {n:frutas} = [{v:"maçã"}];\n{n:frutas}.{f:push}({v:"uva"});',
+    steps: [
+      { list: { name: 'frutas', items: [{ id: 'm', value: '"maçã"' }] } },
+      { list: { name: 'frutas', items: [{ id: 'm', value: '"maçã"' }, { id: 'u', value: '"uva"' }], focus: 1 } },
+      { list: null },
+    ],
+  };
+  beforeEach(() => TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] }));
+  const render = (step: number) => {
+    const fixture = TestBed.createComponent(SceneView);
+    fixture.componentRef.setInput('slide', slide);
+    fixture.componentRef.setInput('syntax', 'js');
+    fixture.componentRef.setInput('step', step);
+    fixture.detectChanges();
+    return fixture.nativeElement as HTMLElement;
+  };
+
+  it('mostra o gaveteiro de cada etapa e o tira com null', () => {
+    expect(render(1).querySelectorAll('kit-list .drawer').length).toBe(2);
+    expect(render(1).querySelector('kit-list .is-focus .index')!.textContent).toBe('1');
+    expect(render(2).querySelector('kit-list')).toBeNull();
   });
 });
