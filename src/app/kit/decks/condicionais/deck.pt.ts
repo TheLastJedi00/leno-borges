@@ -184,6 +184,35 @@ export const deck: Deck = {
       ],
     },
 
+    // 6 · A
+    {
+      id: 'exercicio-saldo',
+      kind: 'predict',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'O que aparece?',
+      question: 'O saldo é 50 e o preço é 80. O que o programa mostra?',
+      code: code.predictBalance,
+      options: ['50', '-30', '80', 'Nada aparece'],
+      answer: 0,
+      explanation: '50 >= 80 é false: o bloco é pulado e o saldo continua 50. A última linha está fora do if e roda sempre.',
+      trace: [
+        { activeLine: 1, chests: [int('saldo', '50', { focus: 'item' })] },
+        { activeLine: 2, chests: [int('saldo', '50'), int('preco', '80', { focus: 'item' })] },
+        { activeLine: 3, chests: [int('saldo', '50'), int('preco', '80')] },
+        {
+          activeLine: 6,
+          skip: [4],
+          chests: [int('saldo', '50', { focus: 'item' }), int('preco', '80')],
+        },
+      ],
+      notes: [
+        '30 segundos para cada pessoa decidir sozinha, depois votação',
+        'Quem marcou -30 fez a conta sem olhar a pergunta do if',
+        'Quem marcou "Nada aparece" achou que o console.log estava dentro do if: olhar as chaves',
+      ],
+    },
+
     // 7 · E
     {
       id: 'else-if',
@@ -254,6 +283,63 @@ export const deck: Deck = {
       ],
     },
 
+    // 9 · A
+    {
+      id: 'exercicio-conceito',
+      kind: 'sort',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'Qual conceito?',
+      lead: 'Com as perguntas na ordem certa (9, 7, 5), em qual escaninho cai cada nota?',
+      bins: [
+        { id: 'a', shape: 'text', label: 'A' },
+        { id: 'b', shape: 'text', label: 'B' },
+        { id: 'c', shape: 'text', label: 'C' },
+        { id: 'reprovado', shape: 'text', label: 'Reprovado' },
+      ],
+      items: [
+        { value: '9.5', bin: 'a' },
+        { value: '7', bin: 'b' },
+        { value: '6.9', bin: 'c' },
+        { value: '5', bin: 'c' },
+        { value: '4.9', bin: 'reprovado' },
+        { value: '10', bin: 'a' },
+        { value: '0', bin: 'reprovado' },
+        { value: '8', bin: 'b' },
+      ],
+      notes: [
+        'Para cada nota, fazer as perguntas em voz alta, de cima para baixo',
+        'Bordas: 7 dá B (7 >= 7 é true) e 6.9 dá C',
+        '4.9 não passa em nenhuma pergunta: vai para o else',
+      ],
+    },
+
+    // 10 · A
+    {
+      id: 'exercicio-valor',
+      kind: 'branch',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'Escolha a nota',
+      lead: 'Troque a nota e veja o caminho acender.',
+      variable: 'nota',
+      code: code.grades,
+      flow: GRADES,
+      start: 1,
+      choices: [
+        { value: '9.5', answers: [true], output: 'A' },
+        { value: '8', answers: [false, true], output: 'B' },
+        { value: '6', answers: [false, false, true], output: 'C' },
+        { value: '3', answers: [false, false, false], output: 'Reprovado' },
+      ],
+      goals: ['A', 'Reprovado', 'C'],
+      notes: [
+        'Chamar alguém da turma para escolher a nota',
+        'Antes de clicar, pedir para a pessoa dizer quais perguntas o programa vai fazer',
+        'Desafio 2: com 3, as três perguntas dão false e o else roda',
+      ],
+    },
+
     // 11 · E
     {
       id: 'blocos',
@@ -270,6 +356,195 @@ export const deck: Deck = {
         'Combinar com a turma: dois espaços (ou um Tab) por nível, sempre',
         'O editor indenta sozinho (Format Document): usar e confiar',
         'Curiosidade: em Python a indentação é obrigatória e faz o papel das chaves',
+      ],
+    },
+
+    // 12 · A
+    {
+      id: 'sem-chaves',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: 'if sem chaves',
+      code: code.noBraces,
+      steps: [
+        {
+          caption: 'Sem chaves, só a primeira linha depois do if pertence a ele.',
+          activeLine: 2,
+        },
+        {
+          caption: 'saldo > 0 é false: pula o "Pode sacar"… mas o "Saque feito" roda sempre, mesmo indentado.',
+          activeLine: 4,
+          skip: [3],
+          output: 'Saque feito',
+        },
+      ],
+      notes: [
+        'As três linguagens aceitam if sem chaves, e a indentação engana quem lê',
+        'Caso real: em 2014, um erro chamado "goto fail" deixou o iPhone e o Mac aceitarem conexões seguras falsas',
+        'O motivo foi uma linha repetida logo depois de um if sem chaves: a cópia rodava sempre',
+        'Regra da turma: sempre com chaves, mesmo com uma linha só',
+      ],
+    },
+
+    // 13 · A
+    {
+      id: 'atribuir-no-if',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: '= dentro do if',
+      code: code.assignInIf,
+      steps: [
+        {
+          caption: {
+            js: 'Um = só guarda 5 em x. E 5 conta como verdadeiro: entra sempre.',
+            ts: 'Um = só guarda 5 em x. E 5 conta como verdadeiro: entra sempre, sem aviso.',
+            java: 'Um = só guarda 5 em x, e um int não é uma resposta de true ou false.',
+          },
+          activeLine: 2,
+        },
+        {
+          caption: {
+            js: 'Entrou, e x agora vale 5. Para comparar: x === 5.',
+            ts: 'Entrou, e x agora vale 5. Para comparar: x === 5.',
+            java: 'O Java recusa antes de rodar. Para comparar: x == 5.',
+          },
+          activeLine: { js: 5, ts: 5, java: 2 },
+          output: { js: 'Entrou\n5', ts: 'Entrou\n5', java: JAVA_NOT_BOOLEAN },
+          outputTone: { js: 'ok', ts: 'ok', java: 'error' },
+        },
+      ],
+      notes: [
+        'Retomar a aula 3: = guarda, == e === comparam',
+        'JS e TS: qualquer número diferente de 0 conta como verdadeiro (aula 4)',
+        'Java só aceita boolean no if, então esse erro não passa',
+        'Com boolean o Java também cai: if (pago = true) guarda true e entra sempre',
+      ],
+    },
+
+    // 14 · A (só JS/TS)
+    {
+      id: 'verdadeiro-por-conversao',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      syntaxes: ['js', 'ts'],
+      title: 'Verdadeiro por conversão',
+      code: only.truthy,
+      steps: [
+        {
+          caption: 'Em JS e TS, a condição pode ser qualquer valor.',
+          activeLine: 2,
+          flow: { conditions: ['nome'], outcomes: ['"Olá, " + nome', '"Digite seu nome"'], answers: [] },
+        },
+        {
+          caption: 'Texto vazio conta como falso: cai no else.',
+          activeLine: 5,
+          skip: [3],
+          flow: {
+            conditions: ['nome'],
+            outcomes: ['"Olá, " + nome', '"Digite seu nome"'],
+            answers: [false],
+          },
+          output: 'Digite seu nome',
+        },
+      ],
+      notes: [
+        'Contam como falso: false, 0, "", null, undefined e NaN (aula 4); todo o resto conta como verdadeiro',
+        'if (nome) é um jeito curto de perguntar "tem alguma coisa escrita?"',
+        'Cuidado com números: if (qtd) não entra com 0, mesmo que 0 seja uma quantidade válida',
+      ],
+    },
+
+    // 15 · A (só Java)
+    {
+      id: 'java-so-boolean',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      syntaxes: ['java'],
+      title: 'O if do Java só aceita boolean',
+      code: only.javaBoolean,
+      steps: [
+        {
+          caption: 'Em Java, a condição precisa ser true ou false. Um número não serve.',
+          activeLine: 2,
+          output: JAVA_NOT_BOOLEAN,
+          outputTone: 'error',
+        },
+        {
+          caption: 'Compare para ter um boolean: if (x != 0). Para texto: if (!nome.isEmpty()).',
+        },
+      ],
+      notes: [
+        'Em JS e TS, if (x) e if (nome) funcionam por conversão; em Java não compilam',
+        'É mais trabalho, mas a pergunta fica escrita: x != 0 diz exatamente o que se quer',
+        'O mesmo vale para &&, || e ! (aula 4): só com boolean',
+      ],
+    },
+
+    // 16 · A
+    {
+      id: 'aninhado',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'if dentro de if',
+      code: code.nested,
+      steps: [
+        {
+          caption: 'idade 20: passa na primeira pergunta e entra no bloco…',
+          activeLine: 3,
+        },
+        {
+          caption: '…e lá dentro vem a segunda. Sem ingresso, cai no else de dentro.',
+          activeLine: 7,
+          skip: [5],
+          output: 'Compre o ingresso',
+        },
+      ],
+      notes: [
+        'Se as duas perguntas levam à mesma mensagem, um && resolve: if (idade >= 18 && ingresso)',
+        'O aninhado vale quando cada falta tem uma resposta diferente',
+        'Cada nível de if ganha mais um nível de indentação',
+        'Mais de dois níveis fica difícil de ler: hora de repensar as perguntas',
+      ],
+    },
+
+    // 17 · A
+    {
+      id: 'ternario',
+      kind: 'expr',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      title: 'Operador ternário',
+      description:
+        'A conta 20 >= 18 ? "adulto" : "menor" resolve a comparação, dá true e escolhe "adulto".',
+      steps: [
+        {
+          expr: '{v:20} >= {v:18} ? {v:"adulto"} : {v:"menor"}',
+          caption: 'Um if / else que devolve um valor. Idade 20:',
+        },
+        {
+          expr: '[[{v:20} >= {v:18}]] ? {v:"adulto"} : {v:"menor"}',
+          replace: true,
+          caption: 'A pergunta vem antes do ?…',
+        },
+        {
+          expr: '[[{v:true} ? {v:"adulto"} : {v:"menor"}]]',
+          caption: '…true escolhe o valor depois do ?, false o valor depois do :.',
+        },
+        {
+          expr: '{v:"adulto"}',
+          result: true,
+          caption: 'O resultado cabe num baú: status = idade >= 18 ? "adulto" : "menor".',
+        },
+      ],
+      notes: [
+        'Igual nas três linguagens: condição ? valorSeTrue : valorSeFalse',
+        'Bom para escolher entre dois valores; para rodar várias linhas, if / else',
+        'Ternário dentro de ternário fica ilegível: evitar',
       ],
     },
 
