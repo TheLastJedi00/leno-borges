@@ -389,6 +389,12 @@ export const fr: Dictionary = {
               'Comment comparer des valeurs et obtenir une réponse vraie ou fausse, expliqué avec une balance.',
             duration: '10 min à 3 h',
           },
+          'operadores-logicos': {
+            title: 'Opérateurs logiques',
+            summary:
+              'Comment combiner et inverser des questions vraies ou fausses avec &&, || et !, expliqué avec des interrupteurs et une ampoule.',
+            duration: '10 min à 3 h',
+          },
         },
       },
     },

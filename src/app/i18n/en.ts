@@ -386,6 +386,12 @@ export const en: Dictionary = {
               'How to compare values and get a true or false answer, explained with a balance scale.',
             duration: '10 min to 3 h',
           },
+          'operadores-logicos': {
+            title: 'Logical Operators',
+            summary:
+              'How to combine and invert true or false questions with &&, || and !, explained with switches and a lamp.',
+            duration: '10 min to 3 h',
+          },
         },
       },
     },
