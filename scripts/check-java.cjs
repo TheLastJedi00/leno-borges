@@ -61,7 +61,7 @@ function runJava(code) {
     return { kind: 'compile', lines: errors };
   }
   try {
-    const stdout = execFileSync(java, ['-Dstdout.encoding=UTF-8', '-cp', dir, 'Main'], { stdio: 'pipe' });
+    const stdout = execFileSync(java, ['-Dfile.encoding=UTF-8', '-Dsun.stdout.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-cp', dir, 'Main'], { stdio: 'pipe' });
     return { kind: 'ok', lines: clean(stdout).trimEnd().split('\n').filter((l, i, a) => a.length > 1 || l) };
   } catch (e) {
     const exception = clean(e.stderr).split('\n').find((l) => l.startsWith('Exception'));
