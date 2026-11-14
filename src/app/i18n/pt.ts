@@ -380,6 +380,18 @@ export const pt: Dictionary = {
               'Como fazer contas com os valores guardados: os cinco operadores, a ordem das operações e os atalhos de atribuição.',
             duration: '10 min a 3 h',
           },
+          'operadores-relacionais': {
+            title: 'Operadores Relacionais',
+            summary:
+              'Como comparar valores e receber uma resposta de verdadeiro ou falso, explicado com uma balança.',
+            duration: '10 min a 3 h',
+          },
+          'operadores-logicos': {
+            title: 'Operadores Lógicos',
+            summary:
+              'Como juntar e inverter perguntas de verdadeiro ou falso com &&, || e !, explicado com interruptores e uma lâmpada.',
+            duration: '10 min a 3 h',
+          },
         },
       },
     },
@@ -431,6 +443,15 @@ export const pt: Dictionary = {
       choose: 'Escolha uma resposta',
       reveal: 'Ver a execução',
       answer: 'Resposta',
+      lampOn: 'lâmpada acesa',
+      lampOff: 'lâmpada apagada',
+      circuitHint: 'Clique nos interruptores, ou use Tab e Enter.',
+      challenge: 'Desafio',
+      goalOn: 'Objetivo: acender a lâmpada.',
+      goalOff: 'Objetivo: apagar a lâmpada.',
+      solved: 'Conseguiu!',
+      nextChallenge: 'Próximo desafio',
+      allDone: 'Todos os desafios resolvidos!',
     },
   },
 };

@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { type ChestState, type SceneSlide, type SceneStep, type Syntax, pick } from '../kit.data';
 import { ChestRow } from '../ui/chest/chest-row';
 import { chestWidth } from '../ui/chest/chest';
+import { Scale } from '../ui/scale/scale';
+import { Circuit } from '../ui/circuit/circuit';
+import { I18n } from '../../i18n/i18n';
 import { Code } from '../ui/code/code';
 import { sceneAt } from '../ui/code/code-markup';
 
@@ -42,7 +45,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
 /** Slide de cena: baús animados por etapa, com código e saída opcionais ao lado. */
 @Component({
   selector: 'kit-scene-view',
-  imports: [ChestRow, Code],
+  imports: [ChestRow, Code, Scale, Circuit],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -59,25 +62,40 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
 
       <div
         class="mt-6 flex min-h-0 flex-1 items-center gap-12"
-        [class.justify-center]="!code() || !chests().length"
+        [class.justify-center]="!code() || !hasFigure()"
       >
-        @if (chests().length) {
-          <kit-chest-row
-            class="flex-1"
-            [style.zoom]="zoom()"
-            [chests]="chests()"
-            [syntax]="syntax()"
-          ></kit-chest-row>
+        @if (hasFigure()) {
+          <div class="flex min-w-0 flex-1 flex-col items-center justify-center gap-6">
+            @if (compare(); as cmp) {
+              <kit-scale class="kit-fade" [style.zoom]="code() ? 1 : 1.4" [compare]="cmp"></kit-scale>
+            }
+            @if (circuit(); as circ) {
+              <kit-circuit
+                class="kit-fade"
+                [style.zoom]="code() ? 0.84 : 1.3"
+                [state]="circ"
+                [lampText]="lampText()"
+              ></kit-circuit>
+            }
+            @if (chests().length) {
+              <kit-chest-row
+                class="self-stretch"
+                [style.zoom]="compare() ? 0.6 : zoom()"
+                [chests]="chests()"
+                [syntax]="syntax()"
+              ></kit-chest-row>
+            }
+          </div>
         }
         @if (code(); as markup) {
-          <div class="grid shrink-0 gap-4" [style.width.px]="chests().length ? 600 : 860">
+          <div class="grid shrink-0 gap-4" [style.width.px]="hasFigure() ? 600 : 860">
             <kit-code
               [markup]="markup"
               [syntax]="syntax()"
               [visible]="st.lines"
               [highlight]="highlight()"
               [activeLine]="activeLine()"
-              [fontSize]="chests().length ? 26 : 30"
+              [fontSize]="hasFigure() ? 26 : 30"
             ></kit-code>
             @if (output(); as out) {
               @for (o of [out]; track o) {
@@ -112,6 +130,17 @@ export class SceneView {
       ),
     );
   });
+  readonly compare = computed(() => pick(this.state().compare ?? undefined, this.syntax()));
+  /** Há ilustração (balança ou baús) à esquerda do código. */
+  readonly circuit = computed(() => this.state().circuit ?? undefined);
+  readonly hasFigure = computed(
+    () => !!this.compare() || !!this.circuit() || this.chests().length > 0,
+  );
+  private readonly t = inject(I18n).t;
+  readonly lampText = computed(() => ({
+    on: this.t().kit.exercise.lampOn,
+    off: this.t().kit.exercise.lampOff,
+  }));
   readonly activeLine = computed(() => pick(this.state().activeLine, this.syntax()));
   readonly outputTone = computed(() => pick(this.state().outputTone, this.syntax()));
   readonly highlight = computed(() => pick(this.state().highlight, this.syntax()));

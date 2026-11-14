@@ -380,6 +380,18 @@ export const en: Dictionary = {
               'How to do math with stored values: the five operators, the order of operations and assignment shortcuts.',
             duration: '10 min to 3 h',
           },
+          'operadores-relacionais': {
+            title: 'Relational Operators',
+            summary:
+              'How to compare values and get a true or false answer, explained with a balance scale.',
+            duration: '10 min to 3 h',
+          },
+          'operadores-logicos': {
+            title: 'Logical Operators',
+            summary:
+              'How to combine and invert true or false questions with &&, || and !, explained with switches and a lamp.',
+            duration: '10 min to 3 h',
+          },
         },
       },
     },
@@ -431,6 +443,15 @@ export const en: Dictionary = {
       choose: 'Pick an answer',
       reveal: 'Show the execution',
       answer: 'Answer',
+      lampOn: 'lamp on',
+      lampOff: 'lamp off',
+      circuitHint: 'Click the switches, or use Tab and Enter.',
+      challenge: 'Challenge',
+      goalOn: 'Goal: turn the lamp on.',
+      goalOff: 'Goal: turn the lamp off.',
+      solved: 'You did it!',
+      nextChallenge: 'Next challenge',
+      allDone: 'All challenges solved!',
     },
   },
 };

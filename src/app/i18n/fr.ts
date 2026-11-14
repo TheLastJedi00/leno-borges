@@ -383,6 +383,18 @@ export const fr: Dictionary = {
               'Comment calculer avec les valeurs conservées : les cinq opérateurs, l’ordre des opérations et les raccourcis d’affectation.',
             duration: '10 min à 3 h',
           },
+          'operadores-relacionais': {
+            title: 'Opérateurs relationnels',
+            summary:
+              'Comment comparer des valeurs et obtenir une réponse vraie ou fausse, expliqué avec une balance.',
+            duration: '10 min à 3 h',
+          },
+          'operadores-logicos': {
+            title: 'Opérateurs logiques',
+            summary:
+              'Comment combiner et inverser des questions vraies ou fausses avec &&, || et !, expliqué avec des interrupteurs et une ampoule.',
+            duration: '10 min à 3 h',
+          },
         },
       },
     },
@@ -434,6 +446,15 @@ export const fr: Dictionary = {
       choose: 'Choisissez une réponse',
       reveal: 'Voir l’exécution',
       answer: 'Réponse',
+      lampOn: 'ampoule allumée',
+      lampOff: 'ampoule éteinte',
+      circuitHint: 'Cliquez sur les interrupteurs, ou utilisez Tab et Entrée.',
+      challenge: 'Défi',
+      goalOn: 'Objectif : allumer l’ampoule.',
+      goalOff: 'Objectif : éteindre l’ampoule.',
+      solved: 'Réussi !',
+      nextChallenge: 'Défi suivant',
+      allDone: 'Tous les défis sont réussis !',
     },
   },
 };

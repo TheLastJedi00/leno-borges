@@ -1,0 +1,149 @@
+.circuit {
+  --wire: var(--color-line);
+  overflow: visible;
+}
+
+/* Lâmpada acesa: a corrente passa e o fio ganha a cor do tema */
+.circuit.is-on {
+  --wire: var(--color-accent);
+}
+
+.wire,
+.lever {
+  fill: none;
+  stroke: var(--wire);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.4s ease;
+}
+
+.lever {
+  stroke: var(--color-paper);
+  transform-box: view-box;
+  transition: transform 0.45s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.terminal {
+  fill: var(--color-surface);
+  stroke: var(--color-paper);
+  stroke-width: 3;
+}
+
+.battery {
+  fill: var(--color-raised);
+  stroke: var(--color-accent);
+  stroke-width: 3;
+}
+
+.battery-mark {
+  font: 700 20px var(--font-mono);
+  fill: var(--color-accent-soft);
+}
+
+.inverter {
+  fill: var(--color-raised);
+  stroke: var(--color-kit-keyword);
+  stroke-width: 3;
+}
+
+.inverter-mark {
+  font: 700 36px var(--font-mono);
+  fill: var(--color-kit-keyword);
+}
+
+.label {
+  font: 700 22px var(--font-mono);
+  fill: var(--color-kit-name);
+}
+
+.value {
+  font: 600 20px var(--font-mono);
+}
+
+.yes {
+  fill: var(--color-kit-value);
+}
+
+.no {
+  fill: var(--color-kit-error);
+}
+
+.expr {
+  font: 600 24px var(--font-mono);
+  fill: var(--color-paper);
+}
+
+.arrow {
+  fill: var(--color-faint);
+}
+
+.hit {
+  fill: transparent;
+}
+
+.switch.is-interactive {
+  cursor: pointer;
+  outline: none;
+}
+
+.switch.is-interactive:hover .hit,
+.switch.is-interactive:focus-visible .hit {
+  fill: color-mix(in oklab, var(--color-accent) 12%, transparent);
+  stroke: var(--color-accent);
+  stroke-width: 2;
+}
+
+.bulb {
+  fill: var(--color-ink);
+  stroke: var(--color-faint);
+  stroke-width: 4;
+  transition:
+    fill 0.4s ease,
+    stroke 0.4s ease;
+}
+
+.filament {
+  fill: none;
+  stroke: var(--color-faint);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.glow {
+  fill: var(--color-kit-name);
+  opacity: 0;
+  filter: blur(14px);
+  transition: opacity 0.5s ease;
+}
+
+.is-on .bulb {
+  fill: var(--color-kit-name);
+  stroke: var(--color-kit-name);
+}
+
+.is-on .filament {
+  stroke: var(--color-ink);
+}
+
+.is-on .glow {
+  opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wire,
+  .lever,
+  .bulb,
+  .glow {
+    transition: none;
+  }
+}
+
+/* O atalho `font:` acima religa as ligaduras; o kit mostra os operadores como se digita */
+.expr,
+.label,
+.value,
+.inverter-mark,
+.battery-mark {
+  font-variant-ligatures: none;
+}

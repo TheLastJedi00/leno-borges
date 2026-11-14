@@ -1,0 +1,182 @@
+/* Balança no palco 1280×720: travessão que inclina para o lado mais pesado, pratos sempre em pé */
+.scale {
+  --edge: color-mix(in oklab, var(--color-accent) 55%, transparent);
+  --tilt: 0deg;
+  position: relative;
+  width: 480px;
+  height: 360px;
+}
+
+.beam {
+  position: absolute;
+  top: 170px;
+  left: 60px;
+  right: 60px;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #4a4a52, #34343a);
+  border: 2px solid var(--edge);
+  transform: rotate(var(--tilt));
+  transition: transform 0.9s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+/* Cada prato fica numa ponta e gira ao contrário do travessão, para não tombar */
+.pan {
+  position: absolute;
+  bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transform: translateX(-50%) rotate(calc(var(--tilt) * -1));
+  transform-origin: 50% 100%;
+  transition: transform 0.9s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.pan-left {
+  left: 0;
+}
+
+.pan-right {
+  left: 100%;
+}
+
+.plate {
+  width: 150px;
+  height: 14px;
+  border-radius: 0 0 40px 40px;
+  background: linear-gradient(180deg, #44444b, #2e2e33);
+  border: 2px solid var(--edge);
+  box-shadow: var(--shadow-raised);
+}
+
+.item {
+  padding: 8px 18px;
+  border-radius: 14px;
+  white-space: nowrap;
+  font: 600 32px var(--font-mono);
+  color: var(--color-kit-value);
+  background: color-mix(in oklab, var(--color-kit-value) 14%, var(--color-ink));
+  border: 2px solid color-mix(in oklab, var(--color-kit-value) 55%, transparent);
+}
+
+.label {
+  padding: 4px 14px;
+  border-radius: 10px;
+  rotate: -4deg;
+  white-space: nowrap;
+  font: 700 22px var(--font-mono);
+  color: var(--color-ink);
+  background: var(--color-kit-name);
+  box-shadow: 4px 6px 14px rgb(0 0 0 / 0.45);
+}
+
+.pivot {
+  position: absolute;
+  z-index: 2;
+  top: 144px;
+  left: calc(50% - 34px);
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 3px solid var(--color-accent);
+  box-shadow: var(--shadow-raised);
+}
+
+.op {
+  font: 700 30px var(--font-mono);
+  color: var(--color-kit-keyword);
+}
+
+.post {
+  position: absolute;
+  top: 200px;
+  left: calc(50% - 7px);
+  width: 14px;
+  height: 66px;
+  background: linear-gradient(90deg, #3a3a40, #2c2c31);
+  border-left: 2px solid var(--edge);
+  border-right: 2px solid var(--edge);
+}
+
+.foot {
+  position: absolute;
+  top: 264px;
+  left: calc(50% - 80px);
+  width: 160px;
+  height: 18px;
+  border-radius: 12px 12px 6px 6px;
+  background: linear-gradient(180deg, #404047, #2c2c31);
+  border: 2px solid var(--edge);
+}
+
+.verdict-slot {
+  position: absolute;
+  top: 298px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.verdict {
+  padding: 6px 22px;
+  border-radius: 14px;
+  font: 700 34px var(--font-mono);
+}
+
+.verdict.is-true {
+  color: var(--color-kit-value);
+  background: color-mix(in oklab, var(--color-kit-value) 14%, var(--color-ink));
+  border: 2px solid color-mix(in oklab, var(--color-kit-value) 60%, transparent);
+}
+
+.verdict.is-false {
+  color: var(--color-kit-error);
+  background: color-mix(in oklab, var(--color-kit-error) 12%, var(--color-ink));
+  border: 2px solid color-mix(in oklab, var(--color-kit-error) 60%, transparent);
+}
+
+.kit-item-drop {
+  animation: drop 0.7s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+}
+
+.kit-pop {
+  animation: pop 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-120px);
+  }
+}
+
+@keyframes pop {
+  from {
+    scale: 0;
+  }
+}
+
+/* Sem movimento: a balança só troca de estado */
+@media (prefers-reduced-motion: reduce) {
+  .beam,
+  .pan {
+    transition: none;
+  }
+  .kit-item-drop,
+  .kit-pop {
+    animation: none;
+  }
+}
+
+/* O atalho `font:` acima religa as ligaduras; o kit mostra os operadores como se digita */
+.item,
+.label,
+.op,
+.verdict {
+  font-variant-ligatures: none;
+}
