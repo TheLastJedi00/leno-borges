@@ -244,6 +244,23 @@ export interface TruthSlide extends SlideBase {
   footnote?: BySyntax;
 }
 
+/** Um desafio do exercício de circuito: ligar e desligar os interruptores até cumprir o objetivo. */
+export interface CircuitChallenge {
+  mode: CircuitMode;
+  labels?: string[];
+  /** Interruptores no começo do desafio. */
+  start: boolean[];
+  /** true: acender a lâmpada; false: apagar. */
+  goal: boolean;
+}
+
+/** Exercício interativo de circuito: vários desafios no mesmo slide. */
+export interface CircuitSlide extends SlideBase {
+  kind: 'circuit';
+  lead: string;
+  challenges: CircuitChallenge[];
+}
+
 export type Slide =
   | CoverSlide
   | SceneSlide
@@ -252,7 +269,8 @@ export type Slide =
   | SortSlide
   | PredictSlide
   | ExprSlide
-  | TruthSlide;
+  | TruthSlide
+  | CircuitSlide;
 
 export interface Deck {
   slides: Slide[];
@@ -264,6 +282,7 @@ export function stepCount(slide: Slide): number {
     case 'cover':
     case 'table':
     case 'sort':
+    case 'circuit':
       return 1;
     case 'scene':
     case 'expr':

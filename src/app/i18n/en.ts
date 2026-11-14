@@ -439,6 +439,13 @@ export const en: Dictionary = {
       answer: 'Answer',
       lampOn: 'lamp on',
       lampOff: 'lamp off',
+      circuitHint: 'Click the switches, or use Tab and Enter.',
+      challenge: 'Challenge',
+      goalOn: 'Goal: turn the lamp on.',
+      goalOff: 'Goal: turn the lamp off.',
+      solved: 'You did it!',
+      nextChallenge: 'Next challenge',
+      allDone: 'All challenges solved!',
     },
   },
 };

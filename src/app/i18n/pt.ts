@@ -439,6 +439,13 @@ export const pt: Dictionary = {
       answer: 'Resposta',
       lampOn: 'lâmpada acesa',
       lampOff: 'lâmpada apagada',
+      circuitHint: 'Clique nos interruptores, ou use Tab e Enter.',
+      challenge: 'Desafio',
+      goalOn: 'Objetivo: acender a lâmpada.',
+      goalOff: 'Objetivo: apagar a lâmpada.',
+      solved: 'Conseguiu!',
+      nextChallenge: 'Próximo desafio',
+      allDone: 'Todos os desafios resolvidos!',
     },
   },
 };

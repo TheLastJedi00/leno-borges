@@ -442,6 +442,13 @@ export const fr: Dictionary = {
       answer: 'Réponse',
       lampOn: 'ampoule allumée',
       lampOff: 'ampoule éteinte',
+      circuitHint: 'Cliquez sur les interrupteurs, ou utilisez Tab et Entrée.',
+      challenge: 'Défi',
+      goalOn: 'Objectif : allumer l’ampoule.',
+      goalOff: 'Objectif : éteindre l’ampoule.',
+      solved: 'Réussi !',
+      nextChallenge: 'Défi suivant',
+      allDone: 'Tous les défis sont réussis !',
     },
   },
 };
