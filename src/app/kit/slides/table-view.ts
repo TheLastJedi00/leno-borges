@@ -20,7 +20,9 @@ import { ROLE_CLASS } from '../ui/code/code';
             <thead>
               <tr class="border-b border-line">
                 @for (h of s.head; track $index) {
-                  <th class="px-8 py-5 font-mono text-[18px] font-medium uppercase tracking-wider text-faint">
+                  <th
+                    [style.padding-block.px]="dense() ? 12 : 20"
+                    class="px-8 font-mono text-[18px] font-medium uppercase tracking-wider text-faint">
                     {{ h }}
                   </th>
                 }
@@ -31,7 +33,9 @@ import { ROLE_CLASS } from '../ui/code/code';
                 <tr class="border-b border-line/50 last:border-0">
                   @for (cell of row; track $index; let c = $index) {
                     <td
-                      class="px-8 py-[18px] text-[26px]"
+                      class="px-8"
+                      [style.padding-block.px]="dense() ? 7 : 18"
+                      [style.font-size.px]="dense() ? 24 : 26"
                       [class]="c === 0 ? 'font-display font-medium text-paper' : 'font-mono text-muted'"
                     >
                       @for (tok of cell; track $index) {
@@ -45,7 +49,7 @@ import { ROLE_CLASS } from '../ui/code/code';
           </table>
         }
         @if (footnote(); as note) {
-          <p class="mt-6 text-[22px] text-muted">{{ note }}</p>
+          <p class="text-[22px] text-muted" [style.margin-top.px]="dense() ? 16 : 24">{{ note }}</p>
         }
       </div>
     </div>
@@ -61,5 +65,7 @@ export class TableView {
       row.map((cell) => parseCode(cell)[0]),
     ),
   );
+  /** Mais de 6 linhas: linhas mais baixas para a tabela caber no palco. */
+  readonly dense = computed(() => this.rows().length > 6);
   readonly footnote = computed(() => pick(this.slide().footnote, this.syntax()));
 }
