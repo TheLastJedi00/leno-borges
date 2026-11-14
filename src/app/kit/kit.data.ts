@@ -217,6 +217,17 @@ export function findLesson(
   return track && lesson ? { track, lesson } : undefined;
 }
 
+/** Aula seguinte na mesma trilha (convite "seguir para a próxima aula" no fim da apresentação). */
+export function nextLesson(
+  trackSlug: string | null | undefined,
+  lessonSlug: string | null | undefined,
+  list: Track[] = tracks,
+): Lesson | undefined {
+  const lessons = list.find((t) => t.slug === trackSlug)?.lessons ?? [];
+  const index = lessons.findIndex((l) => l.slug === lessonSlug);
+  return index >= 0 ? lessons[index + 1] : undefined;
+}
+
 export function lessonPath(track: TrackId, lesson: LessonId): string {
   return `/kit/${track}/${lesson}`;
 }
