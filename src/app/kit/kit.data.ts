@@ -20,7 +20,8 @@ export type TrackId = 'logica-de-programacao';
 export type LessonId =
   | 'variaveis-e-tipos'
   | 'operadores-aritmeticos'
-  | 'operadores-relacionais';
+  | 'operadores-relacionais'
+  | 'operadores-logicos';
 
 export interface Lesson {
   slug: LessonId;
@@ -320,6 +321,12 @@ export const tracks: Track[] = [
         syntaxes: ['js', 'ts', 'java'],
         counts: { essencial: 10, completo: 18 },
         load: () => import('./decks/operadores-relacionais/deck.pt').then((m) => m.deck),
+      },
+      {
+        slug: 'operadores-logicos',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 17 },
+        load: () => import('./decks/operadores-logicos/deck.pt').then((m) => m.deck),
       },
     ],
   },

@@ -386,6 +386,12 @@ export const pt: Dictionary = {
               'Como comparar valores e receber uma resposta de verdadeiro ou falso, explicado com uma balança.',
             duration: '10 min a 3 h',
           },
+          'operadores-logicos': {
+            title: 'Operadores Lógicos',
+            summary:
+              'Como juntar e inverter perguntas de verdadeiro ou falso com &&, || e !, explicado com interruptores e uma lâmpada.',
+            duration: '10 min a 3 h',
+          },
         },
       },
     },
