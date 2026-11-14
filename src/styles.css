@@ -111,6 +111,11 @@
     box-shadow: 0 0 0 4px color-mix(in oklab, currentColor 16%, transparent);
   }
 
+  /* Linha que não roda nesta etapa (o if pulou): some quase toda, mas continua legível */
+  .kit-line-skip {
+    opacity: 0.22 !important;
+  }
+
   .kit-line-active {
     background-color: color-mix(in oklab, var(--color-accent) 14%, transparent);
     box-shadow: inset 4px 0 0 var(--color-accent);

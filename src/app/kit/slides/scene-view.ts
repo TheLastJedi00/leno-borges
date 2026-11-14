@@ -4,6 +4,7 @@ import { ChestRow } from '../ui/chest/chest-row';
 import { chestWidth } from '../ui/chest/chest';
 import { Scale } from '../ui/scale/scale';
 import { Circuit } from '../ui/circuit/circuit';
+import { Flow, flowLayout } from '../ui/flow/flow';
 import { I18n } from '../../i18n/i18n';
 import { Code } from '../ui/code/code';
 import { sceneAt } from '../ui/code/code-markup';
@@ -20,6 +21,20 @@ const ROW_SPACE = 1280 - 128 - 600 - 48;
 const CHEST_GAP = 48;
 /** Abaixo disso, os baús ficam pequenos demais numa linha só: melhor quebrar em duas. */
 const MIN_ONE_ROW_ZOOM = 0.65;
+/** Área da ilustração no palco: altura livre abaixo do título e da legenda, largura sem código. */
+const FIGURE_H = 410;
+const FIGURE_W_ALONE = 1100;
+
+/**
+ * Escala do fluxograma: o maior que couber na área (ao lado do código ou sozinho), sem passar
+ * de 1,3. Calculada com o maior desenho do slide, para não mudar de tamanho entre etapas.
+ */
+export function flowZoom(sizes: { width: number; height: number }[], withCode: boolean): number {
+  if (!sizes.length) return 1;
+  const width = Math.max(...sizes.map((s) => s.width));
+  const height = Math.max(...sizes.map((s) => s.height));
+  return Math.min(1.3, (withCode ? ROW_SPACE : FIGURE_W_ALONE) / width, FIGURE_H / height);
+}
 
 /**
  * Escala dos baús ao lado do código: cabem numa linha ou, se ficarem pequenos demais, em duas.
@@ -45,7 +60,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
 /** Slide de cena: baús animados por etapa, com código e saída opcionais ao lado. */
 @Component({
   selector: 'kit-scene-view',
-  imports: [ChestRow, Code, Scale, Circuit],
+  imports: [ChestRow, Code, Scale, Circuit, Flow],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -77,6 +92,9 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
                 [lampText]="lampText()"
               ></kit-circuit>
             }
+            @if (flow(); as fl) {
+              <kit-flow class="kit-fade" [style.zoom]="flowZoom()" [state]="fl"></kit-flow>
+            }
             @if (chests().length) {
               <kit-chest-row
                 class="self-stretch"
@@ -95,6 +113,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
               [visible]="st.lines"
               [highlight]="highlight()"
               [activeLine]="activeLine()"
+              [skipped]="skipped()"
               [fontSize]="hasFigure() ? 26 : 30"
             ></kit-code>
             @if (output(); as out) {
@@ -131,10 +150,19 @@ export class SceneView {
     );
   });
   readonly compare = computed(() => pick(this.state().compare ?? undefined, this.syntax()));
-  /** Há ilustração (balança ou baús) à esquerda do código. */
+  /** Circuito da aula 4. */
   readonly circuit = computed(() => this.state().circuit ?? undefined);
+  readonly flow = computed(() => pick(this.state().flow ?? undefined, this.syntax()));
+  readonly flowZoom = computed(() => {
+    const steps = this.slide().steps;
+    const sizes = steps
+      .map((_, i) => pick(sceneAt(steps, i).flow ?? undefined, this.syntax()))
+      .filter((f) => !!f)
+      .map((f) => flowLayout(f));
+    return flowZoom(sizes, !!this.code());
+  });
   readonly hasFigure = computed(
-    () => !!this.compare() || !!this.circuit() || this.chests().length > 0,
+    () => !!this.compare() || !!this.circuit() || !!this.flow() || this.chests().length > 0,
   );
   private readonly t = inject(I18n).t;
   readonly lampText = computed(() => ({
@@ -142,6 +170,7 @@ export class SceneView {
     off: this.t().kit.exercise.lampOff,
   }));
   readonly activeLine = computed(() => pick(this.state().activeLine, this.syntax()));
+  readonly skipped = computed(() => pick(this.state().skip ?? undefined, this.syntax()) ?? []);
   readonly outputTone = computed(() => pick(this.state().outputTone, this.syntax()));
   readonly highlight = computed(() => pick(this.state().highlight, this.syntax()));
   readonly code = computed(() => pick(this.slide().code, this.syntax()));
