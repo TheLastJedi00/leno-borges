@@ -10,6 +10,11 @@ const SHAPES: Record<ChestShape, { width: number; glyph: string }> = {
   any: { width: 280, glyph: '*' },
 };
 
+/** Largura do baú no palco, usada para encaixar fileiras de baús ao lado do código. */
+export function chestWidth(shape: ChestShape | undefined): number {
+  return SHAPES[shape ?? 'any'].width;
+}
+
 /**
  * Baú da metáfora: o baú é a variável, a etiqueta é o nome, o item é o valor e o formato é o tipo.
  * Cada parte entra com a própria animação (o item cai, a etiqueta é colada, a tampa abre).
