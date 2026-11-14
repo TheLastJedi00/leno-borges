@@ -17,7 +17,7 @@ export type Mode = 'essencial' | 'completo';
 export const MODES: readonly Mode[] = ['essencial', 'completo'];
 
 export type TrackId = 'logica-de-programacao';
-export type LessonId = 'variaveis-e-tipos';
+export type LessonId = 'variaveis-e-tipos' | 'operadores-aritmeticos';
 
 export interface Lesson {
   slug: LessonId;
@@ -222,6 +222,12 @@ export const tracks: Track[] = [
         syntaxes: ['js', 'ts', 'java'],
         counts: { essencial: 10, completo: 25 },
         load: () => import('./decks/variaveis-e-tipos/deck.pt').then((m) => m.deck),
+      },
+      {
+        slug: 'operadores-aritmeticos',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 23 },
+        load: () => import('./decks/operadores-aritmeticos/deck.pt').then((m) => m.deck),
       },
     ],
   },

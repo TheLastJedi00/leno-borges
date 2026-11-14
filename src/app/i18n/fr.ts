@@ -377,6 +377,12 @@ export const fr: Dictionary = {
               'Comment un programme conserve, nomme et reconnaît l’information, expliqué avec des coffres, des étiquettes et des objets.',
             duration: '10 min à 4 h',
           },
+          'operadores-aritmeticos': {
+            title: 'Opérateurs arithmétiques',
+            summary:
+              'Comment calculer avec les valeurs conservées : les cinq opérateurs, l’ordre des opérations et les raccourcis d’affectation.',
+            duration: '10 min à 3 h',
+          },
         },
       },
     },
