@@ -596,8 +596,8 @@ export const deck: Deck = {
       title: 'Resumo',
       columns: 4,
       cards: [
-        { title: 'if', value: '{k:if} (…) { }', text: 'Roda o bloco só se a resposta for true.' },
-        { title: 'else', value: '{k:else} { }', text: 'O caminho do false. Sempre um dos dois.' },
+        { title: 'if', value: '{k:if} (…)', text: 'Roda o bloco só se a resposta for true.' },
+        { title: 'else', value: '{k:else}', text: 'O caminho do false. Sempre um dos dois.' },
         { title: 'else if', value: '{k:else} {k:if}', text: 'Perguntas em fila: para no primeiro true.' },
         { title: 'Ordem', value: '{v:9}, {v:7}, {v:5}', text: 'Da condição mais exigente para a menos.' },
       ],

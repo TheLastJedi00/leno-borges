@@ -91,7 +91,7 @@ export function flowLayout(state: FlowState): FlowLayout {
     boxes.push({ text: state.outcomes[i] ?? '', x: boxX, y: cy - BOX_H / 2, w: boxW, taken: isTaken, dim: decided && !isTaken });
     const nextY = ENTRY + (i + 1) * PITCH;
     arrows.push({
-      points: [[cx, y + H], [cx, i === n - 1 && !hasElse ? nextY - (PITCH - H) / 2 - END_R + 4 : nextY]],
+      points: [[cx, y + H], [cx, nextY]],
       label: 'false',
       labelAt: [cx + 14, y + H + (PITCH - H) / 2 + 8],
       lit: answer === false,
@@ -105,7 +105,7 @@ export function flowLayout(state: FlowState): FlowLayout {
     boxes.push({ text: elseText, x: cx - elseW / 2, y: bottom, w: elseW, taken: taken === n, dim: decided && taken !== n });
     height = bottom + BOX_H + 4;
   } else {
-    const ey = bottom - (PITCH - H) / 2 + 4;
+    const ey = bottom + END_R + 3;
     end = { x: cx, y: ey, lit: taken === 'none' };
     height = ey + END_R + 4;
   }

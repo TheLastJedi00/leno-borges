@@ -146,7 +146,6 @@ export interface Dictionary {
       nextChallenge: string;
       allDone: string;
       /** Exercício "escolha o valor" (aulas de condicionais). */
-      branchHint: string;
       /** Antes da saída pedida: "Objetivo: fazer aparecer" `B`. */
       goalOutput: string;
       goalNothing: string;
