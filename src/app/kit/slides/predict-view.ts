@@ -35,6 +35,7 @@ const CHEST_GAP = 48;
           [markup]="code()"
           [syntax]="syntax()"
           [activeLine]="activeLine()"
+          [skipped]="skipped()"
           [fontSize]="26"
         ></kit-code>
 
@@ -116,6 +117,7 @@ export class PredictView {
     this.step() > 0 ? sceneAt(this.slide().trace, this.step() - 1) : null,
   );
   readonly activeLine = computed(() => pick(this.trace()?.activeLine, this.syntax()));
+  readonly skipped = computed(() => pick(this.trace()?.skip ?? undefined, this.syntax()) ?? []);
   readonly finished = computed(() => this.step() >= this.slide().trace.length);
 
   choose(i: number) {

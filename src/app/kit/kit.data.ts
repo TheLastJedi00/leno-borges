@@ -21,7 +21,8 @@ export type LessonId =
   | 'variaveis-e-tipos'
   | 'operadores-aritmeticos'
   | 'operadores-relacionais'
-  | 'operadores-logicos';
+  | 'operadores-logicos'
+  | 'condicionais';
 
 export interface Lesson {
   slug: LessonId;
@@ -163,6 +164,8 @@ export interface SceneStep {
   activeLine?: BySyntax<number | null>;
   /** Linhas (base 1) que não rodam nesta etapa: ficam apagadas, mostrando o caminho da execução. */
   skip?: BySyntax<number[]> | null;
+  /** Valor que entra no lugar de `@@` no código do slide nesta etapa (a mesma cena com outro valor). */
+  value?: string;
   output?: BySyntax | null;
   outputTone?: BySyntax<'ok' | 'error'>;
   /** Balança da comparação; `null` tira a balança da cena. */
@@ -392,6 +395,12 @@ export const tracks: Track[] = [
         syntaxes: ['js', 'ts', 'java'],
         counts: { essencial: 10, completo: 17 },
         load: () => import('./decks/operadores-logicos/deck.pt').then((m) => m.deck),
+      },
+      {
+        slug: 'condicionais',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 18 },
+        load: () => import('./decks/condicionais/deck.pt').then((m) => m.deck),
       },
     ],
   },

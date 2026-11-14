@@ -1,7 +1,8 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { type BranchSlide, stepCount } from '../kit.data';
-import { BranchView, codeWithValue } from './branch-view';
+import { codeWithValue } from '../ui/code/code-markup';
+import { BranchView } from './branch-view';
 
 const slide: BranchSlide = {
   id: 'b',

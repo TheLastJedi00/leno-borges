@@ -7,7 +7,7 @@ const ENTRY = 40;
 /** Losango: altura, pontas laterais e espaço do texto. */
 const H = 76;
 const TIP = 34;
-const PITCH = H + 60;
+const PITCH = H + 48;
 const GAP_X = 104;
 const BOX_H = 60;
 const END_R = 12;

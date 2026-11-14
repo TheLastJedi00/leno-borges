@@ -2,16 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { I18n } from '../../i18n/i18n';
 import { type BranchSlide, type FlowState, type Syntax, pick } from '../kit.data';
 import { Code } from '../ui/code/code';
+import { codeWithValue } from '../ui/code/code-markup';
 import { Flow, flowLayout } from '../ui/flow/flow';
 
 /** Espaço da ilustração na coluna da direita do exercício. */
 const FIG_W = 540;
 const FIG_H = 250;
-
-/** Código do exercício com o valor escolhido no lugar de `@@`. */
-export function codeWithValue(markup: string, value: string): string {
-  return markup.replaceAll('@@', value);
-}
 
 /**
  * Exercício "escolha o valor": a turma troca o valor da variável (botões, Tab e Enter) e vê o
