@@ -170,6 +170,8 @@ export interface ExprStep {
   caption?: BySyntax;
   /** Começa uma conta nova (as linhas anteriores saem). */
   reset?: boolean;
+  /** Substitui a linha anterior em vez de acrescentar (ex.: destacar o trecho antes de calcular). */
+  replace?: boolean;
   /** Linha com o resultado final da conta. */
   result?: boolean;
 }
