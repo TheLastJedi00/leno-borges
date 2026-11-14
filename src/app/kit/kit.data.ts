@@ -91,6 +91,37 @@ export interface Compare {
   result?: boolean;
 }
 
+/** Ligação dos interruptores: em série (&&), em paralelo (||) ou com inversor (!). */
+export type CircuitMode = 'and' | 'or' | 'not';
+
+/** Circuito da aula de operadores lógicos: a lâmpada é calculada dos interruptores. */
+export interface CircuitState {
+  mode: CircuitMode;
+  /** Interruptores ligados (true) ou desligados; `not` usa só o primeiro. */
+  switches: boolean[];
+  /** Etiqueta de cada interruptor (nome da condição). */
+  labels?: string[];
+}
+
+/** A lâmpada acende? É o resultado da expressão lógica do circuito. */
+export function lampOn(mode: CircuitMode, switches: readonly boolean[]): boolean {
+  const [a = false, b = false] = switches;
+  switch (mode) {
+    case 'and':
+      return a && b;
+    case 'or':
+      return a || b;
+    case 'not':
+      return !a;
+  }
+}
+
+/** Expressão do circuito com as etiquetas: `a && b`, `a || b`, `!a`. */
+export function circuitExpression(mode: CircuitMode, labels: readonly string[] = ['a', 'b']): string {
+  const [a = 'a', b = 'b'] = labels;
+  return mode === 'and' ? `${a} && ${b}` : mode === 'or' ? `${a} || ${b}` : `!${a}`;
+}
+
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
@@ -105,6 +136,8 @@ export interface SceneStep {
   outputTone?: BySyntax<'ok' | 'error'>;
   /** Balança da comparação; `null` tira a balança da cena. */
   compare?: BySyntax<Compare> | null;
+  /** Circuito de interruptores e lâmpada; `null` tira o circuito da cena. */
+  circuit?: CircuitState | null;
 }
 
 interface SlideBase {
@@ -199,6 +232,35 @@ export interface ExprSlide extends SlideBase {
   steps: ExprStep[];
 }
 
+/** Tabela-verdade: uma linha a mais por etapa (a primeira etapa já mostra a primeira linha). */
+export interface TruthSlide extends SlideBase {
+  kind: 'truth';
+  lead?: BySyntax;
+  /** Cabeçalho de cada coluna, com a marcação de código (`{n:a} && {n:b}`). */
+  head: BySyntax<string[]>;
+  rows: boolean[][];
+  /** Colunas de resultado (índices), destacadas; as demais são as entradas. */
+  results: number[];
+  footnote?: BySyntax;
+}
+
+/** Um desafio do exercício de circuito: ligar e desligar os interruptores até cumprir o objetivo. */
+export interface CircuitChallenge {
+  mode: CircuitMode;
+  labels?: string[];
+  /** Interruptores no começo do desafio. */
+  start: boolean[];
+  /** true: acender a lâmpada; false: apagar. */
+  goal: boolean;
+}
+
+/** Exercício interativo de circuito: vários desafios no mesmo slide. */
+export interface CircuitSlide extends SlideBase {
+  kind: 'circuit';
+  lead: string;
+  challenges: CircuitChallenge[];
+}
+
 export type Slide =
   | CoverSlide
   | SceneSlide
@@ -206,7 +268,9 @@ export type Slide =
   | TableSlide
   | SortSlide
   | PredictSlide
-  | ExprSlide;
+  | ExprSlide
+  | TruthSlide
+  | CircuitSlide;
 
 export interface Deck {
   slides: Slide[];
@@ -218,12 +282,15 @@ export function stepCount(slide: Slide): number {
     case 'cover':
     case 'table':
     case 'sort':
+    case 'circuit':
       return 1;
     case 'scene':
     case 'expr':
       return Math.max(1, slide.steps.length);
     case 'cards':
       return Math.max(1, slide.cards.length);
+    case 'truth':
+      return Math.max(1, slide.rows.length);
     case 'predict':
       return 1 + slide.trace.length;
   }

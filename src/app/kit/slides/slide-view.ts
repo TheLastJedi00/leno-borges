@@ -7,11 +7,23 @@ import { TableView } from './table-view';
 import { SortView } from './sort-view';
 import { PredictView } from './predict-view';
 import { ExprView } from './expr-view';
+import { TruthView } from './truth-view';
+import { CircuitView } from './circuit-view';
 
 /** Moldura comum de um slide (título, selo de aprofundamento) e escolha do layout pelo `kind`. */
 @Component({
   selector: 'kit-slide-view',
-  imports: [CoverView, SceneView, CardsView, TableView, SortView, PredictView, ExprView],
+  imports: [
+    CoverView,
+    SceneView,
+    CardsView,
+    TableView,
+    SortView,
+    PredictView,
+    ExprView,
+    TruthView,
+    CircuitView,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'absolute inset-0 block' },
   template: `
@@ -47,6 +59,12 @@ import { ExprView } from './expr-view';
       }
       @case ('expr') {
         <kit-expr-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-expr-view>
+      }
+      @case ('truth') {
+        <kit-truth-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-truth-view>
+      }
+      @case ('circuit') {
+        <kit-circuit-view [slide]="s" [syntax]="syntax()"></kit-circuit-view>
       }
     }
   `,

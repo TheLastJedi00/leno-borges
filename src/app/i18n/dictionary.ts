@@ -134,6 +134,17 @@ export interface Dictionary {
       choose: string;
       reveal: string;
       answer: string;
+      /** Estado da lâmpada do circuito, para leitor de tela. */
+      lampOn: string;
+      lampOff: string;
+      /** Exercício de circuito. */
+      circuitHint: string;
+      challenge: string;
+      goalOn: string;
+      goalOff: string;
+      solved: string;
+      nextChallenge: string;
+      allDone: string;
     };
   };
 }
