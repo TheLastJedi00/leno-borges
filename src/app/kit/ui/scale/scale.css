@@ -172,3 +172,11 @@
     animation: none;
   }
 }
+
+/* O atalho `font:` acima religa as ligaduras; o kit mostra os operadores como se digita */
+.item,
+.label,
+.op,
+.verdict {
+  font-variant-ligatures: none;
+}

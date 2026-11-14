@@ -30,18 +30,18 @@ const LAYOUTS: Record<CircuitMode, Layout> = {
   },
   or: {
     wires: [
-      'M50 203 V160 H130',
-      'M130 160 V95 H250',
-      'M310 95 H450 V160',
-      'M130 160 V225 H250',
-      'M310 225 H450 V160',
-      'M450 160 H530 V290 H50 V267',
+      'M50 203 V172 H130',
+      'M130 172 V112 H250',
+      'M310 112 H450 V172',
+      'M130 172 V236 H250',
+      'M310 236 H450 V172',
+      'M450 172 H530 V300 H50 V267',
     ],
     switches: [
-      { index: 0, cx: 280, cy: 95 },
-      { index: 1, cx: 280, cy: 225 },
+      { index: 0, cx: 280, cy: 112 },
+      { index: 1, cx: 280, cy: 236 },
     ],
-    lamp: { x: 530, y: 225 },
+    lamp: { x: 530, y: 236 },
   },
   not: {
     wires: ['M50 203 V120 H170', 'M230 120 H330', 'M410 120 H530 V290 H50 V267'],
@@ -80,8 +80,10 @@ function filamentPath(x: number, y: number): string {
       [attr.aria-label]="description()"
     >
       <text class="expr" x="300" y="34" text-anchor="middle">
-        {{ expression() }} <tspan class="arrow">→</tspan>
-        <tspan [attr.class]="on() ? 'yes' : 'no'">{{ on() }}</tspan>
+        <!-- dx no lugar de espaços: o Angular remove o espaço entre os tspan -->
+        <tspan>{{ expression() }}</tspan>
+        <tspan class="arrow" dx="14">→</tspan>
+        <tspan [attr.class]="on() ? 'yes' : 'no'" dx="14">{{ on() }}</tspan>
       </text>
 
       @for (d of l.wires; track $index) {

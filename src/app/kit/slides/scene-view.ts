@@ -67,12 +67,12 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
         @if (hasFigure()) {
           <div class="flex min-w-0 flex-1 flex-col items-center justify-center gap-6">
             @if (compare(); as cmp) {
-              <kit-scale class="kit-fade" [compare]="cmp"></kit-scale>
+              <kit-scale class="kit-fade" [style.zoom]="code() ? 1 : 1.4" [compare]="cmp"></kit-scale>
             }
             @if (circuit(); as circ) {
               <kit-circuit
                 class="kit-fade"
-                [style.zoom]="code() ? 0.84 : 1.15"
+                [style.zoom]="code() ? 0.84 : 1.3"
                 [state]="circ"
                 [lampText]="lampText()"
               ></kit-circuit>
