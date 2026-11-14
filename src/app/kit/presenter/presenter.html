@@ -56,7 +56,7 @@
           <button
             type="button"
             (click)="state.next()"
-            [disabled]="state.isLast()"
+            [disabled]="!state.canAdvance()"
             class="rounded-full bg-accent-deep px-5 py-2.5 text-sm font-semibold text-white shadow-raised transition-[filter,box-shadow,opacity] hover:brightness-110 active:shadow-inset disabled:opacity-40"
           >
             {{ p.next }} <span aria-hidden="true">›</span>
@@ -95,6 +95,40 @@
                 [syntax]="state.syntax()"
               ></kit-slide-view>
             </kit-stage>
+          } @else if (upNextTitle()) {
+            <!-- Último slide: a próxima aula da trilha, com o convite quando ele estiver aberto -->
+            <div
+              class="grid aspect-video place-items-center rounded-2xl bg-surface p-6 text-center shadow-inset"
+              [class.ring-2]="state.asking()"
+              [class.ring-accent]="state.asking()"
+            >
+              <div>
+                <p class="font-mono text-xs uppercase tracking-wider text-faint">
+                  {{ state.asking() ? p.end.question : p.end.nextLabel }}
+                </p>
+                <p class="mt-2 font-display text-2xl font-semibold text-paper">{{ upNextTitle() }}</p>
+                @if (state.asking()) {
+                  <div class="mt-5 flex flex-wrap justify-center gap-2">
+                    <button
+                      type="button"
+                      (click)="state.dismiss()"
+                      class="rounded-full bg-raised px-4 py-2 text-sm font-semibold text-muted shadow-raised hover:text-paper active:shadow-inset"
+                    >
+                      {{ p.end.stay }}
+                    </button>
+                    <button
+                      type="button"
+                      (click)="state.follow()"
+                      class="rounded-full bg-accent-deep px-5 py-2 text-sm font-semibold text-white shadow-raised hover:brightness-110 active:shadow-inset"
+                    >
+                      {{ p.end.follow }} <span aria-hidden="true">→</span>
+                    </button>
+                  </div>
+                } @else {
+                  <p class="mt-3 text-xs text-faint">{{ pr.end }}</p>
+                }
+              </div>
+            </div>
           } @else {
             <div
               class="grid aspect-video place-items-center rounded-2xl bg-surface font-display text-xl text-faint shadow-inset"

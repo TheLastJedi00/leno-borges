@@ -44,6 +44,66 @@
       <p class="font-mono text-sm text-faint">{{ p.loading }}</p>
     }
     <p class="sr-only" aria-live="polite" aria-atomic="true">{{ slideLabel() }}</p>
+
+    <!-- Fim da aula: convite para seguir direto à próxima aula da trilha -->
+    @if (state.asking() && upNextTitle()) {
+      <div
+        class="absolute inset-0 z-10 grid place-items-center bg-ink/75 p-4 backdrop-blur-sm"
+        animate.enter="kit-fade"
+        data-kit-end
+        (click)="state.dismiss()"
+      >
+        <section
+          role="alertdialog"
+          aria-labelledby="kit-end-question"
+          aria-describedby="kit-end-next"
+          class="kit-rise w-full max-w-xl rounded-3xl bg-surface p-7 text-center shadow-raised-lg sm:p-10"
+          (click)="$event.stopPropagation()"
+        >
+          <p
+            class="inline-flex items-center gap-2 rounded-full bg-ink/50 px-3.5 py-1.5 font-mono text-xs text-accent-soft shadow-inset"
+          >
+            <span aria-hidden="true" class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+            {{ p.end.badge }}
+          </p>
+          <h2
+            id="kit-end-question"
+            class="mt-6 font-display text-3xl font-semibold tracking-tight text-paper sm:text-4xl"
+          >
+            {{ p.end.question }}
+          </h2>
+          <div id="kit-end-next" class="mx-auto mt-6 max-w-md rounded-2xl bg-ink/40 px-5 py-4 shadow-inset">
+            <p class="font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
+              {{ p.end.nextLabel }} · {{ upNextNumber() }}
+            </p>
+            <p class="mt-1 font-display text-xl font-medium text-paper sm:text-2xl">{{ upNextTitle() }}</p>
+          </div>
+          <div class="mt-8 flex flex-col-reverse justify-center gap-3 sm:flex-row">
+            <button
+              type="button"
+              (click)="state.dismiss()"
+              class="rounded-full bg-raised px-6 py-3 text-sm font-semibold text-muted shadow-raised transition-[color,box-shadow] hover:text-paper active:shadow-inset"
+            >
+              {{ p.end.stay }}
+            </button>
+            <button
+              #followButton
+              type="button"
+              (click)="state.follow()"
+              class="group/follow inline-flex items-center justify-center gap-2 rounded-full bg-accent-deep px-7 py-3 text-sm font-semibold text-white shadow-raised transition-[filter,box-shadow] hover:brightness-110 active:shadow-inset"
+            >
+              {{ p.end.follow }}
+              <span
+                aria-hidden="true"
+                class="transition-transform group-hover/follow:translate-x-0.5 motion-reduce:transition-none"
+                >→</span
+              >
+            </button>
+          </div>
+          <p class="mt-6 hidden font-mono text-xs text-faint sm:block">{{ p.end.hint }}</p>
+        </section>
+      </div>
+    }
   </div>
 
   <!-- Barra de controles -->
@@ -108,7 +168,7 @@
         <button
           type="button"
           (click)="state.next()"
-          [disabled]="state.isLast()"
+          [disabled]="!state.canAdvance()"
           [attr.aria-label]="p.next"
           [title]="p.next"
           class="grid h-9 w-9 place-items-center rounded-full bg-surface text-paper shadow-raised transition-[color,box-shadow,opacity] hover:text-accent-soft active:shadow-inset disabled:opacity-40"

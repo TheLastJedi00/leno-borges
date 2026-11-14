@@ -392,6 +392,14 @@ export const pt: Dictionary = {
       of: 'de',
       slideRole: 'slide',
       progress: 'Progresso da apresentação',
+      end: {
+        badge: 'Fim da aula',
+        question: 'Seguir para a próxima aula?',
+        nextLabel: 'Próxima aula',
+        follow: 'Seguir',
+        stay: 'Ficar nesta aula',
+        hint: '→ ou Enter para seguir · Esc para ficar',
+      },
     },
     presenter: {
       title: 'Apresentador',

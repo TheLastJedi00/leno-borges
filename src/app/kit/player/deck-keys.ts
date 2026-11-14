@@ -36,6 +36,15 @@ export function handleDeckKey(
     case 'PageUp':
       state.prev();
       break;
+    case 'Enter':
+      // Com o convite de próxima aula aberto, Enter segue (num botão, o próprio botão decide)
+      if (onControl || !state.asking()) return false;
+      state.next();
+      break;
+    case 'Escape':
+      if (!state.asking()) return false;
+      state.dismiss();
+      break;
     case 'Home':
       state.first();
       break;
