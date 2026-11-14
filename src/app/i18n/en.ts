@@ -468,6 +468,7 @@ export const en: Dictionary = {
       goalNothing: 'Goal: make the program print nothing.',
       valueOf: 'Value of',
       nothingPrinted: '(nothing is printed)',
+      outsideList: 'out of the list',
     },
   },
 };

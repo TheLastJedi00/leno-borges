@@ -1,0 +1,145 @@
+.list {
+  position: relative;
+}
+
+/* Etiqueta com o nome da lista, como a do baú */
+.tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  background: var(--color-raised);
+  box-shadow: var(--shadow-raised);
+  font: 600 22px/40px var(--font-mono);
+  color: var(--color-kit-name);
+}
+
+/* Gaveteiro: cresce e encolhe com as gavetas */
+.cabinet {
+  position: absolute;
+  left: 0;
+  height: 96px;
+  border: 3px solid var(--color-line);
+  border-radius: 16px;
+  background: var(--color-ink);
+  box-shadow: var(--shadow-inset);
+  transition: width 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.is-fixed .cabinet {
+  border-color: var(--color-muted);
+  border-width: 5px;
+}
+
+.bolt {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-muted);
+}
+
+/* Gaveta: anda para a nova posição quando outra entra ou sai antes dela */
+.drawer {
+  position: absolute;
+  top: 15px;
+  height: 60px;
+  border: 3px solid var(--color-line);
+  border-radius: 12px;
+  background: var(--color-raised);
+  transition:
+    left 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+    border-color 0.4s ease,
+    background-color 0.4s ease;
+}
+
+.drawer.is-focus {
+  border-color: var(--color-accent);
+  background: color-mix(in oklab, var(--color-accent) 22%, var(--color-ink));
+}
+
+.value {
+  display: block;
+  font: 700 22px/54px var(--font-mono);
+  text-align: center;
+  color: var(--color-kit-value);
+  white-space: nowrap;
+}
+
+/* Índice embaixo, fora do gaveteiro */
+.index {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 84px;
+  font: 600 22px var(--font-mono);
+  text-align: center;
+  color: var(--color-faint);
+  transition: color 0.4s ease;
+}
+
+.is-focus .index {
+  color: var(--color-accent-soft);
+}
+
+/* Índice que não existe */
+.drawer.is-ghost {
+  border-style: dashed;
+  border-color: var(--color-kit-error);
+  background: transparent;
+}
+
+.is-ghost .value,
+.is-ghost .index {
+  color: var(--color-kit-error);
+}
+
+.skip {
+  position: absolute;
+  font: 700 22px var(--font-mono);
+  color: var(--color-faint);
+}
+
+.drawer-in {
+  animation: drawer-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.drawer-out {
+  animation: drawer-out 0.35s ease both;
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-28px);
+  }
+}
+
+@keyframes drawer-out {
+  to {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cabinet,
+  .drawer,
+  .index {
+    transition: none;
+  }
+
+  .drawer-in,
+  .drawer-out {
+    animation: none;
+  }
+}
+
+/* O atalho `font:` religa as ligaduras; o kit mostra o código como se digita */
+.tag,
+.value,
+.index {
+  font-variant-ligatures: none;
+}

@@ -468,6 +468,7 @@ export const pt: Dictionary = {
       goalNothing: 'Objetivo: não aparecer nada.',
       valueOf: 'Valor de',
       nothingPrinted: '(nada aparece)',
+      outsideList: 'fora da lista',
     },
   },
 };
