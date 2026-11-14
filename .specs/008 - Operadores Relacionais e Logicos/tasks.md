@@ -26,7 +26,7 @@ Uma branch `feat/<fase>` por fase, com um commit por tarefa. Ao final, merge na 
 ## Encerramento
 - [x] Merge das fases na branch `release/008-operadores-relacionais-e-logicos`
 - [x] `npm run build` e `npm test` sem falhas
-- [x] Subir em `localhost:4200` e homologar no Chrome: sequência 2 → 3 → 4 pelo convite, as duas aulas nos dois roteiros e nas três sintaxes, exercícios, `prefers-reduced-motion`
+- [x] Subir em `localhost:4200` e homologar no Chrome: sequência 2 → 3 → 4 pelo convite, as duas aulas nos dois roteiros e nas três sintaxes, exercícios (`prefers-reduced-motion` ficou de fora, ver decisões)
 
 ## Decisões tomadas na execução
 - **Java não foi executado**: não há JDK na máquina. JS foi conferido rodando cada trecho, TS compilando cada trecho no `tsc` 5.9 (`--strict`), e as saídas e mensagens do Java seguem o comportamento documentado (mensagens do `javac` do JDK 9 ou mais novo). Vale rodar os trechos de Java uma vez antes de dar a aula
