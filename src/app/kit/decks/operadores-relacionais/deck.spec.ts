@@ -1,5 +1,5 @@
 import { type ChestState, type PredictSlide, tracks } from '../../kit.data';
-import { deckProblems, exprProblems, snippetProblems } from '../deck-checks';
+import { deckProblems, exprProblems, jsOutputProblems, snippetProblems } from '../deck-checks';
 import { code, only } from './code';
 import { deck } from './deck.pt';
 
@@ -23,6 +23,10 @@ describe('aula operadores relacionais', () => {
 
   it('as contas dos slides de expressão fecham', () => {
     expect(exprProblems(deck, lesson.syntaxes)).toEqual([]);
+  });
+
+  it('a saída em JS mostrada no slide é a que o código imprime', () => {
+    expect(jsOutputProblems(deck)).toEqual([]);
   });
 
   it('exercício de classificar: cada comparação no baú da sua resposta', () => {

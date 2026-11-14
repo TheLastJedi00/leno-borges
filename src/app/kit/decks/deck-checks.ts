@@ -1,6 +1,6 @@
 import { type Deck, type Lesson, SYNTAXES, type Slide, type Syntax, pick, stepCount } from '../kit.data';
 import { visibleSlides } from '../player/player-state';
-import { parseCode, parseExpr, plainCode } from '../ui/code/code-markup';
+import { parseCode, parseExpr, plainCode, sceneAt } from '../ui/code/code-markup';
 
 // Conferências comuns a todos os decks, usadas pelos testes de cada aula. Funções puras (sem
 // Jasmine) que devolvem a lista de problemas encontrados: o teste espera a lista vazia.
@@ -67,6 +67,31 @@ export function exprProblems(deck: Deck, syntaxes: readonly Syntax[]): string[] 
       }
       previous = value;
     }
+  }
+  return problems;
+}
+
+/**
+ * Cenas com código: roda o trecho em JavaScript e compara o que ele imprime com a saída da última
+ * etapa no slide (quando a saída de JS não é um erro). Pega saída escrita errada à mão.
+ */
+export function jsOutputProblems(deck: Deck): string[] {
+  const problems: string[] = [];
+  for (const slide of deck.slides) {
+    if (slide.kind !== 'scene' || !slide.code) continue;
+    if (slide.syntaxes && !slide.syntaxes.includes('js')) continue;
+    const last = sceneAt(slide.steps, slide.steps.length - 1);
+    const expected = pick(last.output ?? undefined, 'js');
+    if (expected === undefined || pick(last.outputTone, 'js') === 'error') continue;
+    const printed: string[] = [];
+    const fakeConsole = { log: (...args: unknown[]) => printed.push(args.map(String).join(' ')) };
+    try {
+      Function('console', plainCode(pick(slide.code, 'js') ?? ''))(fakeConsole);
+    } catch (error) {
+      printed.push(String(error));
+    }
+    const actual = printed.join('\n');
+    if (actual !== expected) problems.push(`${slide.id}: imprime ${JSON.stringify(actual)}, o slide mostra ${JSON.stringify(expected)}`);
   }
   return problems;
 }

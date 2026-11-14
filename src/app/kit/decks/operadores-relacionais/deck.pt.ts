@@ -15,7 +15,8 @@ const bool = (id: string, item: string, extra: Partial<ChestState> = {}) =>
 const text = (id: string, item: string, extra: Partial<ChestState> = {}) =>
   chest(id, 'text', { open: true, label: id, item, ...extra });
 
-/** Erros conferidos no `tsc` 5.9 (TS2367 e TS2365). */
+/** Erros conferidos no `tsc` 5.9 (TS2367, TS2365 e TS2845). */
+const TS_ALWAYS_FALSE = "error: This condition will always return 'false'.";
 const TS_NO_OVERLAP =
   "error: This comparison appears to be unintentional because the types 'string' and 'number' have no overlap.";
 const TS_BOOL_NUMBER = (op: string) =>
@@ -497,10 +498,15 @@ export const deck: Deck = {
       code: code.nan,
       steps: [
         {
-          caption: 'NaN não é igual a nada, nem a ele mesmo.',
+          caption: {
+            js: 'NaN não é igual a nada, nem a ele mesmo.',
+            ts: 'NaN não é igual a nada, nem a ele mesmo. O TypeScript avisa antes de rodar.',
+            java: 'NaN não é igual a nada, nem a ele mesmo.',
+          },
           lines: 1,
           activeLine: 1,
-          output: 'false',
+          output: { js: 'false', ts: TS_ALWAYS_FALSE, java: 'false' },
+          outputTone: { js: 'ok', ts: 'error', java: 'ok' },
         },
         {
           caption: {
@@ -510,11 +516,13 @@ export const deck: Deck = {
           },
           lines: 2,
           activeLine: 2,
-          output: 'false\ntrue',
+          output: { js: 'false\ntrue', ts: 'true', java: 'false\ntrue' },
+          outputTone: 'ok',
         },
       ],
       notes: [
         'NaN veio da aula 2: 0 / 0 e texto em conta (JS)',
+        'TS recusa comparar com NaN porque a resposta seria sempre false',
         'A regra vem do padrão de números decimais (IEEE 754), igual nas três linguagens',
         'Curiosidade: NaN é o único valor diferente dele mesmo',
       ],
