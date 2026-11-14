@@ -392,6 +392,12 @@ export const en: Dictionary = {
               'How to combine and invert true or false questions with &&, || and !, explained with switches and a lamp.',
             duration: '10 min to 3 h',
           },
+          condicionais: {
+            title: 'Conditionals',
+            summary:
+              'How a program picks which code to run with if, else and else if, explained with a flowchart that lights up the path taken.',
+            duration: '10 min to 3 h',
+          },
         },
       },
     },
