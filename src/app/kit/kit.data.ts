@@ -123,6 +123,34 @@ export function circuitExpression(mode: CircuitMode, labels: readonly string[] =
   return mode === 'and' ? `${a} && ${b}` : mode === 'or' ? `${a} || ${b}` : `!${a}`;
 }
 
+/**
+ * Fluxograma de `if` / `else` / `else if`: uma fila de losangos (condições) que desce. Cada
+ * losango tem a saída `true` (para a direita, até o que roda) e a `false` (para baixo, até o
+ * próximo losango). Com uma saída a mais que condições, a última é o `else`.
+ */
+export interface FlowState {
+  /** Condição de cada losango, em ordem (`idade >= 18`). */
+  conditions: string[];
+  /** O que roda em cada caminho `true`, mais o `else` opcional no fim. */
+  outcomes: string[];
+  /** Respostas dos losangos já perguntados; o caminho é calculado a partir delas. */
+  answers: boolean[];
+}
+
+/**
+ * Caminho da execução: quantos losangos foram perguntados e qual saída roda (índice em
+ * `outcomes`), `'none'` quando nada roda (`if` sem `else` com resposta false) ou `null` enquanto
+ * a decisão não terminou. Para no primeiro `true`: as condições seguintes nem são perguntadas.
+ */
+export function flowRoute(state: FlowState): { asked: number; taken: number | 'none' | null } {
+  const n = state.conditions.length;
+  const firstTrue = state.answers.slice(0, n).indexOf(true);
+  if (firstTrue >= 0) return { asked: firstTrue + 1, taken: firstTrue };
+  const asked = Math.min(state.answers.length, n);
+  if (asked < n) return { asked, taken: null };
+  return { asked, taken: state.outcomes.length > n ? n : 'none' };
+}
+
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
@@ -141,6 +169,8 @@ export interface SceneStep {
   compare?: BySyntax<Compare> | null;
   /** Circuito de interruptores e lâmpada; `null` tira o circuito da cena. */
   circuit?: CircuitState | null;
+  /** Fluxograma do if / else; `null` tira o fluxograma da cena. */
+  flow?: BySyntax<FlowState> | null;
 }
 
 interface SlideBase {
