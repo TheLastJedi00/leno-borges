@@ -1,4 +1,4 @@
-import { parseCode, parseExpr, plainCode, sceneAt } from './code-markup';
+import { fitFontSize, parseCode, parseExpr, plainCode, sceneAt } from './code-markup';
 
 describe('code-markup', () => {
   it('separa tokens com papel e texto puro', () => {
@@ -33,5 +33,13 @@ describe('code-markup', () => {
 
   it('expressão sem destaque é uma parte só', () => {
     expect(parseExpr('{v:14}')).toEqual([{ tokens: [{ text: '14', role: 'v' }], focus: false }]);
+  });
+});
+
+describe('fitFontSize', () => {
+  it('não passa do máximo e encolhe quando a linha não cabe', () => {
+    expect(fitFontSize('{k:let} {n:a} = {v:1};', 26, 552)).toBe(26);
+    const long = '  {k:case} {v:1}: {f:System.out.println}({v:"Dom"}); {k:break};';
+    expect(fitFontSize(long, 26, 552)).toBe(21);
   });
 });

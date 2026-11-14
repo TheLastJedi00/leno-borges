@@ -8,7 +8,7 @@ import { Flow, flowLayout } from '../ui/flow/flow';
 import { Sorter, sorterLayout } from '../ui/switch/sorter';
 import { I18n } from '../../i18n/i18n';
 import { Code } from '../ui/code/code';
-import { codeWithValue, parseCode, sceneAt } from '../ui/code/code-markup';
+import { codeWithValue, fitFontSize, parseCode, sceneAt } from '../ui/code/code-markup';
 
 /** Destacar um papel no código acende a parte correspondente do baú. */
 const FOCUS_BY_ROLE: Partial<Record<string, ChestState['focus']>> = {
@@ -205,9 +205,12 @@ export class SceneView {
     const markup = pick(this.slide().code, this.syntax());
     return markup === undefined ? undefined : codeWithValue(markup, this.state().value);
   });
-  readonly fontSize = computed(() =>
-    codeFontSize(parseCode(this.code() ?? '').length, this.hasFigure()),
-  );
+  /** Pela altura (número de linhas) e pela largura (linha mais comprida: 552px ou 812px de texto). */
+  readonly fontSize = computed(() => {
+    const markup = this.code() ?? '';
+    const byLines = codeFontSize(parseCode(markup).length, this.hasFigure());
+    return fitFontSize(markup, byLines, this.hasFigure() ? 552 : 812);
+  });
   readonly caption = computed(() => pick(this.state().caption, this.syntax()));
   readonly output = computed(() => pick(this.state().output ?? undefined, this.syntax()));
 }
