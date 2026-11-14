@@ -152,6 +152,51 @@ export function flowRoute(state: FlowState): { asked: number; taken: number | 'n
   return { asked, taken: state.outcomes.length > n ? n : 'none' };
 }
 
+/** Um escaninho da triagem do `switch`: a etiqueta do `case` e o que roda dentro dele. */
+export interface SorterCase {
+  /** Valor do `case` como no código (`1`, `"verde"`); vários separados por vírgula (`6, 7`). */
+  label: string;
+  /** O que o bloco imprime (`"Domingo"`); vazio quando não imprime nada. */
+  out?: string;
+  /** Tem `break` no fim: a queda para aqui. */
+  brk?: boolean;
+}
+
+/**
+ * Triagem do `switch`: o valor é um item que desce e cai no escaninho com a etiqueta igual (ou no
+ * `default`). Sem `break`, continua caindo nos de baixo.
+ */
+export interface SorterState {
+  value: string;
+  cases: SorterCase[];
+  /** `default` no fim, com o que imprime; sem ele, um valor sem etiqueta não cai em nada. */
+  fallback?: { out?: string };
+  /** O item já caiu (sem valor: ainda está no alto, antes da comparação). */
+  dropped?: boolean;
+}
+
+/**
+ * Onde o item cai e quais escaninhos rodam: `landed` é o índice do escaninho (o `default` é o
+ * índice `cases.length`) ou `null` quando não cai em nada; `ran` são os que rodam, do que caiu até
+ * o primeiro `break` (ou o fim). A comparação é a do texto: `"5"` não é `5`, como no `===`.
+ */
+export function sorterRoute(state: SorterState): { landed: number | null; ran: number[] } {
+  if (!state.dropped) return { landed: null, ran: [] };
+  const n = state.cases.length;
+  let landed: number | null = state.cases.findIndex((c) =>
+    c.label.split(',').map((l) => l.trim()).includes(state.value),
+  );
+  if (landed < 0) landed = state.fallback ? n : null;
+  if (landed === null) return { landed, ran: [] };
+  const ran: number[] = [];
+  for (let i = landed; i <= n; i++) {
+    if (i === n && !state.fallback) break;
+    ran.push(i);
+    if (i < n && state.cases[i].brk) break;
+  }
+  return { landed, ran };
+}
+
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
@@ -174,6 +219,8 @@ export interface SceneStep {
   circuit?: CircuitState | null;
   /** Fluxograma do if / else; `null` tira o fluxograma da cena. */
   flow?: BySyntax<FlowState> | null;
+  /** Triagem do switch; `null` tira a triagem da cena. */
+  sorter?: BySyntax<SorterState> | null;
 }
 
 interface SlideBase {
