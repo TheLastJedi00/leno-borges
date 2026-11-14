@@ -132,10 +132,27 @@ export function truthProblems(deck: Deck): string[] {
   return problems;
 }
 
+/**
+ * Valor como o `console.log` do Node mostra no terminal: texto solto sem aspas, listas com
+ * espaço depois do `[` e textos dentro da lista entre aspas simples (`[ 'maçã', 1 ]`). Vale para
+ * listas curtas (o Node quebra linha nas compridas, que os slides não usam).
+ */
+export function nodeFormat(value: unknown, nested = false): string {
+  if (Array.isArray(value)) {
+    return value.length ? `[ ${value.map((v) => nodeFormat(v, true)).join(', ')} ]` : '[]';
+  }
+  if (typeof value === 'string' && nested) {
+    return value.includes("'") && !value.includes('"') ? `"${value}"` : `'${value.replaceAll("'", "\\'")}'`;
+  }
+  return String(value);
+}
+
 /** Roda um trecho de JS com `console.log` falso e devolve o que ele imprimiu. */
-function runJs(code: string): string {
+export function runJs(code: string): string {
   const printed: string[] = [];
-  const fakeConsole = { log: (...args: unknown[]) => printed.push(args.map(String).join(' ')) };
+  const fakeConsole = {
+    log: (...args: unknown[]) => printed.push(args.map((a) => nodeFormat(a)).join(' ')),
+  };
   try {
     Function('console', code)(fakeConsole);
   } catch (error) {
