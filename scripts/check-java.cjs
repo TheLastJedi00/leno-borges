@@ -77,6 +77,21 @@ for (const slug of slugs) {
     if (slide.syntaxes && !slide.syntaxes.includes('java')) continue;
     const markup = 'code' in slide && slide.code ? pick(slide.code, 'java') : undefined;
     if (!markup) continue;
+    if (slide.kind === 'branch') {
+      // Exercício "escolha o valor": roda o código com cada valor.
+      for (const choice of slide.choices) {
+        const expected = pick(choice.output, 'java') ?? '';
+        const result = runJava(plainCode(markup).replaceAll('@@', choice.value));
+        checked++;
+        if (result.kind !== 'ok' || result.lines.join('\n') !== expected) {
+          problems++;
+          console.log(`\n✗ ${slug} / ${slide.id}, valor ${choice.value}`);
+          console.log(`  slide: ${JSON.stringify(expected)}`);
+          console.log(`  javac/java (${result.kind}): ${JSON.stringify(result.lines.join('\n'))}`);
+        }
+      }
+      continue;
+    }
     const steps = slide.kind === 'predict' ? slide.trace : slide.kind === 'scene' ? slide.steps : [];
     const last = sceneAt(steps, Math.max(0, steps.length - 1));
     const expected = pick(last.output ?? undefined, 'java');

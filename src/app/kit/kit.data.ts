@@ -294,6 +294,37 @@ export interface CircuitSlide extends SlideBase {
   challenges: CircuitChallenge[];
 }
 
+/** Um valor que a turma pode escolher no exercício `branch`. */
+export interface BranchChoice {
+  /** Valor como aparece no código (`8`, `"verde"`). */
+  value: string;
+  /** Respostas dos losangos com esse valor (fluxograma). */
+  answers?: boolean[];
+  /** O que o programa imprime com esse valor; `""` quando nada aparece. */
+  output: BySyntax;
+}
+
+/**
+ * Exercício "escolha o valor": a turma troca o valor da variável e vê qual caminho o programa
+ * segue. Cada desafio pede uma saída; o caminho e a saída de cada valor ficam no deck (o teste do
+ * deck roda o código em JS com cada valor para conferir).
+ */
+export interface BranchSlide extends SlideBase {
+  kind: 'branch';
+  lead: string;
+  /** Nome da variável que a turma troca. */
+  variable: string;
+  /** Código com `@@` no lugar do valor escolhido. */
+  code: BySyntax<CodeMarkup>;
+  /** Fluxograma sem as respostas (vêm do valor escolhido). */
+  flow?: BySyntax<Omit<FlowState, 'answers'>>;
+  choices: BranchChoice[];
+  /** Valor escolhido no começo (índice em `choices`). */
+  start?: number;
+  /** Saídas que cada desafio pede, em ordem. */
+  goals: string[];
+}
+
 export type Slide =
   | CoverSlide
   | SceneSlide
@@ -303,7 +334,8 @@ export type Slide =
   | PredictSlide
   | ExprSlide
   | TruthSlide
-  | CircuitSlide;
+  | CircuitSlide
+  | BranchSlide;
 
 export interface Deck {
   slides: Slide[];
@@ -316,6 +348,7 @@ export function stepCount(slide: Slide): number {
     case 'table':
     case 'sort':
     case 'circuit':
+    case 'branch':
       return 1;
     case 'scene':
     case 'expr':

@@ -452,6 +452,11 @@ export const en: Dictionary = {
       solved: 'You did it!',
       nextChallenge: 'Next challenge',
       allDone: 'All challenges solved!',
+      branchHint: 'Pick a value and watch which path the program takes.',
+      goalOutput: 'Goal: make the program print',
+      goalNothing: 'Goal: make the program print nothing.',
+      valueOf: 'Value of',
+      nothingPrinted: '(nothing is printed)',
     },
   },
 };

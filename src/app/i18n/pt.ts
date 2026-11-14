@@ -452,6 +452,11 @@ export const pt: Dictionary = {
       solved: 'Conseguiu!',
       nextChallenge: 'Próximo desafio',
       allDone: 'Todos os desafios resolvidos!',
+      branchHint: 'Escolha um valor e veja qual caminho o programa segue.',
+      goalOutput: 'Objetivo: fazer aparecer',
+      goalNothing: 'Objetivo: não aparecer nada.',
+      valueOf: 'Valor de',
+      nothingPrinted: '(nada aparece)',
     },
   },
 };
