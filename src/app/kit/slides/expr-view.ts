@@ -36,7 +36,7 @@ import { type ExprPart, parseExpr } from '../ui/code/code-markup';
                   class="rounded-2xl transition-[background-color,box-shadow] duration-500"
                   [class.kit-expr-focus]="part.focus && last"
                   >@for (tok of part.tokens; track $index) {<span
-                    [class]="line.result ? 'text-kit-value' : tok.role ? role[tok.role] : ''"
+                    [class]="line.result ? resultClass(line) : tok.role ? role[tok.role] : ''"
                     >{{ tok.text }}</span
                   >}</span
                 >
@@ -84,6 +84,12 @@ export class ExprView {
       });
     return lines;
   });
+
+  /** Resultado final em verde; `false` (aula de relacionais) em vermelho. */
+  resultClass(line: { parts: ExprPart[] }): string {
+    const text = line.parts.flatMap((p) => p.tokens.map((t) => t.text)).join('').trim();
+    return text === 'false' ? 'text-kit-error' : 'text-kit-value';
+  }
 
   /** A legenda mais recente até a etapa ativa. */
   readonly caption = computed(() => {

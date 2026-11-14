@@ -383,6 +383,12 @@ export const fr: Dictionary = {
               'Comment calculer avec les valeurs conservées : les cinq opérateurs, l’ordre des opérations et les raccourcis d’affectation.',
             duration: '10 min à 3 h',
           },
+          'operadores-relacionais': {
+            title: 'Opérateurs relationnels',
+            summary:
+              'Comment comparer des valeurs et obtenir une réponse vraie ou fausse, expliqué avec une balance.',
+            duration: '10 min à 3 h',
+          },
         },
       },
     },

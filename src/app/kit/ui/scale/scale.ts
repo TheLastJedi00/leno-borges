@@ -82,5 +82,9 @@ export function scaleTilt(left: string, right: string): -1 | 0 | 1 {
 export class Scale {
   compare = input.required<Compare>();
   readonly tiltDeg = TILT_DEG;
-  readonly tilt = computed(() => scaleTilt(this.compare().left, this.compare().right));
+  /** Nivelada enquanto a turma palpita; inclina quando a balança responde. */
+  readonly tilt = computed(() => {
+    const c = this.compare();
+    return c.result === undefined ? 0 : scaleTilt(c.left, c.right);
+  });
 }

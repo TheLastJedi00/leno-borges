@@ -759,7 +759,7 @@ export const deck: Deck = {
       notes: [
         'Pedir para a turma resolver de cabeça: (8 - 2) * 3 % 4',
         'Java: lembrar da divisão inteira',
-        'Próxima aula: comparar valores e tomar decisões (condicionais)',
+        'Próxima aula: operadores relacionais, comparar valores e receber verdadeiro ou falso',
         'Abrir para perguntas',
       ],
     },

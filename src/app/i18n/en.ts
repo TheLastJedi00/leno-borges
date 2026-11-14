@@ -380,6 +380,12 @@ export const en: Dictionary = {
               'How to do math with stored values: the five operators, the order of operations and assignment shortcuts.',
             duration: '10 min to 3 h',
           },
+          'operadores-relacionais': {
+            title: 'Relational Operators',
+            summary:
+              'How to compare values and get a true or false answer, explained with a balance scale.',
+            duration: '10 min to 3 h',
+          },
         },
       },
     },

@@ -380,6 +380,12 @@ export const pt: Dictionary = {
               'Como fazer contas com os valores guardados: os cinco operadores, a ordem das operações e os atalhos de atribuição.',
             duration: '10 min a 3 h',
           },
+          'operadores-relacionais': {
+            title: 'Operadores Relacionais',
+            summary:
+              'Como comparar valores e receber uma resposta de verdadeiro ou falso, explicado com uma balança.',
+            duration: '10 min a 3 h',
+          },
         },
       },
     },
