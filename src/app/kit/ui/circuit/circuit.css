@@ -138,3 +138,12 @@
     transition: none;
   }
 }
+
+/* O atalho `font:` acima religa as ligaduras; o kit mostra os operadores como se digita */
+.expr,
+.label,
+.value,
+.inverter-mark,
+.battery-mark {
+  font-variant-ligatures: none;
+}

@@ -19,7 +19,9 @@ export const STAGE_H = 720;
 @Component({
   selector: 'kit-stage',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'block' },
+  // Sem ligaduras: a JetBrains Mono junta >=, === e && em um símbolo só, e a turma precisa ver
+  // os caracteres que vai digitar
+  host: { class: 'block', style: 'font-variant-ligatures: none; font-feature-settings: "calt" 0, "liga" 0' },
   template: `
     <div class="relative aspect-video w-full overflow-hidden rounded-2xl bg-surface shadow-raised-lg">
       <div

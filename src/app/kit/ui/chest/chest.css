@@ -250,3 +250,12 @@
     transform: translateX(10px);
   }
 }
+
+/* O atalho `font:` acima religa as ligaduras; o kit mostra os operadores como se digita */
+.address,
+.glyph,
+.type,
+.item,
+.label {
+  font-variant-ligatures: none;
+}

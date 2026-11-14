@@ -5,6 +5,11 @@ import { ChestRow } from '../ui/chest/chest-row';
 import { Code } from '../ui/code/code';
 import { sceneAt } from '../ui/code/code-markup';
 import { chestsFor } from './scene-view';
+import { chestWidth } from '../ui/chest/chest';
+
+/** Largura da coluna das respostas no palco (1280 - padding 128 - código 560 - vão 40). */
+const ANSWER_W = 552;
+const CHEST_GAP = 48;
 
 /**
  * Exercício "qual o valor final?": a turma escolhe uma resposta (etapa 0) e, nas etapas
@@ -67,7 +72,8 @@ import { chestsFor } from './scene-view';
 
           @if (trace(); as tr) {
             <kit-chest-row
-              class="kit-fade [zoom:0.7]"
+              class="kit-fade"
+              [style.zoom]="zoom()"
               [chests]="chestsFor(tr, syntax())"
               [syntax]="syntax()"
             ></kit-chest-row>
@@ -86,6 +92,21 @@ export class PredictView {
   syntax = input.required<Syntax>();
   readonly t = inject(I18n).t;
   readonly chestsFor = chestsFor;
+  /**
+   * Baús da execução numa linha só, abaixo das respostas: no máximo 0.7, menos quando a etapa
+   * com mais baús não cabe na coluna.
+   */
+  readonly zoom = computed(() => {
+    const trace = this.slide().trace;
+    const widest = Math.max(
+      0,
+      ...trace.map((_, i) => {
+        const widths = chestsFor(sceneAt(trace, i), this.syntax()).map((c) => chestWidth(c.shape));
+        return widths.reduce((a, b) => a + b, 0) + CHEST_GAP * Math.max(0, widths.length - 1);
+      }),
+    );
+    return widest ? Math.min(0.7, (ANSWER_W / widest) * 0.97) : 0.7;
+  });
 
   readonly chosen = signal<number | null>(null);
   readonly code = computed(() => pick(this.slide().code, this.syntax()) ?? '');
