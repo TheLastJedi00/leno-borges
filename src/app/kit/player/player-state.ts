@@ -57,8 +57,10 @@ export function clampIndex(index: number, length: number): number {
 
 /** Mensagem trocada entre a janela da turma e a do apresentador. */
 export type SyncMessage =
-  | { type: 'state'; slideId: string; step: number; syntax: Syntax; mode: Mode }
-  | { type: 'hello' };
+  | { type: 'state'; slideId: string; step: number; syntax: Syntax; mode: Mode; ask: boolean }
+  | { type: 'hello' }
+  /** Uma janela seguiu para a próxima aula: as outras seguem junto. */
+  | { type: 'lesson'; lesson: string };
 
 /**
  * Estado de uma apresentação (fornecido por componente: player e apresentador têm cada um o seu,
@@ -73,6 +75,12 @@ export class PlayerState {
   readonly syntax = signal<Syntax>('js');
   readonly mode = signal<Mode>('completo');
   readonly pos = signal<Position>({ index: 0, step: 0 });
+  /** Próxima aula da trilha (convite no fim da apresentação). */
+  readonly upNext = signal<Lesson | undefined>(undefined);
+  /** Convite "seguir para a próxima aula?" aberto. */
+  readonly asking = signal(false);
+  /** Chamado ao seguir para a próxima aula (o componente navega). */
+  onFollow: (() => void) | null = null;
 
   readonly slides = computed(() => {
     const deck = this.deck();
@@ -89,6 +97,8 @@ export class PlayerState {
   readonly isLast = computed(
     () => this.pos().index === this.total() - 1 && this.pos().step === this.steps() - 1,
   );
+  /** Avançar ainda faz algo: há etapa ou slide pela frente, ou uma próxima aula. */
+  readonly canAdvance = computed(() => !this.isLast() || !!this.upNext());
   /** Progresso de 0 a 1, contando slides inteiros. */
   readonly progress = computed(() =>
     this.total() > 1 ? this.pos().index / (this.total() - 1) : 1,
@@ -109,31 +119,63 @@ export class PlayerState {
     });
   }
 
-  init(deck: Deck, lesson: Lesson, syntax: Syntax, mode: Mode, index: number) {
+  init(deck: Deck, lesson: Lesson, syntax: Syntax, mode: Mode, index: number, upNext?: Lesson) {
     this.deck.set(deck);
     this.lesson.set(lesson);
+    this.upNext.set(upNext);
+    this.asking.set(false);
     this.syntax.set(syntax);
     this.mode.set(mode);
     this.pos.set({ index: clampIndex(index, visibleSlides(deck, mode, syntax).length), step: 0 });
   }
 
+  /** Avança; no fim da aula abre o convite e, com o convite aberto, segue para a próxima aula. */
   next() {
     this.muted = false;
+    if (this.asking()) {
+      this.follow();
+      return;
+    }
+    if (this.isLast()) {
+      if (this.upNext()) this.asking.set(true);
+      return;
+    }
     this.pos.update((p) => nextPosition(this.slides(), p));
   }
 
+  /** Volta; com o convite aberto, só fecha o convite (fica no último slide). */
   prev() {
     this.muted = false;
+    if (this.asking()) {
+      this.asking.set(false);
+      return;
+    }
     this.pos.update((p) => prevPosition(this.slides(), p));
+  }
+
+  dismiss() {
+    this.muted = false;
+    this.asking.set(false);
+  }
+
+  /** Segue para a próxima aula e pede às outras janelas que sigam junto. */
+  follow() {
+    const upNext = this.upNext();
+    if (!upNext) return;
+    this.asking.set(false);
+    this.channel?.postMessage({ type: 'lesson', lesson: upNext.slug } satisfies SyncMessage);
+    this.onFollow?.();
   }
 
   first() {
     this.muted = false;
+    this.asking.set(false);
     this.pos.set({ index: 0, step: 0 });
   }
 
   last() {
     this.muted = false;
+    this.asking.set(false);
     const slides = this.slides();
     const index = Math.max(0, slides.length - 1);
     this.pos.set({ index, step: slides[index] ? stepCount(slides[index]) - 1 : 0 });
@@ -141,6 +183,7 @@ export class PlayerState {
 
   goTo(index: number, step = 0) {
     this.muted = false;
+    this.asking.set(false);
     const i = clampIndex(index, this.total());
     const slide = this.slides()[i];
     const s = slide ? Math.min(Math.max(0, step), stepCount(slide) - 1) : 0;
@@ -203,6 +246,7 @@ export class PlayerState {
       step: this.pos().step,
       syntax: this.syntax(),
       mode: this.mode(),
+      ask: this.asking(),
     };
   }
 
@@ -212,6 +256,10 @@ export class PlayerState {
       if (snap) this.channel?.postMessage(snap);
       return;
     }
+    if (message.type === 'lesson') {
+      if (message.lesson === this.upNext()?.slug) this.onFollow?.();
+      return;
+    }
     const deck = this.deck();
     if (!deck) return;
     this.lastRemote = JSON.stringify(message);
@@ -219,5 +267,6 @@ export class PlayerState {
     this.mode.set(message.mode);
     const index = remapIndex(deck.slides, message.slideId, this.slides());
     this.goTo(index, message.step);
+    this.asking.set(!!message.ask && !!this.upNext());
   }
 }

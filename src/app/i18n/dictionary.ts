@@ -99,6 +99,16 @@ export interface Dictionary {
       of: string;
       slideRole: string;
       progress: string;
+      /** Convite no fim da aula para seguir direto à próxima aula da trilha. */
+      end: {
+        badge: string;
+        question: string;
+        /** Rótulo antes do título da próxima aula ("Próxima aula"). */
+        nextLabel: string;
+        follow: string;
+        stay: string;
+        hint: string;
+      };
     };
     presenter: {
       title: string;

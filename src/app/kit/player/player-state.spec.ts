@@ -3,6 +3,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import type { Deck, Lesson, Slide } from '../kit.data';
 import {
   PlayerState,
+  type SyncMessage,
   clampIndex,
   nextPosition,
   prevPosition,
@@ -143,5 +144,60 @@ describe('PlayerState', () => {
     state.lesson.set({ ...lesson, syntaxes: ['js'] });
     state.setSyntax('ts');
     expect(state.syntax()).toBe('java');
+  });
+
+  describe('convite para a próxima aula', () => {
+    const upNext: Lesson = { ...lesson, slug: 'operadores-aritmeticos' as Lesson['slug'] };
+
+    it('sem próxima aula, avançar no fim não faz nada', () => {
+      state.last();
+      state.next();
+      expect(state.asking()).toBeFalse();
+      expect(state.canAdvance()).toBeFalse();
+    });
+
+    it('no fim abre o convite; avançar de novo segue; voltar fecha', () => {
+      state.init(deck, lesson, 'js', 'completo', 0, upNext);
+      const follow = jasmine.createSpy('follow');
+      state.onFollow = follow;
+      state.last();
+      expect(state.canAdvance()).toBeTrue();
+
+      state.next();
+      expect(state.asking()).toBeTrue();
+      expect(state.current()?.id).toBe('f');
+
+      state.prev();
+      expect(state.asking()).toBeFalse();
+      expect(state.isLast()).toBeTrue();
+
+      state.next();
+      state.next();
+      expect(follow).toHaveBeenCalledTimes(1);
+      expect(state.asking()).toBeFalse();
+    });
+
+    it('navegar para outro slide fecha o convite', () => {
+      state.init(deck, lesson, 'js', 'completo', 0, upNext);
+      state.last();
+      state.next();
+      state.first();
+      expect(state.asking()).toBeFalse();
+    });
+
+    it('recebe o convite e o pedido de seguir de outra janela', () => {
+      state.init(deck, lesson, 'js', 'completo', 0, upNext);
+      const follow = jasmine.createSpy('follow');
+      state.onFollow = follow;
+      const receive = (m: SyncMessage) => (state as unknown as { receive(m: SyncMessage): void }).receive(m);
+
+      receive({ type: 'state', slideId: 'f', step: 2, syntax: 'js', mode: 'completo', ask: true });
+      expect(state.asking()).toBeTrue();
+
+      receive({ type: 'lesson', lesson: 'outra' });
+      expect(follow).not.toHaveBeenCalled();
+      receive({ type: 'lesson', lesson: 'operadores-aritmeticos' });
+      expect(follow).toHaveBeenCalledTimes(1);
+    });
   });
 });
