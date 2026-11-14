@@ -9,6 +9,7 @@ import { PredictView } from './predict-view';
 import { ExprView } from './expr-view';
 import { TruthView } from './truth-view';
 import { CircuitView } from './circuit-view';
+import { BranchView } from './branch-view';
 
 /** Moldura comum de um slide (título, selo de aprofundamento) e escolha do layout pelo `kind`. */
 @Component({
@@ -23,6 +24,7 @@ import { CircuitView } from './circuit-view';
     ExprView,
     TruthView,
     CircuitView,
+    BranchView,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'absolute inset-0 block' },
@@ -65,6 +67,9 @@ import { CircuitView } from './circuit-view';
       }
       @case ('circuit') {
         <kit-circuit-view [slide]="s" [syntax]="syntax()"></kit-circuit-view>
+      }
+      @case ('branch') {
+        <kit-branch-view [slide]="s" [syntax]="syntax()"></kit-branch-view>
       }
     }
   `,
