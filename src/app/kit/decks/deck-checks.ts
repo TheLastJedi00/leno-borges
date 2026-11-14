@@ -1,4 +1,13 @@
-import { type Deck, type Lesson, SYNTAXES, type Slide, type Syntax, pick, stepCount } from '../kit.data';
+import {
+  type Deck,
+  type Lesson,
+  SYNTAXES,
+  type Slide,
+  type Syntax,
+  flowRoute,
+  pick,
+  stepCount,
+} from '../kit.data';
 import { visibleSlides } from '../player/player-state';
 import { parseCode, parseExpr, plainCode, sceneAt } from '../ui/code/code-markup';
 
@@ -83,14 +92,7 @@ export function jsOutputProblems(deck: Deck): string[] {
     const last = sceneAt(slide.steps, slide.steps.length - 1);
     const expected = pick(last.output ?? undefined, 'js');
     if (expected === undefined || pick(last.outputTone, 'js') === 'error') continue;
-    const printed: string[] = [];
-    const fakeConsole = { log: (...args: unknown[]) => printed.push(args.map(String).join(' ')) };
-    try {
-      Function('console', plainCode(pick(slide.code, 'js') ?? ''))(fakeConsole);
-    } catch (error) {
-      printed.push(String(error));
-    }
-    const actual = printed.join('\n');
+    const actual = runJs(plainCode(pick(slide.code, 'js') ?? ''));
     if (actual !== expected) problems.push(`${slide.id}: imprime ${JSON.stringify(actual)}, o slide mostra ${JSON.stringify(expected)}`);
   }
   return problems;
@@ -115,6 +117,53 @@ export function truthProblems(deck: Deck): string[] {
         }
       }
     });
+  }
+  return problems;
+}
+
+/** Roda um trecho de JS com `console.log` falso e devolve o que ele imprimiu. */
+function runJs(code: string): string {
+  const printed: string[] = [];
+  const fakeConsole = { log: (...args: unknown[]) => printed.push(args.map(String).join(' ')) };
+  try {
+    Function('console', code)(fakeConsole);
+  } catch (error) {
+    printed.push(String(error));
+  }
+  return printed.join('\n');
+}
+
+/**
+ * Exercício "escolha o valor": roda o código em JS com cada valor e compara com a saída do
+ * valor; confere que o fluxograma termina na caixa que imprime essa saída e que todo desafio
+ * tem um valor que o resolve.
+ */
+export function branchProblems(deck: Deck): string[] {
+  const problems: string[] = [];
+  for (const slide of deck.slides) {
+    if (slide.kind !== 'branch') continue;
+    const code = plainCode(pick(slide.code, 'js') ?? '');
+    const flow = pick(slide.flow, 'js');
+    for (const choice of slide.choices) {
+      const expected = pick(choice.output, 'js') ?? '';
+      const actual = runJs(code.replaceAll('@@', choice.value));
+      if (actual !== expected) {
+        problems.push(`${slide.id}, valor ${choice.value}: imprime ${JSON.stringify(actual)}, o slide mostra ${JSON.stringify(expected)}`);
+      }
+      if (flow) {
+        const { taken } = flowRoute({ ...flow, answers: choice.answers ?? [] });
+        const shown = typeof taken === 'number' ? flow.outcomes[taken].replace(/^"(.*)"$/, '$1') : '';
+        if (taken === null) problems.push(`${slide.id}, valor ${choice.value}: fluxograma sem decisão`);
+        else if (shown !== expected) {
+          problems.push(`${slide.id}, valor ${choice.value}: fluxograma termina em ${JSON.stringify(shown)}, a saída é ${JSON.stringify(expected)}`);
+        }
+      }
+    }
+    for (const goal of slide.goals) {
+      if (!slide.choices.some((c) => (pick(c.output, 'js') ?? '') === goal)) {
+        problems.push(`${slide.id}: nenhum valor resolve o desafio ${JSON.stringify(goal)}`);
+      }
+    }
   }
   return problems;
 }
