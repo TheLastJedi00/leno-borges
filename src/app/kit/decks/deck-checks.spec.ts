@@ -1,5 +1,5 @@
 import type { Deck } from '../kit.data';
-import { branchProblems } from './deck-checks';
+import { branchProblems, nodeFormat, runJs } from './deck-checks';
 
 const deck = (output: string, answers: boolean[], goals = ['Entra']): Deck => ({
   slides: [
@@ -57,5 +57,19 @@ describe('branchProblems com triagem', () => {
   it('confere o que a queda imprime', () => {
     expect(branchProblems(sw('Dom\n?'))).toEqual([]);
     expect(branchProblems(sw('Dom')).length).toBe(2);
+  });
+});
+
+describe('runJs', () => {
+  it('imprime listas como o console.log do Node', () => {
+    expect(runJs('console.log(["maçã", "uva"]);')).toBe("[ 'maçã', 'uva' ]");
+    expect(runJs('console.log([10, 9, 1].sort());')).toBe('[ 1, 10, 9 ]');
+    expect(runJs('console.log([]);')).toBe('[]');
+    expect(runJs('console.log("maçã", 3);')).toBe('maçã 3');
+  });
+
+  it('aspas dentro da lista como o Node', () => {
+    expect(nodeFormat(["d'água", 'x'])).toBe(`[ "d'água", 'x' ]`);
+    expect(nodeFormat([undefined, true])).toBe('[ undefined, true ]');
   });
 });
