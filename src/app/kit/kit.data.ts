@@ -163,13 +163,31 @@ export interface PredictSlide extends SlideBase {
   trace: SceneStep[];
 }
 
+/** Uma linha da conta: a expressão como está nesta etapa. */
+export interface ExprStep {
+  /** Mesma marcação do código; `[[ ]]` marca o trecho calculado nesta etapa. */
+  expr: BySyntax<CodeMarkup>;
+  caption?: BySyntax;
+  /** Começa uma conta nova (as linhas anteriores saem). */
+  reset?: boolean;
+  /** Linha com o resultado final da conta. */
+  result?: boolean;
+}
+
+/** Avaliação de expressão passo a passo: cada etapa acrescenta uma linha à "escada" da conta. */
+export interface ExprSlide extends SlideBase {
+  kind: 'expr';
+  steps: ExprStep[];
+}
+
 export type Slide =
   | CoverSlide
   | SceneSlide
   | CardsSlide
   | TableSlide
   | SortSlide
-  | PredictSlide;
+  | PredictSlide
+  | ExprSlide;
 
 export interface Deck {
   slides: Slide[];
@@ -183,6 +201,7 @@ export function stepCount(slide: Slide): number {
     case 'sort':
       return 1;
     case 'scene':
+    case 'expr':
       return Math.max(1, slide.steps.length);
     case 'cards':
       return Math.max(1, slide.cards.length);
