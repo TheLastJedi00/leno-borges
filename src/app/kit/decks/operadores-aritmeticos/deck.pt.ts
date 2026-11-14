@@ -276,7 +276,7 @@ export const deck: Deck = {
         },
       ],
       notes: [
-        'Par ou ímpar vai aparecer de novo na aula de condicionais',
+        'Par ou ímpar vai aparecer de novo na aula 5, Condicionais',
         'Relógio: depois de 59 vem 0, o resto "dá a volta"',
         'Pedir outro exemplo da turma: dias da semana (dia % 7)',
       ],
@@ -619,7 +619,7 @@ export const deck: Deck = {
       notes: [
         'NaN = Not a Number, "não é um número"',
         'Java: é erro com o programa rodando, o compilador não avisa',
-        'Antes de dividir, conferir se o divisor é zero (aula de condicionais)',
+        'Antes de dividir, conferir se o divisor é zero (aula 5, Condicionais)',
       ],
     },
 

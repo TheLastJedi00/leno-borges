@@ -395,6 +395,18 @@ export const fr: Dictionary = {
               'Comment combiner et inverser des questions vraies ou fausses avec &&, || et !, expliqué avec des interrupteurs et une ampoule.',
             duration: '10 min à 3 h',
           },
+          condicionais: {
+            title: 'Structures conditionnelles',
+            summary:
+              'Comment un programme choisit le code à exécuter avec if, else et else if, expliqué avec un organigramme qui éclaire le chemin suivi.',
+            duration: '10 min à 3 h',
+          },
+          'switch-case': {
+            title: 'Switch case',
+            summary:
+              'Comment choisir un chemin parmi plusieurs à partir d’une seule valeur avec switch, case, break et default, expliqué avec des casiers de tri.',
+            duration: '10 min à 3 h',
+          },
         },
       },
     },
@@ -455,6 +467,10 @@ export const fr: Dictionary = {
       solved: 'Réussi !',
       nextChallenge: 'Défi suivant',
       allDone: 'Tous les défis sont réussis !',
+      goalOutput: 'Objectif : faire afficher',
+      goalNothing: 'Objectif : que le programme n’affiche rien.',
+      valueOf: 'Valeur de',
+      nothingPrinted: '(rien ne s’affiche)',
     },
   },
 };

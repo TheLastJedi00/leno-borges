@@ -12,6 +12,7 @@ Personal portfolio site for Leno Borges (Full-Stack Software Developer & Tech Ed
 - `npm run build` — production build to `dist/leno-borges/browser`
 - `npm test` — Karma/Jasmine unit tests (Chrome)
 - Single spec: `npx ng test --include src/app/app.spec.ts`
+- `npm run check:java [-- <aula>]` — compiles and runs every Java snippet of the Kit de Ensino decks on a real JDK (`JAVA_HOME`, else `~/.jdks`) and compares with the output shown on the slide
 - Deploy: `npm run build && firebase deploy` (Firebase project `leno-borges`; SPA rewrite of `**` → `/index.html`)
 
 No linter is configured; formatting follows the Prettier config in `package.json` (printWidth 100, single quotes, Angular parser for HTML).

@@ -145,6 +145,13 @@ export interface Dictionary {
       solved: string;
       nextChallenge: string;
       allDone: string;
+      /** Exercício "escolha o valor" (aulas de condicionais). */
+      /** Antes da saída pedida: "Objetivo: fazer aparecer" `B`. */
+      goalOutput: string;
+      goalNothing: string;
+      /** Rótulo do grupo de valores, antes do nome da variável. */
+      valueOf: string;
+      nothingPrinted: string;
     };
   };
 }

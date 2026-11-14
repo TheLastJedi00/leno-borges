@@ -3,7 +3,7 @@ import { I18n } from '../../i18n/i18n';
 import { type PredictSlide, type Syntax, pick } from '../kit.data';
 import { ChestRow } from '../ui/chest/chest-row';
 import { Code } from '../ui/code/code';
-import { sceneAt } from '../ui/code/code-markup';
+import { fitFontSize, sceneAt } from '../ui/code/code-markup';
 import { chestsFor } from './scene-view';
 import { chestWidth } from '../ui/chest/chest';
 
@@ -35,7 +35,8 @@ const CHEST_GAP = 48;
           [markup]="code()"
           [syntax]="syntax()"
           [activeLine]="activeLine()"
-          [fontSize]="26"
+          [skipped]="skipped()"
+          [fontSize]="fontSize()"
         ></kit-code>
 
         <div class="flex min-w-0 flex-1 flex-col gap-5">
@@ -110,12 +111,15 @@ export class PredictView {
 
   readonly chosen = signal<number | null>(null);
   readonly code = computed(() => pick(this.slide().code, this.syntax()) ?? '');
+  /** 26, ou menos quando a linha mais comprida não cabe nos 512px de texto. */
+  readonly fontSize = computed(() => fitFontSize(this.code(), 26, 512));
   /** Etapa 0 é a pergunta; a partir da 1, a execução aparece passo a passo. */
   readonly revealed = computed(() => this.step() > 0);
   readonly trace = computed(() =>
     this.step() > 0 ? sceneAt(this.slide().trace, this.step() - 1) : null,
   );
   readonly activeLine = computed(() => pick(this.trace()?.activeLine, this.syntax()));
+  readonly skipped = computed(() => pick(this.trace()?.skip ?? undefined, this.syntax()) ?? []);
   readonly finished = computed(() => this.step() >= this.slide().trace.length);
 
   choose(i: number) {

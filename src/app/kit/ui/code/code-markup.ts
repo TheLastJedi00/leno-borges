@@ -46,9 +46,32 @@ export function parseExpr(markup: CodeMarkup): ExprPart[] {
   return parts;
 }
 
+/** Código com o valor no lugar de `@@` (cenas e exercício que trocam o valor de uma variável). */
+export function codeWithValue(markup: CodeMarkup, value: string | undefined): CodeMarkup {
+  return value === undefined ? markup : markup.replaceAll('@@', value);
+}
+
+/**
+ * Maior fonte (até `max`) em que a linha mais comprida cabe na largura do texto (`width`, sem o
+ * padding). A JetBrains Mono tem 0,6 em de largura por caractere.
+ */
+export function fitFontSize(markup: CodeMarkup, max: number, width: number): number {
+  const longest = Math.max(1, ...plainCode(markup).split('\n').map((l) => l.length));
+  return Math.min(max, Math.floor(width / (0.6 * longest)));
+}
+
 /** Texto puro do trecho (sem marcação), útil para leitor de tela e testes. */
 export function plainCode(markup: CodeMarkup): string {
   return markup.replace(TOKEN, '$2').replace(FOCUS, '$1');
+}
+
+/**
+ * Estados que encerram cada execução da cena: a última etapa de cada valor (`value`) seguido.
+ * Sem `value`, é só a última etapa. Usado para conferir a saída de cada execução.
+ */
+export function finishedRuns(steps: SceneStep[]): SceneStep[] {
+  const states = steps.map((_, i) => sceneAt(steps, i));
+  return states.filter((s, i) => i === states.length - 1 || states[i + 1].value !== s.value);
 }
 
 /** Estado da etapa `step`: cada etapa herda a anterior e sobrescreve só o que declara. */

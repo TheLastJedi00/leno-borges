@@ -21,7 +21,9 @@ export type LessonId =
   | 'variaveis-e-tipos'
   | 'operadores-aritmeticos'
   | 'operadores-relacionais'
-  | 'operadores-logicos';
+  | 'operadores-logicos'
+  | 'condicionais'
+  | 'switch-case';
 
 export interface Lesson {
   slug: LessonId;
@@ -123,6 +125,79 @@ export function circuitExpression(mode: CircuitMode, labels: readonly string[] =
   return mode === 'and' ? `${a} && ${b}` : mode === 'or' ? `${a} || ${b}` : `!${a}`;
 }
 
+/**
+ * Fluxograma de `if` / `else` / `else if`: uma fila de losangos (condições) que desce. Cada
+ * losango tem a saída `true` (para a direita, até o que roda) e a `false` (para baixo, até o
+ * próximo losango). Com uma saída a mais que condições, a última é o `else`.
+ */
+export interface FlowState {
+  /** Condição de cada losango, em ordem (`idade >= 18`). */
+  conditions: string[];
+  /** O que roda em cada caminho `true`, mais o `else` opcional no fim. */
+  outcomes: string[];
+  /** Respostas dos losangos já perguntados; o caminho é calculado a partir delas. */
+  answers: boolean[];
+}
+
+/**
+ * Caminho da execução: quantos losangos foram perguntados e qual saída roda (índice em
+ * `outcomes`), `'none'` quando nada roda (`if` sem `else` com resposta false) ou `null` enquanto
+ * a decisão não terminou. Para no primeiro `true`: as condições seguintes nem são perguntadas.
+ */
+export function flowRoute(state: FlowState): { asked: number; taken: number | 'none' | null } {
+  const n = state.conditions.length;
+  const firstTrue = state.answers.slice(0, n).indexOf(true);
+  if (firstTrue >= 0) return { asked: firstTrue + 1, taken: firstTrue };
+  const asked = Math.min(state.answers.length, n);
+  if (asked < n) return { asked, taken: null };
+  return { asked, taken: state.outcomes.length > n ? n : 'none' };
+}
+
+/** Um escaninho da triagem do `switch`: a etiqueta do `case` e o que roda dentro dele. */
+export interface SorterCase {
+  /** Valor do `case` como no código (`1`, `"verde"`); vários separados por vírgula (`6, 7`). */
+  label: string;
+  /** O que o bloco imprime (`"Domingo"`); vazio quando não imprime nada. */
+  out?: string;
+  /** Tem `break` no fim: a queda para aqui. */
+  brk?: boolean;
+}
+
+/**
+ * Triagem do `switch`: o valor é um item que desce e cai no escaninho com a etiqueta igual (ou no
+ * `default`). Sem `break`, continua caindo nos de baixo.
+ */
+export interface SorterState {
+  value: string;
+  cases: SorterCase[];
+  /** `default` no fim, com o que imprime; sem ele, um valor sem etiqueta não cai em nada. */
+  fallback?: { out?: string };
+  /** O item já caiu (sem valor: ainda está no alto, antes da comparação). */
+  dropped?: boolean;
+}
+
+/**
+ * Onde o item cai e quais escaninhos rodam: `landed` é o índice do escaninho (o `default` é o
+ * índice `cases.length`) ou `null` quando não cai em nada; `ran` são os que rodam, do que caiu até
+ * o primeiro `break` (ou o fim). A comparação é a do texto: `"5"` não é `5`, como no `===`.
+ */
+export function sorterRoute(state: SorterState): { landed: number | null; ran: number[] } {
+  if (!state.dropped) return { landed: null, ran: [] };
+  const n = state.cases.length;
+  let landed: number | null = state.cases.findIndex((c) =>
+    c.label.split(',').map((l) => l.trim()).includes(state.value),
+  );
+  if (landed < 0) landed = state.fallback ? n : null;
+  if (landed === null) return { landed, ran: [] };
+  const ran: number[] = [];
+  for (let i = landed; i <= n; i++) {
+    if (i === n && !state.fallback) break;
+    ran.push(i);
+    if (i < n && state.cases[i].brk) break;
+  }
+  return { landed, ran };
+}
+
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
@@ -133,12 +208,20 @@ export interface SceneStep {
   highlight?: BySyntax<TokenRole | null>;
   /** Linha em destaque (base 1), usada para acompanhar a execução. */
   activeLine?: BySyntax<number | null>;
+  /** Linhas (base 1) que não rodam nesta etapa: ficam apagadas, mostrando o caminho da execução. */
+  skip?: BySyntax<number[]> | null;
+  /** Valor que entra no lugar de `@@` no código do slide nesta etapa (a mesma cena com outro valor). */
+  value?: string;
   output?: BySyntax | null;
   outputTone?: BySyntax<'ok' | 'error'>;
   /** Balança da comparação; `null` tira a balança da cena. */
   compare?: BySyntax<Compare> | null;
   /** Circuito de interruptores e lâmpada; `null` tira o circuito da cena. */
   circuit?: CircuitState | null;
+  /** Fluxograma do if / else; `null` tira o fluxograma da cena. */
+  flow?: BySyntax<FlowState> | null;
+  /** Triagem do switch; `null` tira a triagem da cena. */
+  sorter?: BySyntax<SorterState> | null;
 }
 
 interface SlideBase {
@@ -262,6 +345,39 @@ export interface CircuitSlide extends SlideBase {
   challenges: CircuitChallenge[];
 }
 
+/** Um valor que a turma pode escolher no exercício `branch`. */
+export interface BranchChoice {
+  /** Valor como aparece no código (`8`, `"verde"`). */
+  value: string;
+  /** Respostas dos losangos com esse valor (fluxograma). A triagem acha o `case` sozinha. */
+  answers?: boolean[];
+  /** O que o programa imprime com esse valor; `""` quando nada aparece. */
+  output: BySyntax;
+}
+
+/**
+ * Exercício "escolha o valor": a turma troca o valor da variável e vê qual caminho o programa
+ * segue. Cada desafio pede uma saída; o caminho e a saída de cada valor ficam no deck (o teste do
+ * deck roda o código em JS com cada valor para conferir).
+ */
+export interface BranchSlide extends SlideBase {
+  kind: 'branch';
+  lead: string;
+  /** Nome da variável que a turma troca. */
+  variable: string;
+  /** Código com `@@` no lugar do valor escolhido. */
+  code: BySyntax<CodeMarkup>;
+  /** Fluxograma sem as respostas (vêm do valor escolhido). */
+  flow?: BySyntax<Omit<FlowState, 'answers'>>;
+  /** Triagem sem o valor (vem do valor escolhido). */
+  sorter?: BySyntax<Omit<SorterState, 'value' | 'dropped'>>;
+  choices: BranchChoice[];
+  /** Valor escolhido no começo (índice em `choices`). */
+  start?: number;
+  /** Saídas que cada desafio pede, em ordem. */
+  goals: string[];
+}
+
 export type Slide =
   | CoverSlide
   | SceneSlide
@@ -271,7 +387,8 @@ export type Slide =
   | PredictSlide
   | ExprSlide
   | TruthSlide
-  | CircuitSlide;
+  | CircuitSlide
+  | BranchSlide;
 
 export interface Deck {
   slides: Slide[];
@@ -284,6 +401,7 @@ export function stepCount(slide: Slide): number {
     case 'table':
     case 'sort':
     case 'circuit':
+    case 'branch':
       return 1;
     case 'scene':
     case 'expr':
@@ -327,6 +445,18 @@ export const tracks: Track[] = [
         syntaxes: ['js', 'ts', 'java'],
         counts: { essencial: 10, completo: 17 },
         load: () => import('./decks/operadores-logicos/deck.pt').then((m) => m.deck),
+      },
+      {
+        slug: 'condicionais',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 18 },
+        load: () => import('./decks/condicionais/deck.pt').then((m) => m.deck),
+      },
+      {
+        slug: 'switch-case',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 16 },
+        load: () => import('./decks/switch-case/deck.pt').then((m) => m.deck),
       },
     ],
   },

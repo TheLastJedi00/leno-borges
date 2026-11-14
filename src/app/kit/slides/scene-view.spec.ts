@@ -1,4 +1,4 @@
-import { chestZoom } from './scene-view';
+import { chestZoom, flowZoom } from './scene-view';
 
 describe('chestZoom', () => {
   it('um baú não muda de tamanho', () => {
@@ -15,5 +15,21 @@ describe('chestZoom', () => {
     const z = chestZoom([330, 330, 330]);
     expect(z).toBeGreaterThan(0.65);
     expect((330 * 2 + 48) * z).toBeLessThanOrEqual(504);
+  });
+});
+
+describe('flowZoom', () => {
+  it('ao lado do código, cabe na largura livre', () => {
+    const z = flowZoom([{ width: 700, height: 200 }], true);
+    expect(700 * z).toBeLessThanOrEqual(504);
+  });
+
+  it('sozinho, cresce até 1,3 mas não passa da altura', () => {
+    expect(flowZoom([{ width: 400, height: 200 }], false)).toBe(1.3);
+    expect(560 * flowZoom([{ width: 400, height: 560 }], false)).toBeLessThanOrEqual(410);
+  });
+
+  it('usa o maior desenho do slide', () => {
+    expect(flowZoom([{ width: 300, height: 200 }, { width: 600, height: 200 }], true)).toBe(504 / 600);
   });
 });

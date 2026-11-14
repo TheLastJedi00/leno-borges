@@ -4,9 +4,11 @@ import { ChestRow } from '../ui/chest/chest-row';
 import { chestWidth } from '../ui/chest/chest';
 import { Scale } from '../ui/scale/scale';
 import { Circuit } from '../ui/circuit/circuit';
+import { Flow, flowLayout } from '../ui/flow/flow';
+import { Sorter, sorterLayout } from '../ui/switch/sorter';
 import { I18n } from '../../i18n/i18n';
 import { Code } from '../ui/code/code';
-import { sceneAt } from '../ui/code/code-markup';
+import { codeWithValue, fitFontSize, parseCode, sceneAt } from '../ui/code/code-markup';
 
 /** Destacar um papel no código acende a parte correspondente do baú. */
 const FOCUS_BY_ROLE: Partial<Record<string, ChestState['focus']>> = {
@@ -20,6 +22,30 @@ const ROW_SPACE = 1280 - 128 - 600 - 48;
 const CHEST_GAP = 48;
 /** Abaixo disso, os baús ficam pequenos demais numa linha só: melhor quebrar em duas. */
 const MIN_ONE_ROW_ZOOM = 0.65;
+/**
+ * Tamanho da fonte do código: menor quando o trecho é comprido, para o código e a saída caberem
+ * na altura livre do palco (~476px com uma linha de legenda). Até 6 linhas sozinho e até 7 ao
+ * lado de uma ilustração, fica como sempre foi (30 e 26).
+ */
+export function codeFontSize(lines: number, withFigure: boolean): number {
+  if (withFigure) return lines <= 7 ? 26 : lines <= 8 ? 24 : 22;
+  return lines <= 6 ? 30 : lines <= 7 ? 26 : lines <= 8 ? 24 : 22;
+}
+
+/** Área da ilustração no palco: altura livre abaixo do título e da legenda, largura sem código. */
+const FIGURE_H = 410;
+const FIGURE_W_ALONE = 1100;
+
+/**
+ * Escala do fluxograma (e da triagem do switch): o maior que couber na área (ao lado do código ou sozinho), sem passar
+ * de 1,3. Calculada com o maior desenho do slide, para não mudar de tamanho entre etapas.
+ */
+export function flowZoom(sizes: { width: number; height: number }[], withCode: boolean): number {
+  if (!sizes.length) return 1;
+  const width = Math.max(...sizes.map((s) => s.width));
+  const height = Math.max(...sizes.map((s) => s.height));
+  return Math.min(1.3, (withCode ? ROW_SPACE : FIGURE_W_ALONE) / width, FIGURE_H / height);
+}
 
 /**
  * Escala dos baús ao lado do código: cabem numa linha ou, se ficarem pequenos demais, em duas.
@@ -45,7 +71,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
 /** Slide de cena: baús animados por etapa, com código e saída opcionais ao lado. */
 @Component({
   selector: 'kit-scene-view',
-  imports: [ChestRow, Code, Scale, Circuit],
+  imports: [ChestRow, Code, Scale, Circuit, Flow, Sorter],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -77,6 +103,12 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
                 [lampText]="lampText()"
               ></kit-circuit>
             }
+            @if (flow(); as fl) {
+              <kit-flow class="kit-fade" [style.zoom]="flowZoom()" [state]="fl"></kit-flow>
+            }
+            @if (sorter(); as so) {
+              <kit-switch class="kit-fade" [style.zoom]="sorterZoom()" [state]="so"></kit-switch>
+            }
             @if (chests().length) {
               <kit-chest-row
                 class="self-stretch"
@@ -95,7 +127,8 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
               [visible]="st.lines"
               [highlight]="highlight()"
               [activeLine]="activeLine()"
-              [fontSize]="hasFigure() ? 26 : 30"
+              [skipped]="skipped()"
+              [fontSize]="fontSize()"
             ></kit-code>
             @if (output(); as out) {
               @for (o of [out]; track o) {
@@ -131,10 +164,33 @@ export class SceneView {
     );
   });
   readonly compare = computed(() => pick(this.state().compare ?? undefined, this.syntax()));
-  /** Há ilustração (balança ou baús) à esquerda do código. */
+  /** Circuito da aula 4. */
   readonly circuit = computed(() => this.state().circuit ?? undefined);
+  readonly flow = computed(() => pick(this.state().flow ?? undefined, this.syntax()));
+  readonly flowZoom = computed(() => {
+    const steps = this.slide().steps;
+    const sizes = steps
+      .map((_, i) => pick(sceneAt(steps, i).flow ?? undefined, this.syntax()))
+      .filter((f) => !!f)
+      .map((f) => flowLayout(f));
+    return flowZoom(sizes, !!this.code());
+  });
+  readonly sorter = computed(() => pick(this.state().sorter ?? undefined, this.syntax()));
+  readonly sorterZoom = computed(() => {
+    const steps = this.slide().steps;
+    const sizes = steps
+      .map((_, i) => pick(sceneAt(steps, i).sorter ?? undefined, this.syntax()))
+      .filter((s) => !!s)
+      .map((s) => sorterLayout({ ...s, dropped: true, value: s.value }));
+    return flowZoom(sizes, !!this.code());
+  });
   readonly hasFigure = computed(
-    () => !!this.compare() || !!this.circuit() || this.chests().length > 0,
+    () =>
+      !!this.compare() ||
+      !!this.circuit() ||
+      !!this.flow() ||
+      !!this.sorter() ||
+      this.chests().length > 0,
   );
   private readonly t = inject(I18n).t;
   readonly lampText = computed(() => ({
@@ -142,9 +198,19 @@ export class SceneView {
     off: this.t().kit.exercise.lampOff,
   }));
   readonly activeLine = computed(() => pick(this.state().activeLine, this.syntax()));
+  readonly skipped = computed(() => pick(this.state().skip ?? undefined, this.syntax()) ?? []);
   readonly outputTone = computed(() => pick(this.state().outputTone, this.syntax()));
   readonly highlight = computed(() => pick(this.state().highlight, this.syntax()));
-  readonly code = computed(() => pick(this.slide().code, this.syntax()));
+  readonly code = computed(() => {
+    const markup = pick(this.slide().code, this.syntax());
+    return markup === undefined ? undefined : codeWithValue(markup, this.state().value);
+  });
+  /** Pela altura (número de linhas) e pela largura (linha mais comprida: 552px ou 812px de texto). */
+  readonly fontSize = computed(() => {
+    const markup = this.code() ?? '';
+    const byLines = codeFontSize(parseCode(markup).length, this.hasFigure());
+    return fitFontSize(markup, byLines, this.hasFigure() ? 552 : 812);
+  });
   readonly caption = computed(() => pick(this.state().caption, this.syntax()));
   readonly output = computed(() => pick(this.state().output ?? undefined, this.syntax()));
 }

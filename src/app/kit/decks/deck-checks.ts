@@ -1,6 +1,22 @@
-import { type Deck, type Lesson, SYNTAXES, type Slide, type Syntax, pick, stepCount } from '../kit.data';
+import {
+  type Deck,
+  type Lesson,
+  SYNTAXES,
+  type Slide,
+  type Syntax,
+  flowRoute,
+  pick,
+  sorterRoute,
+  stepCount,
+} from '../kit.data';
 import { visibleSlides } from '../player/player-state';
-import { parseCode, parseExpr, plainCode, sceneAt } from '../ui/code/code-markup';
+import {
+  codeWithValue,
+  finishedRuns,
+  parseCode,
+  parseExpr,
+  plainCode,
+} from '../ui/code/code-markup';
 
 // Conferências comuns a todos os decks, usadas pelos testes de cada aula. Funções puras (sem
 // Jasmine) que devolvem a lista de problemas encontrados: o teste espera a lista vazia.
@@ -80,18 +96,15 @@ export function jsOutputProblems(deck: Deck): string[] {
   for (const slide of deck.slides) {
     if (slide.kind !== 'scene' || !slide.code) continue;
     if (slide.syntaxes && !slide.syntaxes.includes('js')) continue;
-    const last = sceneAt(slide.steps, slide.steps.length - 1);
-    const expected = pick(last.output ?? undefined, 'js');
-    if (expected === undefined || pick(last.outputTone, 'js') === 'error') continue;
-    const printed: string[] = [];
-    const fakeConsole = { log: (...args: unknown[]) => printed.push(args.map(String).join(' ')) };
-    try {
-      Function('console', plainCode(pick(slide.code, 'js') ?? ''))(fakeConsole);
-    } catch (error) {
-      printed.push(String(error));
+    for (const run of finishedRuns(slide.steps)) {
+      const expected = pick(run.output ?? undefined, 'js');
+      if (expected === undefined || pick(run.outputTone, 'js') === 'error') continue;
+      const actual = runJs(plainCode(codeWithValue(pick(slide.code, 'js') ?? '', run.value)));
+      if (actual !== expected) {
+        const at = run.value === undefined ? '' : ` com ${run.value}`;
+        problems.push(`${slide.id}${at}: imprime ${JSON.stringify(actual)}, o slide mostra ${JSON.stringify(expected)}`);
+      }
     }
-    const actual = printed.join('\n');
-    if (actual !== expected) problems.push(`${slide.id}: imprime ${JSON.stringify(actual)}, o slide mostra ${JSON.stringify(expected)}`);
   }
   return problems;
 }
@@ -115,6 +128,62 @@ export function truthProblems(deck: Deck): string[] {
         }
       }
     });
+  }
+  return problems;
+}
+
+/** Roda um trecho de JS com `console.log` falso e devolve o que ele imprimiu. */
+function runJs(code: string): string {
+  const printed: string[] = [];
+  const fakeConsole = { log: (...args: unknown[]) => printed.push(args.map(String).join(' ')) };
+  try {
+    Function('console', code)(fakeConsole);
+  } catch (error) {
+    printed.push(String(error));
+  }
+  return printed.join('\n');
+}
+
+/**
+ * Exercício "escolha o valor": roda o código em JS com cada valor e compara com a saída do
+ * valor; confere que o fluxograma termina na caixa que imprime essa saída e que todo desafio
+ * tem um valor que o resolve.
+ */
+export function branchProblems(deck: Deck): string[] {
+  const problems: string[] = [];
+  for (const slide of deck.slides) {
+    if (slide.kind !== 'branch') continue;
+    const code = plainCode(pick(slide.code, 'js') ?? '');
+    const flow = pick(slide.flow, 'js');
+    const sorter = pick(slide.sorter, 'js');
+    for (const choice of slide.choices) {
+      const expected = pick(choice.output, 'js') ?? '';
+      const actual = runJs(codeWithValue(code, choice.value));
+      if (actual !== expected) {
+        problems.push(`${slide.id}, valor ${choice.value}: imprime ${JSON.stringify(actual)}, o slide mostra ${JSON.stringify(expected)}`);
+      }
+      if (sorter) {
+        const { ran } = sorterRoute({ ...sorter, value: choice.value, dropped: true });
+        const outs = [...sorter.cases.map((c) => c.out ?? ''), sorter.fallback?.out ?? ''];
+        const shown = ran.map((i) => outs[i].replace(/^"(.*)"$/, '$1')).filter(Boolean).join('\n');
+        if (shown !== expected) {
+          problems.push(`${slide.id}, valor ${choice.value}: triagem roda ${JSON.stringify(shown)}, a saída é ${JSON.stringify(expected)}`);
+        }
+      }
+      if (flow) {
+        const { taken } = flowRoute({ ...flow, answers: choice.answers ?? [] });
+        const shown = typeof taken === 'number' ? flow.outcomes[taken].replace(/^"(.*)"$/, '$1') : '';
+        if (taken === null) problems.push(`${slide.id}, valor ${choice.value}: fluxograma sem decisão`);
+        else if (shown !== expected) {
+          problems.push(`${slide.id}, valor ${choice.value}: fluxograma termina em ${JSON.stringify(shown)}, a saída é ${JSON.stringify(expected)}`);
+        }
+      }
+    }
+    for (const goal of slide.goals) {
+      if (!slide.choices.some((c) => (pick(c.output, 'js') ?? '') === goal)) {
+        problems.push(`${slide.id}: nenhum valor resolve o desafio ${JSON.stringify(goal)}`);
+      }
+    }
   }
   return problems;
 }

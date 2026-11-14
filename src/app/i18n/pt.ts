@@ -392,6 +392,18 @@ export const pt: Dictionary = {
               'Como juntar e inverter perguntas de verdadeiro ou falso com &&, || e !, explicado com interruptores e uma lâmpada.',
             duration: '10 min a 3 h',
           },
+          condicionais: {
+            title: 'Condicionais',
+            summary:
+              'Como o programa escolhe qual código roda com if, else e else if, explicado com um fluxograma que acende o caminho seguido.',
+            duration: '10 min a 3 h',
+          },
+          'switch-case': {
+            title: 'Switch Case',
+            summary:
+              'Como escolher um caminho entre vários a partir de um valor com switch, case, break e default, explicado com escaninhos de triagem.',
+            duration: '10 min a 3 h',
+          },
         },
       },
     },
@@ -452,6 +464,10 @@ export const pt: Dictionary = {
       solved: 'Conseguiu!',
       nextChallenge: 'Próximo desafio',
       allDone: 'Todos os desafios resolvidos!',
+      goalOutput: 'Objetivo: fazer aparecer',
+      goalNothing: 'Objetivo: não aparecer nada.',
+      valueOf: 'Valor de',
+      nothingPrinted: '(nada aparece)',
     },
   },
 };
