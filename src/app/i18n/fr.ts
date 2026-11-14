@@ -401,6 +401,12 @@ export const fr: Dictionary = {
               'Comment un programme choisit le code à exécuter avec if, else et else if, expliqué avec un organigramme qui éclaire le chemin suivi.',
             duration: '10 min à 3 h',
           },
+          'switch-case': {
+            title: 'Switch case',
+            summary:
+              'Comment choisir un chemin parmi plusieurs à partir d’une seule valeur avec switch, case, break et default, expliqué avec des casiers de tri.',
+            duration: '10 min à 3 h',
+          },
         },
       },
     },

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { I18n } from '../../i18n/i18n';
 import { type BranchSlide, type FlowState, type SorterState, type Syntax, pick } from '../kit.data';
 import { Code } from '../ui/code/code';
-import { codeWithValue } from '../ui/code/code-markup';
+import { codeWithValue, fitFontSize } from '../ui/code/code-markup';
 import { Flow, flowLayout } from '../ui/flow/flow';
 import { Sorter, sorterLayout } from '../ui/switch/sorter';
 
@@ -31,7 +31,7 @@ const FIG_H = 360;
 
       <div class="mt-5 flex min-h-0 flex-1 gap-10">
         <div class="grid w-[560px] shrink-0 content-start gap-3">
-          <kit-code [markup]="code()" [syntax]="syntax()" [fontSize]="18"></kit-code>
+          <kit-code [markup]="code()" [syntax]="syntax()" [fontSize]="fontSize()"></kit-code>
           <div
             class="flex gap-4 rounded-xl bg-ink px-6 py-2.5 font-mono text-[22px] whitespace-pre-wrap shadow-inset"
             [class]="output() ? 'text-paper' : 'text-faint'"
@@ -47,7 +47,7 @@ const FIG_H = 360;
               {{ ex.challenge }} {{ index() + 1 }} / {{ s.goals.length }}
             </span>
             @if (goal()) {
-              <span>{{ ex.goalOutput }} <span class="font-mono text-kit-value">{{ goal() }}</span></span>
+              <span>{{ ex.goalOutput }} <span class="font-mono text-kit-value">{{ goalText() }}</span></span>
             } @else {
               <span>{{ ex.goalNothing }}</span>
             }
@@ -124,6 +124,10 @@ export class BranchView {
   readonly code = computed(() =>
     codeWithValue(pick(this.slide().code, this.syntax()) ?? '', this.current().value),
   );
+  /** 18, ou menos quando a linha mais comprida não cabe nos 512px de texto. */
+  readonly fontSize = computed(() => fitFontSize(this.code(), 18, 512));
+  /** Saída pedida, numa linha: `Seg, Ter`. */
+  readonly goalText = computed(() => this.goal().replaceAll('\n', ', '));
   readonly output = computed(() => pick(this.current().output, this.syntax()) ?? '');
   readonly flow = computed<FlowState | undefined>(() => {
     const base = pick(this.slide().flow, this.syntax());

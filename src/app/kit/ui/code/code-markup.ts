@@ -51,6 +51,15 @@ export function codeWithValue(markup: CodeMarkup, value: string | undefined): Co
   return value === undefined ? markup : markup.replaceAll('@@', value);
 }
 
+/**
+ * Maior fonte (até `max`) em que a linha mais comprida cabe na largura do texto (`width`, sem o
+ * padding). A JetBrains Mono tem 0,6 em de largura por caractere.
+ */
+export function fitFontSize(markup: CodeMarkup, max: number, width: number): number {
+  const longest = Math.max(1, ...plainCode(markup).split('\n').map((l) => l.length));
+  return Math.min(max, Math.floor(width / (0.6 * longest)));
+}
+
 /** Texto puro do trecho (sem marcação), útil para leitor de tela e testes. */
 export function plainCode(markup: CodeMarkup): string {
   return markup.replace(TOKEN, '$2').replace(FOCUS, '$1');

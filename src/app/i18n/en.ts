@@ -398,6 +398,12 @@ export const en: Dictionary = {
               'How a program picks which code to run with if, else and else if, explained with a flowchart that lights up the path taken.',
             duration: '10 min to 3 h',
           },
+          'switch-case': {
+            title: 'Switch Case',
+            summary:
+              'How to pick one path among many from a single value with switch, case, break and default, explained with sorting slots.',
+            duration: '10 min to 3 h',
+          },
         },
       },
     },

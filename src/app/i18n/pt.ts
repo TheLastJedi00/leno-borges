@@ -398,6 +398,12 @@ export const pt: Dictionary = {
               'Como o programa escolhe qual código roda com if, else e else if, explicado com um fluxograma que acende o caminho seguido.',
             duration: '10 min a 3 h',
           },
+          'switch-case': {
+            title: 'Switch Case',
+            summary:
+              'Como escolher um caminho entre vários a partir de um valor com switch, case, break e default, explicado com escaninhos de triagem.',
+            duration: '10 min a 3 h',
+          },
         },
       },
     },
