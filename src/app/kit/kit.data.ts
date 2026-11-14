@@ -91,6 +91,37 @@ export interface Compare {
   result?: boolean;
 }
 
+/** Ligação dos interruptores: em série (&&), em paralelo (||) ou com inversor (!). */
+export type CircuitMode = 'and' | 'or' | 'not';
+
+/** Circuito da aula de operadores lógicos: a lâmpada é calculada dos interruptores. */
+export interface CircuitState {
+  mode: CircuitMode;
+  /** Interruptores ligados (true) ou desligados; `not` usa só o primeiro. */
+  switches: boolean[];
+  /** Etiqueta de cada interruptor (nome da condição). */
+  labels?: string[];
+}
+
+/** A lâmpada acende? É o resultado da expressão lógica do circuito. */
+export function lampOn(mode: CircuitMode, switches: readonly boolean[]): boolean {
+  const [a = false, b = false] = switches;
+  switch (mode) {
+    case 'and':
+      return a && b;
+    case 'or':
+      return a || b;
+    case 'not':
+      return !a;
+  }
+}
+
+/** Expressão do circuito com as etiquetas: `a && b`, `a || b`, `!a`. */
+export function circuitExpression(mode: CircuitMode, labels: readonly string[] = ['a', 'b']): string {
+  const [a = 'a', b = 'b'] = labels;
+  return mode === 'and' ? `${a} && ${b}` : mode === 'or' ? `${a} || ${b}` : `!${a}`;
+}
+
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
@@ -105,6 +136,8 @@ export interface SceneStep {
   outputTone?: BySyntax<'ok' | 'error'>;
   /** Balança da comparação; `null` tira a balança da cena. */
   compare?: BySyntax<Compare> | null;
+  /** Circuito de interruptores e lâmpada; `null` tira o circuito da cena. */
+  circuit?: CircuitState | null;
 }
 
 interface SlideBase {

@@ -440,6 +440,8 @@ export const fr: Dictionary = {
       choose: 'Choisissez une réponse',
       reveal: 'Voir l’exécution',
       answer: 'Réponse',
+      lampOn: 'ampoule allumée',
+      lampOff: 'ampoule éteinte',
     },
   },
 };

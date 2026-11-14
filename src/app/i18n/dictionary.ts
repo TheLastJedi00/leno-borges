@@ -134,6 +134,9 @@ export interface Dictionary {
       choose: string;
       reveal: string;
       answer: string;
+      /** Estado da lâmpada do circuito, para leitor de tela. */
+      lampOn: string;
+      lampOff: string;
     };
   };
 }

@@ -437,6 +437,8 @@ export const pt: Dictionary = {
       choose: 'Escolha uma resposta',
       reveal: 'Ver a execução',
       answer: 'Resposta',
+      lampOn: 'lâmpada acesa',
+      lampOff: 'lâmpada apagada',
     },
   },
 };

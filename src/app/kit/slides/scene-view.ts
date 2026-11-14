@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { type ChestState, type SceneSlide, type SceneStep, type Syntax, pick } from '../kit.data';
 import { ChestRow } from '../ui/chest/chest-row';
 import { chestWidth } from '../ui/chest/chest';
 import { Scale } from '../ui/scale/scale';
+import { Circuit } from '../ui/circuit/circuit';
+import { I18n } from '../../i18n/i18n';
 import { Code } from '../ui/code/code';
 import { sceneAt } from '../ui/code/code-markup';
 
@@ -43,7 +45,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
 /** Slide de cena: baús animados por etapa, com código e saída opcionais ao lado. */
 @Component({
   selector: 'kit-scene-view',
-  imports: [ChestRow, Code, Scale],
+  imports: [ChestRow, Code, Scale, Circuit],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -66,6 +68,14 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
           <div class="flex min-w-0 flex-1 flex-col items-center justify-center gap-6">
             @if (compare(); as cmp) {
               <kit-scale class="kit-fade" [compare]="cmp"></kit-scale>
+            }
+            @if (circuit(); as circ) {
+              <kit-circuit
+                class="kit-fade"
+                [style.zoom]="code() ? 0.84 : 1.15"
+                [state]="circ"
+                [lampText]="lampText()"
+              ></kit-circuit>
             }
             @if (chests().length) {
               <kit-chest-row
@@ -122,7 +132,15 @@ export class SceneView {
   });
   readonly compare = computed(() => pick(this.state().compare ?? undefined, this.syntax()));
   /** Há ilustração (balança ou baús) à esquerda do código. */
-  readonly hasFigure = computed(() => !!this.compare() || this.chests().length > 0);
+  readonly circuit = computed(() => this.state().circuit ?? undefined);
+  readonly hasFigure = computed(
+    () => !!this.compare() || !!this.circuit() || this.chests().length > 0,
+  );
+  private readonly t = inject(I18n).t;
+  readonly lampText = computed(() => ({
+    on: this.t().kit.exercise.lampOn,
+    off: this.t().kit.exercise.lampOff,
+  }));
   readonly activeLine = computed(() => pick(this.state().activeLine, this.syntax()));
   readonly outputTone = computed(() => pick(this.state().outputTone, this.syntax()));
   readonly highlight = computed(() => pick(this.state().highlight, this.syntax()));
