@@ -100,6 +100,8 @@ export interface SceneStep {
   activeLine?: BySyntax<number | null>;
   output?: BySyntax | null;
   outputTone?: BySyntax<'ok' | 'error'>;
+  /** Balança da comparação; `null` tira a balança da cena. */
+  compare?: BySyntax<Compare> | null;
 }
 
 interface SlideBase {
