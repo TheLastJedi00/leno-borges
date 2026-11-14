@@ -6,8 +6,8 @@ import { codeWithValue } from '../ui/code/code-markup';
 import { Flow, flowLayout } from '../ui/flow/flow';
 
 /** Espaço da ilustração na coluna da direita do exercício. */
-const FIG_W = 540;
-const FIG_H = 250;
+const FIG_W = 552;
+const FIG_H = 360;
 
 /**
  * Exercício "escolha o valor": a turma troca o valor da variável (botões, Tab e Enter) e vê o
@@ -27,13 +27,12 @@ const FIG_H = 250;
         {{ s.title }}
       </h2>
       <p class="mt-3 text-[26px] leading-snug text-muted">{{ s.lead }}</p>
-      <p class="mt-1 text-[18px] text-faint">{{ ex.branchHint }}</p>
 
       <div class="mt-5 flex min-h-0 flex-1 gap-10">
-        <div class="grid w-[560px] shrink-0 content-start gap-4">
-          <kit-code [markup]="code()" [syntax]="syntax()" [fontSize]="21"></kit-code>
+        <div class="grid w-[560px] shrink-0 content-start gap-3">
+          <kit-code [markup]="code()" [syntax]="syntax()" [fontSize]="18"></kit-code>
           <div
-            class="flex gap-4 rounded-xl bg-ink px-6 py-3 font-mono text-[22px] whitespace-pre-wrap shadow-inset"
+            class="flex gap-4 rounded-xl bg-ink px-6 py-2.5 font-mono text-[22px] whitespace-pre-wrap shadow-inset"
             [class]="output() ? 'text-paper' : 'text-faint'"
           >
             <span aria-hidden="true" class="text-faint">›</span>
@@ -41,65 +40,65 @@ const FIG_H = 250;
           </div>
         </div>
 
-        <div class="flex min-w-0 flex-1 flex-col gap-4">
-          <p class="font-mono text-[18px] uppercase tracking-wider text-faint">
-            {{ ex.challenge }} {{ index() + 1 }} / {{ s.goals.length }}
-          </p>
-          <p class="font-display text-[30px] leading-tight font-semibold text-paper">
+        <div class="flex min-w-0 flex-1 flex-col gap-3">
+          <p class="flex flex-wrap items-baseline gap-x-4 font-display text-[28px] leading-tight font-semibold text-paper">
+            <span class="font-mono text-[16px] font-normal uppercase tracking-wider text-faint">
+              {{ ex.challenge }} {{ index() + 1 }} / {{ s.goals.length }}
+            </span>
             @if (goal()) {
-              {{ ex.goalOutput }} <span class="font-mono text-kit-value">{{ goal() }}</span>
+              <span>{{ ex.goalOutput }} <span class="font-mono text-kit-value">{{ goal() }}</span></span>
             } @else {
-              {{ ex.goalNothing }}
+              <span>{{ ex.goalNothing }}</span>
             }
           </p>
 
           @if (flow(); as fl) {
-            <div class="flex justify-center">
+            <div class="flex min-h-0 flex-1 items-center justify-center">
               <kit-flow [style.zoom]="flowZoom()" [state]="fl"></kit-flow>
             </div>
           }
+        </div>
+      </div>
 
-          <div class="flex flex-wrap items-center gap-3" role="group" [attr.aria-label]="ex.valueOf + ' ' + s.variable">
-            <span class="font-mono text-[22px] text-kit-name">{{ s.variable }} =</span>
-            @for (c of s.choices; track $index; let i = $index) {
-              <button
-                type="button"
-                (click)="choose(i)"
-                [attr.aria-pressed]="choice() === i"
-                class="rounded-xl px-4 py-2 font-mono text-[22px] font-semibold shadow-raised transition-[background-color,color] active:shadow-inset"
-                [class]="choice() === i ? 'bg-accent-deep text-white' : 'bg-raised text-kit-value hover:text-paper'"
-              >
-                {{ c.value }}
-              </button>
-            }
-          </div>
+      <div class="mt-4 flex items-center gap-6">
+        <div class="flex flex-wrap items-center gap-3" role="group" [attr.aria-label]="ex.valueOf + ' ' + s.variable">
+          <span class="font-mono text-[22px] text-kit-name">{{ s.variable }} =</span>
+          @for (c of s.choices; track $index; let i = $index) {
+            <button
+              type="button"
+              (click)="choose(i)"
+              [attr.aria-pressed]="choice() === i"
+              class="rounded-xl px-4 py-2 font-mono text-[22px] font-semibold shadow-raised transition-[background-color,color] active:shadow-inset"
+              [class]="choice() === i ? 'bg-accent-deep text-white' : 'bg-raised text-kit-value hover:text-paper'"
+            >
+              {{ c.value }}
+            </button>
+          }
+        </div>
 
-          <div class="flex flex-wrap items-center gap-4">
-            <p aria-live="polite" class="min-h-[34px] text-[24px] font-semibold text-kit-value">
-              @if (solved()) {
-                {{ isLast() ? ex.allDone : ex.solved }}
-              }
-            </p>
-            <div class="ml-auto flex gap-3">
-              @if (!isLast()) {
-                <button
-                  type="button"
-                  (click)="nextChallenge()"
-                  [disabled]="!solved()"
-                  class="rounded-full bg-accent-deep px-5 py-2.5 text-[19px] font-semibold text-white shadow-raised transition-[filter,opacity] hover:brightness-110 active:shadow-inset disabled:opacity-40"
-                >
-                  {{ ex.nextChallenge }} <span aria-hidden="true">→</span>
-                </button>
-              }
-              <button
-                type="button"
-                (click)="reset()"
-                class="rounded-full bg-raised px-5 py-2.5 text-[19px] font-semibold text-muted shadow-raised hover:text-paper active:shadow-inset"
-              >
-                {{ ex.reset }}
-              </button>
-            </div>
-          </div>
+        <p aria-live="polite" class="ml-auto text-[24px] font-semibold text-kit-value">
+          @if (solved()) {
+            {{ isLast() ? ex.allDone : ex.solved }}
+          }
+        </p>
+        <div class="flex gap-3">
+          @if (!isLast()) {
+            <button
+              type="button"
+              (click)="nextChallenge()"
+              [disabled]="!solved()"
+              class="rounded-full bg-accent-deep px-5 py-2.5 text-[19px] font-semibold text-white shadow-raised transition-[filter,opacity] hover:brightness-110 active:shadow-inset disabled:opacity-40"
+            >
+              {{ ex.nextChallenge }} <span aria-hidden="true">→</span>
+            </button>
+          }
+          <button
+            type="button"
+            (click)="reset()"
+            class="rounded-full bg-raised px-5 py-2.5 text-[19px] font-semibold text-muted shadow-raised hover:text-paper active:shadow-inset"
+          >
+            {{ ex.reset }}
+          </button>
         </div>
       </div>
     </div>

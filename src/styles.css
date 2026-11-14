@@ -113,7 +113,7 @@
 
   /* Linha que não roda nesta etapa (o if pulou): some quase toda, mas continua legível */
   .kit-line-skip {
-    opacity: 0.22 !important;
+    opacity: 0.14 !important;
   }
 
   .kit-line-active {
