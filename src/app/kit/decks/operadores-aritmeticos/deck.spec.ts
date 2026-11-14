@@ -8,7 +8,8 @@ const lesson = tracks[0].lessons.find((l) => l.slug === 'operadores-aritmeticos'
 
 describe('aula operadores aritméticos', () => {
   it('está no catálogo, logo depois de variáveis e tipos', () => {
-    expect(tracks[0].lessons.map((l) => l.slug)).toEqual(['variaveis-e-tipos', 'operadores-aritmeticos']);
+    const slugs = tracks[0].lessons.map((l) => l.slug);
+    expect(slugs.indexOf('operadores-aritmeticos')).toBe(slugs.indexOf('variaveis-e-tipos') + 1);
   });
 
   it('todo trecho de código existe nas três sintaxes', () => {
