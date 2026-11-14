@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { type ExprSlide, type Syntax, pick } from '../kit.data';
 import { ROLE_CLASS } from '../ui/code/code';
-import { parseExpr } from '../ui/code/code-markup';
+import { type ExprPart, parseExpr } from '../ui/code/code-markup';
 
 /**
  * Conta passo a passo: cada etapa acrescenta uma linha à "escada" da expressão. A linha atual fica
@@ -64,18 +64,25 @@ export class ExprView {
 
   readonly role: Record<string, string> = ROLE_CLASS;
 
-  /** Linhas da conta atual: da última etapa com `reset` até a etapa ativa. */
+  /**
+   * Linhas da conta atual, da última etapa com `reset` até a etapa ativa. Uma etapa com `replace`
+   * troca a linha anterior e mantém a chave dela (a linha muda sem animar de novo).
+   */
   readonly lines = computed(() => {
-    const steps = this.slide().steps.slice(0, this.step() + 1);
-    let start = 0;
-    steps.forEach((s, i) => {
-      if (s.reset) start = i;
-    });
-    return steps.slice(start).map((s, i) => ({
-      key: start + i,
-      result: !!s.result,
-      parts: parseExpr(pick(s.expr, this.syntax()) ?? ''),
-    }));
+    const lines: { key: number; result: boolean; parts: ExprPart[] }[] = [];
+    this.slide()
+      .steps.slice(0, this.step() + 1)
+      .forEach((s, i) => {
+        if (s.reset) lines.length = 0;
+        const line = {
+          key: i,
+          result: !!s.result,
+          parts: parseExpr(pick(s.expr, this.syntax()) ?? ''),
+        };
+        if (s.replace && lines.length) lines[lines.length - 1] = { ...line, key: lines[lines.length - 1].key };
+        else lines.push(line);
+      });
+    return lines;
   });
 
   /** A legenda mais recente até a etapa ativa. */

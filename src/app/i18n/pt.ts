@@ -374,6 +374,12 @@ export const pt: Dictionary = {
               'Como um programa guarda, nomeia e reconhece informações, explicado com baús, etiquetas e itens.',
             duration: '10 min a 4 h',
           },
+          'operadores-aritmeticos': {
+            title: 'Operadores Aritméticos',
+            summary:
+              'Como fazer contas com os valores guardados: os cinco operadores, a ordem das operações e os atalhos de atribuição.',
+            duration: '10 min a 3 h',
+          },
         },
       },
     },

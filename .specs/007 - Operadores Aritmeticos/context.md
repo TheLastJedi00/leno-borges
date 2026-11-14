@@ -40,7 +40,8 @@ Implementação:
 Metáfora continua a mesma: o operador **abre os baús, faz a conta com os itens e guarda o resultado** em um baú. Exemplos genéricos do dia a dia (carrinho, notas, saldo, relógio).
 
 - **Essencial (E):** 10 slides, cerca de 10 min.
-- **Completo (E + A):** 23 slides em cada sintaxe (21 comuns, 1 só de Java e 1 só de JS/TS).
+- **Completo (E + A):** 22 slides em cada sintaxe: 21 comuns e 1 exclusivo (slide 7 só em Java, slide 18 só em JS/TS).
+- Os números da tabela são a ordem no roteiro Completo com todos os slides; no Essencial, o player numera de 1 a 10 só os slides E.
 
 | # | Roteiro | Slide | Tipo | O que mostra |
 |---|---|---|---|---|

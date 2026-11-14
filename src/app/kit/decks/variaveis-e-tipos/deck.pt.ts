@@ -1,24 +1,9 @@
-import type { BySyntax, ChestShape, ChestState, Deck } from '../../kit.data';
+import type { ChestState, Deck } from '../../kit.data';
+import { chest } from '../chests';
 import { code, only } from './code';
 
 // Aula 1 da trilha Lógica de Programação. Conteúdo em PT; roteiro em .specs/006 - Kit de Ensino/context.md
 // Metáfora: baú = variável, etiqueta = nome, item = valor, formato do baú = tipo.
-
-/** Nome do tipo escrito no baú, por sintaxe (em JS é o que `typeof` responde). */
-const TYPE: Record<Exclude<ChestShape, 'any'>, BySyntax> = {
-  text: { js: 'string', ts: 'string', java: 'String' },
-  int: { js: 'number', ts: 'number', java: 'int' },
-  decimal: { js: 'number', ts: 'number', java: 'double' },
-  bool: { js: 'boolean', ts: 'boolean', java: 'boolean' },
-};
-
-function chest(
-  id: string,
-  shape: Exclude<ChestShape, 'any'>,
-  extra: Partial<ChestState> = {},
-): ChestState {
-  return { id, shape, typeName: TYPE[shape], ...extra };
-}
 
 const idade = (extra: Partial<ChestState> = {}) => chest('idade', 'int', extra);
 
