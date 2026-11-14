@@ -6,6 +6,7 @@ import {
   type Syntax,
   flowRoute,
   pick,
+  sorterRoute,
   stepCount,
 } from '../kit.data';
 import { visibleSlides } from '../player/player-state';
@@ -154,11 +155,20 @@ export function branchProblems(deck: Deck): string[] {
     if (slide.kind !== 'branch') continue;
     const code = plainCode(pick(slide.code, 'js') ?? '');
     const flow = pick(slide.flow, 'js');
+    const sorter = pick(slide.sorter, 'js');
     for (const choice of slide.choices) {
       const expected = pick(choice.output, 'js') ?? '';
       const actual = runJs(codeWithValue(code, choice.value));
       if (actual !== expected) {
         problems.push(`${slide.id}, valor ${choice.value}: imprime ${JSON.stringify(actual)}, o slide mostra ${JSON.stringify(expected)}`);
+      }
+      if (sorter) {
+        const { ran } = sorterRoute({ ...sorter, value: choice.value, dropped: true });
+        const outs = [...sorter.cases.map((c) => c.out ?? ''), sorter.fallback?.out ?? ''];
+        const shown = ran.map((i) => outs[i].replace(/^"(.*)"$/, '$1')).filter(Boolean).join('\n');
+        if (shown !== expected) {
+          problems.push(`${slide.id}, valor ${choice.value}: triagem roda ${JSON.stringify(shown)}, a saída é ${JSON.stringify(expected)}`);
+        }
       }
       if (flow) {
         const { taken } = flowRoute({ ...flow, answers: choice.answers ?? [] });

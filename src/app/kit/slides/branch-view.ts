@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { I18n } from '../../i18n/i18n';
-import { type BranchSlide, type FlowState, type Syntax, pick } from '../kit.data';
+import { type BranchSlide, type FlowState, type SorterState, type Syntax, pick } from '../kit.data';
 import { Code } from '../ui/code/code';
 import { codeWithValue } from '../ui/code/code-markup';
 import { Flow, flowLayout } from '../ui/flow/flow';
+import { Sorter, sorterLayout } from '../ui/switch/sorter';
 
 /** Espaço da ilustração na coluna da direita do exercício. */
 const FIG_W = 552;
@@ -16,7 +17,7 @@ const FIG_H = 360;
  */
 @Component({
   selector: 'kit-branch-view',
-  imports: [Code, Flow],
+  imports: [Code, Flow, Sorter],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -55,6 +56,11 @@ const FIG_H = 360;
           @if (flow(); as fl) {
             <div class="flex min-h-0 flex-1 items-center justify-center">
               <kit-flow [style.zoom]="flowZoom()" [state]="fl"></kit-flow>
+            </div>
+          }
+          @if (sorter(); as so) {
+            <div class="flex min-h-0 flex-1 items-center justify-center">
+              <kit-switch [style.zoom]="sorterZoom()" [state]="so"></kit-switch>
             </div>
           }
         </div>
@@ -128,6 +134,19 @@ export class BranchView {
     const base = pick(this.slide().flow, this.syntax());
     if (!base) return 1;
     const { width, height } = flowLayout({ ...base, answers: [] });
+    return Math.min(1, FIG_W / width, FIG_H / height);
+  });
+  readonly sorter = computed<SorterState | undefined>(() => {
+    const base = pick(this.slide().sorter, this.syntax());
+    return base ? { ...base, value: this.current().value, dropped: true } : undefined;
+  });
+  /** Escala fixa do slide: a do valor mais largo, com o item no escaninho mais baixo. */
+  readonly sorterZoom = computed(() => {
+    const base = pick(this.slide().sorter, this.syntax());
+    if (!base) return 1;
+    const sizes = this.slide().choices.map((c) => sorterLayout({ ...base, value: c.value, dropped: true }));
+    const width = Math.max(...sizes.map((s) => s.width));
+    const height = Math.max(...sizes.map((s) => s.height));
     return Math.min(1, FIG_W / width, FIG_H / height);
   });
   readonly goal = computed(() => this.slide().goals[this.index()]);

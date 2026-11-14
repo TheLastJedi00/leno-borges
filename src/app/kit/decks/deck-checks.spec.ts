@@ -33,3 +33,29 @@ describe('branchProblems', () => {
     expect(branchProblems(deck('Entra', [true], ['Entra', 'X'])).length).toBe(1);
   });
 });
+
+describe('branchProblems com triagem', () => {
+  const sw = (output: string): Deck => ({
+    slides: [
+      {
+        id: 's',
+        kind: 'branch',
+        depth: 'extra',
+        tag: 'Exercício',
+        title: 't',
+        lead: 'l',
+        notes: ['n'],
+        variable: 'dia',
+        code: `{k:let} {n:dia} = {v:@@};\n{k:switch} ({n:dia}) {\n  {k:case} {v:1}: {f:console.log}({v:"Dom"});\n  {k:default}: {f:console.log}({v:"?"});\n}`,
+        sorter: { cases: [{ label: '1', out: '"Dom"' }], fallback: { out: '"?"' } },
+        choices: [{ value: '1', output }],
+        goals: [output],
+      },
+    ],
+  });
+
+  it('confere o que a queda imprime', () => {
+    expect(branchProblems(sw('Dom\n?'))).toEqual([]);
+    expect(branchProblems(sw('Dom')).length).toBe(2);
+  });
+});
