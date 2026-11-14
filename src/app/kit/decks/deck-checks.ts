@@ -173,6 +173,7 @@ export function branchProblems(deck: Deck): string[] {
     const code = plainCode(pick(slide.code, 'js') ?? '');
     const flow = pick(slide.flow, 'js');
     const sorter = pick(slide.sorter, 'js');
+    const list = pick(slide.list, 'js');
     for (const choice of slide.choices) {
       const expected = pick(choice.output, 'js') ?? '';
       const actual = runJs(codeWithValue(code, choice.value));
@@ -185,6 +186,14 @@ export function branchProblems(deck: Deck): string[] {
         const shown = ran.map((i) => outs[i].replace(/^"(.*)"$/, '$1')).filter(Boolean).join('\n');
         if (shown !== expected) {
           problems.push(`${slide.id}, valor ${choice.value}: triagem roda ${JSON.stringify(shown)}, a saída é ${JSON.stringify(expected)}`);
+        }
+      }
+      if (list) {
+        // Gaveteiro: a gaveta do índice escolhido guarda o que o código imprime.
+        const item = list.items[Number(choice.value)];
+        const shown = item ? item.value.replace(/^"(.*)"$/, '$1') : 'undefined';
+        if (shown !== expected) {
+          problems.push(`${slide.id}, valor ${choice.value}: gaveta com ${JSON.stringify(shown)}, a saída é ${JSON.stringify(expected)}`);
         }
       }
       if (flow) {

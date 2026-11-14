@@ -1,14 +1,28 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { I18n } from '../../i18n/i18n';
-import { type BranchSlide, type FlowState, type SorterState, type Syntax, pick } from '../kit.data';
+import {
+  type BranchSlide,
+  type FlowState,
+  type ListState,
+  type SorterState,
+  type Syntax,
+  pick,
+} from '../kit.data';
 import { Code } from '../ui/code/code';
 import { codeWithValue, fitFontSize } from '../ui/code/code-markup';
 import { Flow, flowLayout } from '../ui/flow/flow';
+import { List, listLayout } from '../ui/list/list';
 import { Sorter, sorterLayout } from '../ui/switch/sorter';
 
 /** Espaço da ilustração na coluna da direita do exercício. */
 const FIG_W = 552;
 const FIG_H = 360;
+
+/** Gaveteiro com o índice `value` lido: em destaque se existe, fantasma se não. */
+function listAt(base: Omit<ListState, 'focus' | 'outside'>, value: string): ListState {
+  const index = Number(value);
+  return index < base.items.length ? { ...base, focus: index } : { ...base, outside: index };
+}
 
 /**
  * Exercício "escolha o valor": a turma troca o valor da variável (botões, Tab e Enter) e vê o
@@ -17,7 +31,7 @@ const FIG_H = 360;
  */
 @Component({
   selector: 'kit-branch-view',
-  imports: [Code, Flow, Sorter],
+  imports: [Code, Flow, Sorter, List],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -61,6 +75,11 @@ const FIG_H = 360;
           @if (sorter(); as so) {
             <div class="flex min-h-0 flex-1 items-center justify-center">
               <kit-switch [style.zoom]="sorterZoom()" [state]="so"></kit-switch>
+            </div>
+          }
+          @if (list(); as li) {
+            <div class="flex min-h-0 flex-1 items-center justify-center">
+              <kit-list [style.zoom]="listZoom()" [state]="li"></kit-list>
             </div>
           }
         </div>
@@ -149,6 +168,20 @@ export class BranchView {
     const base = pick(this.slide().sorter, this.syntax());
     if (!base) return 1;
     const sizes = this.slide().choices.map((c) => sorterLayout({ ...base, value: c.value, dropped: true }));
+    const width = Math.max(...sizes.map((s) => s.width));
+    const height = Math.max(...sizes.map((s) => s.height));
+    return Math.min(1, FIG_W / width, FIG_H / height);
+  });
+  /** Gaveteiro: o valor escolhido é o índice lido (gaveta em destaque, ou fantasma se não existir). */
+  readonly list = computed<ListState | undefined>(() => {
+    const base = pick(this.slide().list, this.syntax());
+    return base ? listAt(base, this.current().value) : undefined;
+  });
+  /** Escala fixa do slide: a do índice mais distante entre os valores. */
+  readonly listZoom = computed(() => {
+    const base = pick(this.slide().list, this.syntax());
+    if (!base) return 1;
+    const sizes = this.slide().choices.map((c) => listLayout(listAt(base, c.value)));
     const width = Math.max(...sizes.map((s) => s.width));
     const height = Math.max(...sizes.map((s) => s.height));
     return Math.min(1, FIG_W / width, FIG_H / height);
