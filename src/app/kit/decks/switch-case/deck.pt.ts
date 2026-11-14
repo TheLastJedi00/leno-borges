@@ -196,6 +196,30 @@ export const deck: Deck = {
       ],
     },
 
+    // 6 · A
+    {
+      id: 'exercicio-menu',
+      kind: 'predict',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'O que aparece?',
+      question: 'A opção escolhida no menu foi 2. O que o programa mostra?',
+      code: code.predictMenu,
+      options: ['Salvar', 'Salvar e Sair', 'Abrir, Salvar e Sair', 'Nada'],
+      answer: 1,
+      explanation: 'Cai no case 2 e mostra Salvar. Sem break, continua no case 3 e mostra Sair, e só então para.',
+      trace: [
+        { activeLine: 1, chests: [int('op', '2', { focus: 'item' })] },
+        { activeLine: 4, skip: [3] },
+        { activeLine: 5, skip: [3] },
+      ],
+      notes: [
+        '30 segundos para cada pessoa decidir sozinha, depois votação',
+        'Quem marcou "Salvar" esqueceu que falta o break no case 2',
+        'Quem marcou "Abrir, Salvar e Sair" achou que começa do primeiro case',
+      ],
+    },
+
     // 7 · E
     {
       id: 'casos-juntos',
@@ -264,6 +288,125 @@ export const deck: Deck = {
       ],
     },
 
+    // 9 · A (só JS/TS)
+    {
+      id: 'compara-estrito',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      syntaxes: ['js', 'ts'],
+      title: 'O switch compara com ===',
+      description:
+        'O item "5", um texto, desce pela calha e não confere com a etiqueta case 5, um número: cai no default.',
+      code: only.strict,
+      steps: [
+        {
+          caption: 'O valor é o texto "5"; a etiqueta é o número 5.',
+          activeLine: 2,
+          sorter: { js: at(STRICT, '"5"', false), ts: at(STRICT, '"5"', false) },
+        },
+        {
+          caption: {
+            js: '"5" === 5 é false: não confere e cai no default.',
+            ts: 'O TS recusa antes de rodar: texto nunca é igual a número.',
+          },
+          activeLine: { js: 4, ts: 3 },
+          skip: { js: [3], ts: [] },
+          sorter: { js: at(STRICT, '"5"'), ts: at(STRICT, '"5"', false) },
+          output: { js: 'outro', ts: TS_NOT_COMPARABLE },
+          outputTone: { js: 'ok', ts: 'error' },
+        },
+      ],
+      notes: [
+        'O switch usa === (aula 3): tipo e valor precisam bater',
+        'Valor que vem de um campo de texto chega como texto: converter com Number() antes',
+        'TS: o erro aparece no case, antes de rodar (TS2678)',
+      ],
+    },
+
+    // 10 · A (só Java)
+    {
+      id: 'java-tipos',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      syntaxes: ['java'],
+      title: 'O que o switch do Java aceita',
+      code: only.javaDuplicate,
+      steps: [
+        {
+          caption: 'Duas etiquetas iguais: o Java recusa antes de rodar.',
+          activeLine: 4,
+          output: JAVA_DUPLICATE,
+          outputTone: 'error',
+        },
+        {
+          caption: 'Aceita int, char, String e enum. Com double, boolean ou long, não compila.',
+        },
+      ],
+      notes: [
+        'Também vale para Integer, Character, byte e short',
+        'Com double ou boolean, o javac 17 dá uma mensagem confusa ("patterns in switch statements are a preview feature"): o recado é que esse tipo não serve',
+        'Para faixas de valores e decimais, if / else if (aula 5)',
+      ],
+    },
+
+    // 11 · A (só Java)
+    {
+      id: 'java-seta',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      syntaxes: ['java'],
+      title: 'Java moderno: case com seta',
+      code: only.javaArrow,
+      steps: [
+        {
+          caption: 'Com ->, cada case roda só o seu: sem break e sem queda. Vários valores com vírgula.',
+          activeLine: 3,
+        },
+        {
+          caption: 'E o switch pode devolver um valor, que cabe num baú.',
+          activeLine: 6,
+          output: 'Folga',
+        },
+      ],
+      notes: [
+        'Existe desde o Java 14; o switch de dois-pontos continua valendo',
+        'Também serve sem devolver valor: case 1, 7 -> System.out.println("Folga");',
+        'O switch que devolve valor precisa cobrir todos os casos: daí o default',
+        'Termina com ; depois da chave, porque é uma atribuição',
+      ],
+    },
+
+    // 12 · A (só JS/TS)
+    {
+      id: 'switch-true',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      syntaxes: ['js', 'ts'],
+      title: 'switch (true)',
+      code: only.switchTrue,
+      steps: [
+        {
+          caption: 'Truque: o valor é true, e cada case é uma pergunta.',
+          activeLine: 2,
+        },
+        {
+          caption: 'Cai no primeiro case cuja pergunta dá true.',
+          activeLine: 4,
+          skip: [3, 5],
+          output: 'B',
+        },
+      ],
+      notes: [
+        'Funciona porque cada case é comparado com true usando ===',
+        'Faz o mesmo que o else if da aula 5, que costuma ser mais claro',
+        'Java não aceita: as etiquetas precisam ser valores fixos',
+      ],
+    },
+
     // 13 · E
     {
       id: 'switch-ou-if',
@@ -288,6 +431,81 @@ export const deck: Deck = {
         'Tudo o que o switch faz, o if também faz; o contrário não',
         'O switch deixa claro que a decisão depende de um valor só',
         'Na dúvida, if: é mais flexível',
+      ],
+    },
+
+    // 14 · A
+    {
+      id: 'exercicio-switch-ou-if',
+      kind: 'sort',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'switch ou if?',
+      lead: 'Qual combina mais com cada situação?',
+      bins: [
+        { id: 'switch', shape: 'text', label: 'switch' },
+        { id: 'if', shape: 'text', label: 'if' },
+      ],
+      items: [
+        { value: 'Opção 1 a 4 do menu', bin: 'switch' },
+        { value: 'Conceito pela nota', bin: 'if' },
+        { value: 'Cor do semáforo', bin: 'switch' },
+        { value: 'Idade e ingresso', bin: 'if' },
+        { value: 'Dia pelo número', bin: 'switch' },
+        { value: 'Frete acima de 200', bin: 'if' },
+        { value: 'Operador + - * /', bin: 'switch' },
+        { value: 'Temperatura abaixo de 0', bin: 'if' },
+      ],
+      notes: [
+        'Pergunta-chave: é "igual a qual destes valores?" (switch) ou "maior, menor, e, ou?" (if)',
+        'Conceito pela nota é faixa: if (ou o switch (true), que é um if disfarçado)',
+        'Idade e ingresso são dois valores: if com &&',
+      ],
+    },
+
+    // 15 · A
+    {
+      id: 'exercicio-valor',
+      kind: 'branch',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'Escolha o dia',
+      lead: 'Troque o valor e veja onde o item cai, e até onde a execução escorrega.',
+      variable: 'dia',
+      code: code.fallThrough,
+      sorter: FALL,
+      choices: [
+        { value: '1', output: 'Dom\nSeg\nTer' },
+        { value: '2', output: 'Seg\nTer' },
+        { value: '3', output: 'Ter' },
+        { value: '9', output: 'Inválido' },
+      ],
+      goals: ['Ter', 'Seg\nTer', 'Inválido'],
+      notes: [
+        'Chamar alguém da turma para escolher o valor',
+        'Antes de clicar, pedir para a pessoa dizer até onde a execução vai cair',
+        'Desafio 2: Seg e Ter juntos só acontecem pela queda a partir do case 2',
+      ],
+    },
+
+    // 16 · A
+    {
+      id: 'att-1990',
+      kind: 'cards',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: 'O break que parou os EUA',
+      lead: 'Em 15 de janeiro de 1990, a rede de longa distância da AT&T ficou fora do ar por cerca de 9 horas.',
+      cards: [
+        { title: 'A causa', value: '{k:break};', text: 'Um break no lugar errado, dentro de um switch em C, saía antes da hora.' },
+        { title: 'O efeito', value: '{v:9 h}', text: 'Milhões de ligações não completadas nos Estados Unidos.' },
+        { title: 'A lição', value: '{k:case} {k:break}', text: 'Cada break muda o caminho: teste cada case.' },
+      ],
+      notes: [
+        'O código novo tinha sido instalado nas centrais semanas antes',
+        'Uma central reiniciava, avisava as vizinhas, e o erro fazia as vizinhas reiniciarem também, em cadeia',
+        'Não era falta de break, e sim um break que pulava um trecho importante',
+        'Moral: switch parece simples, mas o caminho da execução precisa ser testado',
       ],
     },
 
