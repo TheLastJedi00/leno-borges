@@ -556,7 +556,7 @@ export const deck: Deck = {
       notes: [
         'Pedir para a turma escrever um switch para um menu de 3 opções',
         'Lembrar: switch para valores fixos, if para faixas e combinações',
-        'Próxima aula: laços de repetição, fazer o programa repetir uma tarefa',
+        'Próxima aula: listas, guardar vários valores com um nome só',
         'Abrir para perguntas',
       ],
     },

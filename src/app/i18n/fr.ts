@@ -407,6 +407,12 @@ export const fr: Dictionary = {
               'Comment choisir un chemin parmi plusieurs à partir d’une seule valeur avec switch, case, break et default, expliqué avec des casiers de tri.',
             duration: '10 min à 3 h',
           },
+          listas: {
+            title: 'Listes',
+            summary:
+              'Comment garder plusieurs valeurs sous un seul nom et lire, ajouter, remplacer, retirer et chercher des éléments, expliqué avec un classeur à tiroirs numérotés.',
+            duration: '10 min à 3 h',
+          },
         },
       },
     },

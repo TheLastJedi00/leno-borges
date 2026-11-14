@@ -23,7 +23,8 @@ export type LessonId =
   | 'operadores-relacionais'
   | 'operadores-logicos'
   | 'condicionais'
-  | 'switch-case';
+  | 'switch-case'
+  | 'listas';
 
 export interface Lesson {
   slug: LessonId;
@@ -482,6 +483,12 @@ export const tracks: Track[] = [
         syntaxes: ['js', 'ts', 'java'],
         counts: { essencial: 10, completo: 16 },
         load: () => import('./decks/switch-case/deck.pt').then((m) => m.deck),
+      },
+      {
+        slug: 'listas',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 21 },
+        load: () => import('./decks/listas/deck.pt').then((m) => m.deck),
       },
     ],
   },
