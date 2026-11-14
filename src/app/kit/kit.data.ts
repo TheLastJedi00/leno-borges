@@ -228,7 +228,7 @@ export const tracks: Track[] = [
       {
         slug: 'operadores-aritmeticos',
         syntaxes: ['js', 'ts', 'java'],
-        counts: { essencial: 10, completo: 23 },
+        counts: { essencial: 10, completo: 22 },
         load: () => import('./decks/operadores-aritmeticos/deck.pt').then((m) => m.deck),
       },
     ],
