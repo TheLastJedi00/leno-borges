@@ -1,6 +1,6 @@
 import type { ChestState, Deck } from '../../kit.data';
 import { chest } from '../chests';
-import { code } from './code';
+import { code, only } from './code';
 
 // Aula 3 da trilha Lógica de Programação. Conteúdo em PT; roteiro em
 // .specs/008 - Operadores Relacionais e Logicos/context.md
@@ -12,6 +12,16 @@ const int = (id: string, item: string, extra: Partial<ChestState> = {}) =>
   chest(id, 'int', { open: true, label: id, item, ...extra });
 const bool = (id: string, item: string, extra: Partial<ChestState> = {}) =>
   chest(id, 'bool', { open: true, label: id, item, ...extra });
+const text = (id: string, item: string, extra: Partial<ChestState> = {}) =>
+  chest(id, 'text', { open: true, label: id, item, ...extra });
+
+/** Erros conferidos no `tsc` 5.9 (TS2367 e TS2365). */
+const TS_NO_OVERLAP =
+  "error: This comparison appears to be unintentional because the types 'string' and 'number' have no overlap.";
+const TS_BOOL_NUMBER = (op: string) =>
+  `error: Operator '${op}' cannot be applied to types 'boolean' and 'number'.`;
+/** Erro do `javac` (JDK 9 ou mais novo) ao comparar boolean com int. */
+const JAVA_BAD_OPERANDS = (op: string) => `error: bad operand types for binary operator '${op}'`;
 
 export const deck: Deck = {
   slides: [
@@ -175,6 +185,35 @@ export const deck: Deck = {
       ],
     },
 
+    // 7 · A
+    {
+      id: 'exercicio-vf',
+      kind: 'sort',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'Verdadeiro ou falso?',
+      lead: 'Em qual baú cai a resposta de cada comparação?',
+      bins: [
+        { id: 'true', shape: 'bool', label: 'true' },
+        { id: 'false', shape: 'bool', label: 'false' },
+      ],
+      items: [
+        { value: '7 > 3', bin: 'true' },
+        { value: '2 >= 2', bin: 'true' },
+        { value: '5 < 5', bin: 'false' },
+        { value: '9 <= 4', bin: 'false' },
+        { value: '3 * 2 > 5', bin: 'true' },
+        { value: '10 / 2 < 5', bin: 'false' },
+        { value: '0 >= -1', bin: 'true' },
+        { value: '1 + 1 <= 2', bin: 'true' },
+      ],
+      notes: [
+        'Deixar a turma decidir cada item em voz alta antes de soltar',
+        'Pegadinhas de borda: 2 >= 2 é true, 5 < 5 é false',
+        'Com conta: primeiro calcula (3 * 2 = 6), depois compara',
+      ],
+    },
+
     // 8 · E
     {
       id: 'guarda-compara',
@@ -202,6 +241,45 @@ export const deck: Deck = {
         'Erro clássico: escrever = querendo comparar',
         'JS: o = troca o valor do baú sem avisar; TS e Java costumam recusar',
         'Ler = como "recebe" e ===/== como "é igual a?"',
+      ],
+    },
+
+    // 9 · A (só JS/TS)
+    {
+      id: 'igual-solto',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      syntaxes: ['js', 'ts'],
+      title: '== ou ===?',
+      code: only.looseEquals,
+      steps: [
+        {
+          caption: {
+            js: '== converte antes de comparar: o texto "5" vira o número 5.',
+            ts: 'TypeScript recusa antes de rodar: texto e número nunca são iguais.',
+          },
+          lines: 1,
+          activeLine: 1,
+          output: { js: 'true', ts: TS_NO_OVERLAP },
+          outputTone: { js: 'ok', ts: 'error' },
+        },
+        {
+          caption: {
+            js: '=== compara também o tipo: texto não é número. Use sempre ===.',
+            ts: 'Com === também. Em TS e JS, a regra é usar sempre ===.',
+          },
+          lines: 2,
+          activeLine: 2,
+          output: { js: 'true\nfalse', ts: TS_NO_OVERLAP },
+          outputTone: { js: 'ok', ts: 'error' },
+        },
+      ],
+      notes: [
+        '== é a "igualdade frouxa": converte os tipos com regras difíceis de lembrar',
+        'Exemplos estranhos do ==: 0 == "" é true, null == undefined é true',
+        'Linters (ESLint) avisam quando alguém usa ==',
+        '!= e !== seguem a mesma regra',
       ],
     },
 
@@ -237,6 +315,89 @@ export const deck: Deck = {
       ],
     },
 
+    // 11 · A (só Java)
+    {
+      id: 'java-string-igual',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Aprofundamento',
+      syntaxes: ['java'],
+      title: '== em texto no Java',
+      description: 'Os baús a e b guardam o texto "Ana". a == b responde false; a.equals(b) responde true.',
+      code: only.javaStringEquals,
+      steps: [
+        {
+          caption: 'Dois baús, o mesmo texto dentro.',
+          lines: 2,
+          activeLine: null,
+          chests: [text('a', '"Ana"'), text('b', '"Ana"')],
+        },
+        {
+          caption: '== pergunta se é o mesmo baú, não se o conteúdo é igual.',
+          lines: 3,
+          activeLine: 3,
+          chests: [text('a', '"Ana"', { focus: 'chest' }), text('b', '"Ana"', { focus: 'chest' })],
+          output: 'false',
+        },
+        {
+          caption: 'equals compara o conteúdo, letra por letra.',
+          lines: 4,
+          activeLine: 4,
+          chests: [text('a', '"Ana"', { focus: 'item' }), text('b', '"Ana"', { focus: 'item' })],
+          output: 'false\ntrue',
+        },
+      ],
+      notes: [
+        'String é um objeto: == compara o endereço na memória (aula 1), não o texto',
+        'Pegadinha: "Ana" == "Ana" escrito direto pode dar true (o Java reaproveita textos iguais), e isso engana',
+        'Regra: texto em Java sempre com equals',
+      ],
+    },
+
+    // 12 · A
+    {
+      id: 'ordem-alfabetica',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: 'Ordem alfabética',
+      code: code.order,
+      steps: [
+        {
+          caption: {
+            js: 'Com texto, < e > comparam a ordem alfabética: banana vem antes de maçã.',
+            ts: 'Com texto, < e > comparam a ordem alfabética: banana vem antes de maçã.',
+            java: 'Em Java, < não vale para texto: compareTo responde com um número.',
+          },
+          activeLine: { js: 1, ts: 1, java: 3 },
+          output: { js: 'true', ts: 'true', java: '-7' },
+        },
+        {
+          caption: {
+            js: 'Maiúsculas vêm antes das minúsculas: Zebra vem antes de abelha.',
+            ts: 'Maiúsculas vêm antes das minúsculas: Zebra vem antes de abelha.',
+            java: 'Negativo quer dizer "vem antes": maiúsculas vêm antes das minúsculas.',
+          },
+          activeLine: { js: 2, ts: 2, java: 4 },
+          output: { js: 'true\ntrue', ts: 'true\ntrue', java: '-7\ntrue' },
+        },
+        {
+          caption: {
+            js: 'E "10" < "9": compara o primeiro caractere, 1 contra 9.',
+            ts: 'E "10" < "9": compara o primeiro caractere, 1 contra 9.',
+            java: 'Cada letra é um número por baixo: Z é 90 e a é 97.',
+          },
+          activeLine: { js: 3, ts: 3, java: null },
+          output: { js: 'true\ntrue\ntrue', ts: 'true\ntrue\ntrue', java: '-7\ntrue' },
+        },
+      ],
+      notes: [
+        'Por baixo, cada caractere é um número (código Unicode): Z é 90, a é 97',
+        'Número guardado como texto se ordena errado: "10" vem antes de "9"',
+        'Para ordenar nomes de verdade: localeCompare (JS/TS) e Collator (Java)',
+      ],
+    },
+
     // 13 · E
     {
       id: 'contas-antes',
@@ -258,6 +419,190 @@ export const deck: Deck = {
         'Prioridade: contas (* / % + -), depois comparações',
         'Parênteses ajudam quem lê: (preco * qtd) > saldo',
         'Na próxima aula entram && e ||, que vêm depois das comparações',
+      ],
+    },
+
+    // 14 · A
+    {
+      id: 'exercicio-qual-false',
+      kind: 'predict',
+      depth: 'extra',
+      tag: 'Exercício',
+      title: 'Qual baú guarda false?',
+      question: 'Depois das quatro linhas, qual baú guarda false?',
+      code: code.predictFalse,
+      options: ['b', 'c', 'd', 'Nenhum'],
+      answer: 1,
+      explanation: 'b: 8 > 7 é true. c: 4 % 2 dá 0, e 0 não é 1, então false. d: 5 >= 5 é true.',
+      trace: [
+        { activeLine: 1, chests: [int('a', '4', { focus: 'item' })] },
+        { activeLine: 2, chests: [int('a', '4'), bool('b', 'true', { focus: 'item' })] },
+        {
+          activeLine: 3,
+          chests: [int('a', '4'), bool('b', 'true'), bool('c', 'false', { focus: 'item' })],
+        },
+        {
+          activeLine: 4,
+          chests: [
+            int('a', '4'),
+            bool('b', 'true'),
+            bool('c', 'false'),
+            bool('d', 'true', { focus: 'item' }),
+          ],
+        },
+      ],
+      notes: [
+        '30 segundos para cada pessoa decidir sozinha, depois votação',
+        'Quem marcou d esqueceu o igual do >=',
+        'Revelar linha a linha com a seta',
+      ],
+    },
+
+    // 15 · A
+    {
+      id: 'ponto-flutuante',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: '0.1 + 0.2 é igual a 0.3?',
+      code: code.float,
+      steps: [
+        {
+          caption: 'A soma guarda 0.30000000000000004, então não é igual a 0.3.',
+          lines: 2,
+          activeLine: 2,
+          output: 'false',
+        },
+        {
+          caption: 'Com decimais, pergunte se estão perto o bastante.',
+          lines: 4,
+          activeLine: 4,
+          output: 'false\ntrue',
+        },
+      ],
+      notes: [
+        'Retoma a curiosidade da aula 1: decimal em binário não é exato',
+        '1e-9 é 0,000000001: a tolerância aceitável depende do problema',
+        'Dinheiro: guardar em centavos inteiros evita o problema',
+      ],
+    },
+
+    // 16 · A
+    {
+      id: 'nan',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: 'NaN não é igual a nada',
+      code: code.nan,
+      steps: [
+        {
+          caption: 'NaN não é igual a nada, nem a ele mesmo.',
+          lines: 1,
+          activeLine: 1,
+          output: 'false',
+        },
+        {
+          caption: {
+            js: 'Para saber se é NaN, use Number.isNaN.',
+            ts: 'Para saber se é NaN, use Number.isNaN.',
+            java: 'Para saber se é NaN, use Double.isNaN.',
+          },
+          lines: 2,
+          activeLine: 2,
+          output: 'false\ntrue',
+        },
+      ],
+      notes: [
+        'NaN veio da aula 2: 0 / 0 e texto em conta (JS)',
+        'A regra vem do padrão de números decimais (IEEE 754), igual nas três linguagens',
+        'Curiosidade: NaN é o único valor diferente dele mesmo',
+      ],
+    },
+
+    // 17 · A
+    {
+      id: 'encadear',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Curiosidade',
+      title: '3 > 2 > 1',
+      code: code.chain,
+      steps: [
+        {
+          caption: {
+            js: 'Parece funcionar…',
+            ts: 'TypeScript recusa: depois da primeira comparação sobra um boolean.',
+            java: 'Java recusa: depois da primeira comparação sobra um boolean.',
+          },
+          lines: 1,
+          activeLine: 1,
+          output: { js: 'true', ts: TS_BOOL_NUMBER('<'), java: JAVA_BAD_OPERANDS('<') },
+          outputTone: { js: 'ok', ts: 'error', java: 'error' },
+        },
+        {
+          caption: {
+            js: '3 > 2 vira true, e true > 1 vira 1 > 1: false.',
+            ts: 'E boolean não se compara com número. O jeito certo usa &&, na próxima aula.',
+            java: 'E boolean não se compara com número. O jeito certo usa &&, na próxima aula.',
+          },
+          lines: 2,
+          activeLine: 2,
+          output: {
+            js: 'true\nfalse',
+            ts: TS_BOOL_NUMBER('>'),
+            java: JAVA_BAD_OPERANDS('>'),
+          },
+          outputTone: { js: 'ok', ts: 'error', java: 'error' },
+        },
+      ],
+      notes: [
+        'A comparação vai da esquerda para a direita e responde um boolean',
+        'JS converte true em 1 e false em 0 para continuar a conta',
+        'Na matemática 3 > 2 > 1 faz sentido; no código, é 3 > 2 && 2 > 1 (aula 4)',
+      ],
+    },
+
+    // 18 · A
+    {
+      id: 'desafio-par',
+      kind: 'scene',
+      depth: 'extra',
+      tag: 'Desafio',
+      title: 'Par como verdadeiro ou falso',
+      description:
+        'O baú num guarda 7 e o baú par guarda false. Depois num passa a 10 e par passa a guardar true.',
+      code: code.even,
+      steps: [
+        {
+          caption: 'Como guardar se um número é par? Use o % da aula 2.',
+          lines: 1,
+          activeLine: 1,
+          chests: [int('num', '7')],
+        },
+        {
+          caption: '7 % 2 dá 1, e 1 não é 0: par guarda false.',
+          lines: 2,
+          activeLine: 2,
+          chests: [int('num', '7'), bool('par', 'false', { focus: 'item' })],
+        },
+        {
+          caption: 'Com 10…',
+          lines: 3,
+          activeLine: 3,
+          chests: [int('num', '10', { focus: 'item' }), bool('par', 'false')],
+        },
+        {
+          caption: '…10 % 2 dá 0: par guarda true.',
+          lines: 4,
+          activeLine: 4,
+          chests: [int('num', '10'), bool('par', 'true', { focus: 'item' })],
+        },
+      ],
+      notes: [
+        'Pedir a solução para a turma antes da etapa 2',
+        'Primeiro a conta (%), depois a comparação (===/==), por fim guarda',
+        'Extensão: múltiplo de 3? num % 3 === 0',
       ],
     },
 
