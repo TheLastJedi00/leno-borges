@@ -471,6 +471,7 @@ export const fr: Dictionary = {
       goalNothing: 'Objectif : que le programme n’affiche rien.',
       valueOf: 'Valeur de',
       nothingPrinted: '(rien ne s’affiche)',
+      outsideList: 'hors de la liste',
     },
   },
 };

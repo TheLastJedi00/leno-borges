@@ -81,12 +81,12 @@ for (const slug of slugs) {
     const markup = 'code' in slide && slide.code ? pick(slide.code, 'java') : undefined;
     if (!markup) continue;
     if (slide.kind === 'branch') {
-      // Exercício "escolha o valor": roda o código com cada valor.
+      // Exercício "escolha o valor": roda o código com cada valor (a exceção conta como saída).
       for (const choice of slide.choices) {
         const expected = pick(choice.output, 'java') ?? '';
         const result = runJava(plainCode(codeWithValue(markup, choice.value)));
         checked++;
-        if (result.kind !== 'ok' || noAddress(result.lines.join('\n')) !== noAddress(expected)) {
+        if (result.kind === 'compile' || noAddress(result.lines.join('\n')) !== noAddress(expected)) {
           problems++;
           console.log(`\n✗ ${slug} / ${slide.id}, valor ${choice.value}`);
           console.log(`  slide: ${JSON.stringify(expected)}`);

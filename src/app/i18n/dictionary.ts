@@ -152,6 +152,8 @@ export interface Dictionary {
       /** Rótulo do grupo de valores, antes do nome da variável. */
       valueOf: string;
       nothingPrinted: string;
+      /** Gaveteiro da aula de listas, para leitor de tela: índice pedido que não existe. */
+      outsideList: string;
     };
   };
 }
