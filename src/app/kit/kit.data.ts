@@ -76,6 +76,18 @@ export interface ChestState {
   dim?: boolean;
 }
 
+/** Comparação desenhada na balança: um item em cada prato, operador no centro e a resposta. */
+export interface Compare {
+  left: string;
+  op: string;
+  right: string;
+  /** Etiqueta do baú de onde veio o item (opcional). */
+  leftLabel?: string;
+  rightLabel?: string;
+  /** Sem valor, a balança ainda não respondeu (a turma palpita). */
+  result?: boolean;
+}
+
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
@@ -88,6 +100,8 @@ export interface SceneStep {
   activeLine?: BySyntax<number | null>;
   output?: BySyntax | null;
   outputTone?: BySyntax<'ok' | 'error'>;
+  /** Balança da comparação; `null` tira a balança da cena. */
+  compare?: BySyntax<Compare> | null;
 }
 
 interface SlideBase {
