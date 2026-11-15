@@ -475,6 +475,7 @@ export const en: Dictionary = {
       valueOf: 'Value of',
       nothingPrinted: '(nothing is printed)',
       outsideList: 'out of the list',
+      loopLaps: 'laps',
     },
   },
 };

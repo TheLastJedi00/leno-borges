@@ -475,6 +475,7 @@ export const pt: Dictionary = {
       valueOf: 'Valor de',
       nothingPrinted: '(nada aparece)',
       outsideList: 'fora da lista',
+      loopLaps: 'voltas',
     },
   },
 };

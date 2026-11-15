@@ -67,3 +67,24 @@ describe('SceneView com gaveteiro', () => {
     expect(render(2).querySelector('kit-list')).toBeNull();
   });
 });
+
+describe('SceneView com pista do laço', () => {
+  beforeEach(() => TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] }));
+
+  it('mostra a pista da etapa', () => {
+    const fixture = TestBed.createComponent(SceneView);
+    fixture.componentRef.setInput('slide', {
+      id: 'w',
+      kind: 'scene',
+      depth: 'core',
+      title: 't',
+      notes: ['n'],
+      steps: [{ loop: { condition: 'i <= 3', body: ['i++'], laps: 1, answer: true } }],
+    } satisfies SceneSlide);
+    fixture.componentRef.setInput('syntax', 'js');
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('kit-loop .node')!.classList).toContain('is-true');
+    expect(fixture.componentInstance.loopZoom()).toBeGreaterThan(0);
+  });
+});

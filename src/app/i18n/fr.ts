@@ -478,6 +478,7 @@ export const fr: Dictionary = {
       valueOf: 'Valeur de',
       nothingPrinted: '(rien ne s’affiche)',
       outsideList: 'hors de la liste',
+      loopLaps: 'tours',
     },
   },
 };

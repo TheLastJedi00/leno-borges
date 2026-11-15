@@ -220,6 +220,23 @@ export interface ListState {
   fixed?: boolean;
 }
 
+/**
+ * Pista do laço: a condição no portão, o corpo e a seta que volta. `laps` são as voltas já
+ * completadas; `answer` é a resposta da condição nesta etapa (`null` = ainda não perguntou).
+ */
+export interface LoopState {
+  condition: string;
+  body: string[];
+  /** Começo do `for` (`let i = 1`), antes da pista. */
+  init?: string;
+  /** Passo do `for` (`i++`), no fim de cada volta. */
+  update?: string;
+  /** `do`: o corpo vem antes da condição (`do...while`). */
+  kind?: 'while' | 'do';
+  laps: number;
+  answer: boolean | null;
+}
+
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
@@ -246,6 +263,8 @@ export interface SceneStep {
   sorter?: BySyntax<SorterState> | null;
   /** Gaveteiro da lista; `null` tira o gaveteiro da cena. */
   list?: BySyntax<ListState> | null;
+  /** Pista do laço; `null` tira a pista da cena. */
+  loop?: BySyntax<LoopState> | null;
 }
 
 interface SlideBase {
@@ -412,6 +431,8 @@ export interface BranchChoice {
   answers?: boolean[];
   /** O que o programa imprime com esse valor; `""` quando nada aparece. */
   output: BySyntax;
+  /** Voltas do laço com esse valor (pista). */
+  laps?: number;
 }
 
 /**
@@ -432,6 +453,8 @@ export interface BranchSlide extends SlideBase {
   sorter?: BySyntax<Omit<SorterState, 'value' | 'dropped'>>;
   /** Gaveteiro; o valor escolhido é o índice lido (em destaque, ou fantasma se não existir). */
   list?: BySyntax<Omit<ListState, 'focus' | 'outside'>>;
+  /** Pista do laço; as voltas vêm do valor escolhido (`laps`), já terminadas. */
+  loop?: BySyntax<Omit<LoopState, 'laps' | 'answer'>>;
   choices: BranchChoice[];
   /** Valor escolhido no começo (índice em `choices`). */
   start?: number;
