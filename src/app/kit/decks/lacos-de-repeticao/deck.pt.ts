@@ -51,6 +51,18 @@ const FOR = (condition: string, body: BySyntax, update: string, from: string) =>
 const FOR3 = FOR('i <= 3', say('i'), 'i++', '1');
 const FOR_ODD = FOR('i <= 6', 'if (i % 2 == 0) continue', 'i++', '1');
 
+/** Pista do slide do do...while: o corpo do while ou do do...while, com o texto de cada um. */
+const DO_WHILE = (kind: 'while' | 'do', laps: number, answer: boolean | null): BySyntax<LoopState> => {
+  const make = (s: 'js' | 'ts' | 'java'): LoopState => ({
+    condition: 'i <= 3',
+    body: [`${s === 'java' ? 'System.out.println' : 'console.log'}("${kind}: " + i)`, 'i++'],
+    kind,
+    laps,
+    answer,
+  });
+  return { js: make('js'), ts: make('ts'), java: make('java') };
+};
+
 /** Saída da lista impressa: `console.log` do Node no JS/TS. */
 const JAVA_OUT_OF_BOUNDS = 'Exception in thread "main" java.lang.IndexOutOfBoundsException: Index 3 out of bounds for length 3';
 const JAVA_CME = 'Exception in thread "main" java.util.ConcurrentModificationException';
@@ -575,21 +587,19 @@ export const deck: Deck = {
           caption: 'Com i 5, o while pergunta antes: 5 <= 3 é false. Roda 0 vezes.',
           activeLine: 2,
           skip: [3, 4],
-          chests: [int('i', '5')],
-          loop: { condition: 'i <= 3', body: ['i++'], laps: 0, answer: false },
+          loop: DO_WHILE('while', 0, false),
         },
         {
           caption: 'O do...while roda o corpo primeiro…',
           activeLine: 7,
           skip: [3, 4],
-          loop: { condition: 'i <= 3', body: ['i++'], kind: 'do', laps: 0, answer: null },
+          loop: DO_WHILE('do', 0, null),
           output: 'do: 5',
         },
         {
           caption: '…e só depois pergunta: false, sai. Rodou uma vez.',
           activeLine: 9,
-          chests: [int('i', '6', { focus: 'item' })],
-          loop: { condition: 'i <= 3', body: ['i++'], kind: 'do', laps: 1, answer: false },
+          loop: DO_WHILE('do', 1, false),
         },
       ],
       notes: [

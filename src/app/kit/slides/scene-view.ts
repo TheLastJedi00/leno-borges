@@ -120,7 +120,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
             @if (chests().length) {
               <kit-chest-row
                 class="self-stretch"
-                [style.zoom]="compare() ? 0.6 : zoom()"
+                [style.zoom]="compare() || loop() ? 0.6 : zoom()"
                 [chests]="chests()"
                 [syntax]="syntax()"
               ></kit-chest-row>
@@ -210,7 +210,12 @@ export class SceneView {
       .map((_, i) => pick(sceneAt(steps, i).loop ?? undefined, this.syntax()))
       .filter((l) => !!l)
       .map((l) => loopLayout(l, 'voltas: 10'));
-    return flowZoom(sizes, !!this.code());
+    // Com baús ou gaveteiro na mesma cena, a pista divide a altura com eles.
+    const shared = steps.some((_, i) => {
+      const st = sceneAt(steps, i);
+      return (pick(st.chests, this.syntax()) ?? []).length > 0 || !!st.list;
+    });
+    return flowZoom(sizes, !!this.code()) * (shared ? 0.8 : 1);
   });
   readonly hasFigure = computed(
     () =>
