@@ -213,3 +213,51 @@ export function branchProblems(deck: Deck): string[] {
   }
   return problems;
 }
+
+/**
+ * Teste de mesa: roda o código em JS anotando as colunas `js` antes da linha `at` (a cada volta)
+ * e antes da linha `end` (depois do laço); a coluna `out` recebe o que foi impresso até a próxima
+ * anotação, separado por vírgula. Compara anotação por anotação com as linhas da tabela.
+ */
+export function traceProblems(deck: Deck): string[] {
+  const problems: string[] = [];
+  for (const slide of deck.slides) {
+    if (slide.kind !== 'trace') continue;
+    const exprs = slide.columns.map((c) => c.js).filter((e): e is string => !!e);
+    const lines = plainCode(pick(slide.code, 'js') ?? '').split('\n');
+    const snap = `__snap(() => [${exprs.join(', ')}]);`;
+    if (slide.end !== undefined) lines.splice(slide.end - 1, 0, snap);
+    lines.splice(slide.at - 1, 0, snap);
+
+    const snaps: { values: string[]; out: string[] }[] = [];
+    const fakeConsole = {
+      log: (...args: unknown[]) => snaps.at(-1)?.out.push(args.map((a) => nodeFormat(a)).join(' ')),
+    };
+    const __snap = (read: () => unknown[]) => {
+      if (snaps.length > 100) throw new Error('mais de 100 voltas');
+      snaps.push({ values: read().map((v) => nodeFormat(v)), out: [] });
+    };
+    try {
+      Function('console', '__snap', lines.join('\n'))(fakeConsole, __snap);
+    } catch (error) {
+      problems.push(`${slide.id}: ${String(error)}`);
+      continue;
+    }
+
+    if (snaps.length !== slide.rows.length) {
+      problems.push(`${slide.id}: ${snaps.length} anotações, a tabela tem ${slide.rows.length} linhas`);
+      continue;
+    }
+    snaps.forEach((s, r) => {
+      let e = 0;
+      slide.columns.forEach((col, c) => {
+        const actual = col.js ? s.values[e++] : col.out ? s.out.join(', ') : undefined;
+        const shown = slide.rows[r].cells[c];
+        if (actual !== undefined && actual !== shown) {
+          problems.push(`${slide.id}, linha ${r + 1}, coluna ${c + 1}: o código dá ${JSON.stringify(actual)}, a tabela mostra ${JSON.stringify(shown)}`);
+        }
+      });
+    });
+  }
+  return problems;
+}

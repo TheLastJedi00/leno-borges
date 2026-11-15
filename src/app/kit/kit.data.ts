@@ -354,6 +354,39 @@ export interface TruthSlide extends SlideBase {
   footnote?: BySyntax;
 }
 
+/** Coluna do teste de mesa: o título e, para a conferência, o que ela mostra. */
+export interface TraceColumn {
+  /** Título com a marcação de código (`{n:i} <= {v:3}`). */
+  head: BySyntax<CodeMarkup>;
+  /** Expressão em JS avaliada a cada volta (a conferência compara com a célula). */
+  js?: string;
+  /** Coluna com o que a volta imprime. Sem `js` nem `out`, é um rótulo (o número da volta). */
+  out?: boolean;
+}
+
+export interface TraceRow {
+  cells: string[];
+  /** Linha do código em destaque nesta linha da tabela. */
+  line?: BySyntax<number>;
+}
+
+/**
+ * Teste de mesa: o código e uma tabela com o valor das variáveis a cada volta, revelada uma linha
+ * por etapa. A conferência roda o código em JS anotando as colunas antes da linha `at` (a cada
+ * volta) e antes da linha `end` (depois do laço).
+ */
+export interface TraceSlide extends SlideBase {
+  kind: 'trace';
+  lead?: BySyntax;
+  code: BySyntax<CodeMarkup>;
+  columns: TraceColumn[];
+  rows: TraceRow[];
+  /** Linha do código JS (base 1) antes da qual cada volta é anotada. */
+  at: number;
+  /** Linha do código JS (base 1) depois do laço; além da última linha, anota no fim. */
+  end?: number;
+}
+
 /** Um desafio do exercício de circuito: ligar e desligar os interruptores até cumprir o objetivo. */
 export interface CircuitChallenge {
   mode: CircuitMode;
@@ -416,7 +449,8 @@ export type Slide =
   | ExprSlide
   | TruthSlide
   | CircuitSlide
-  | BranchSlide;
+  | BranchSlide
+  | TraceSlide;
 
 export interface Deck {
   slides: Slide[];
@@ -437,6 +471,7 @@ export function stepCount(slide: Slide): number {
     case 'cards':
       return Math.max(1, slide.cards.length);
     case 'truth':
+    case 'trace':
       return Math.max(1, slide.rows.length);
     case 'predict':
       return 1 + slide.trace.length;
