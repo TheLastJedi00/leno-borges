@@ -223,7 +223,7 @@ export class SceneView {
   });
   readonly stack = computed(() => pick(this.state().stack ?? undefined, this.syntax()));
   /**
-   * Mesma escala em todas as etapas: a da pilha mais alta do slide, sem passar de 1. Com baús ou
+   * Mesma escala em todas as etapas: a da pilha mais alta do slide, sem passar de 1,25. Com baús ou
    * gaveteiro na mesma cena, a pilha divide a altura com eles.
    */
   readonly stackZoom = computed(() => {
@@ -236,7 +236,7 @@ export class SceneView {
       const st = sceneAt(steps, i);
       return (pick(st.chests, this.syntax()) ?? []).length > 0 || !!st.list;
     });
-    return Math.min(1, flowZoom(sizes, !!this.code())) * (shared ? 0.8 : 1);
+    return Math.min(1.25, flowZoom(sizes, !!this.code())) * (shared ? 0.8 : 1);
   });
   readonly hasFigure = computed(
     () =>

@@ -113,7 +113,7 @@ describe('SceneView com pilha de chamadas', () => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelectorAll('kit-stack .frame').length).toBe(2);
     expect(el.querySelector('kit-stack .returning')).not.toBeNull();
-    expect(fixture.componentInstance.stackZoom()).toBeLessThanOrEqual(0.8);
+    expect(fixture.componentInstance.stackZoom()).toBeLessThanOrEqual(1.25 * 0.8);
     fixture.componentRef.setInput('step', 1);
     fixture.detectChanges();
     expect(el.querySelectorAll('kit-stack .frame').length).toBe(1);
