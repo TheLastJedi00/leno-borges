@@ -416,6 +416,12 @@ export const pt: Dictionary = {
               'Como repetir um trecho com while e for, percorrer uma lista e somar valores, explicado com uma pista em que cada volta passa pela condição.',
             duration: '10 min a 3 h',
           },
+          funcoes: {
+            title: 'Funções',
+            summary:
+              'Como dar nome a um trecho de código, passar valores e receber uma resposta com return, explicado com uma pilha de salas em que cada chamada abre a sua.',
+            duration: '10 min a 3 h',
+          },
         },
       },
     },

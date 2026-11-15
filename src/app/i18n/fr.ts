@@ -419,6 +419,12 @@ export const fr: Dictionary = {
               'Comment répéter du code avec while et for, parcourir une liste et additionner des valeurs, expliqué avec une piste où chaque tour passe par la condition.',
             duration: '10 min à 3 h',
           },
+          funcoes: {
+            title: 'Fonctions',
+            summary:
+              'Comment nommer un bout de code, lui passer des valeurs et recevoir une réponse avec return, expliqué avec une pile de salles où chaque appel ouvre la sienne.',
+            duration: '10 min à 3 h',
+          },
         },
       },
     },
