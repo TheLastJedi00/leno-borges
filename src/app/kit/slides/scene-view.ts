@@ -6,6 +6,7 @@ import { Scale } from '../ui/scale/scale';
 import { Circuit } from '../ui/circuit/circuit';
 import { Flow, flowLayout } from '../ui/flow/flow';
 import { List, listLayout } from '../ui/list/list';
+import { Loop, loopLayout } from '../ui/loop/loop';
 import { Sorter, sorterLayout } from '../ui/switch/sorter';
 import { I18n } from '../../i18n/i18n';
 import { Code } from '../ui/code/code';
@@ -72,7 +73,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
 /** Slide de cena: baús animados por etapa, com código e saída opcionais ao lado. */
 @Component({
   selector: 'kit-scene-view',
-  imports: [ChestRow, Code, Scale, Circuit, Flow, Sorter, List],
+  imports: [ChestRow, Code, Scale, Circuit, Flow, Sorter, List, Loop],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -109,6 +110,9 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
             }
             @if (sorter(); as so) {
               <kit-switch class="kit-fade" [style.zoom]="sorterZoom()" [state]="so"></kit-switch>
+            }
+            @if (loop(); as lo) {
+              <kit-loop class="kit-fade" [style.zoom]="loopZoom()" [state]="lo"></kit-loop>
             }
             @if (list(); as li) {
               <kit-list class="kit-fade" [style.zoom]="listZoom()" [state]="li"></kit-list>
@@ -198,8 +202,19 @@ export class SceneView {
       .map((l) => listLayout(l));
     return flowZoom(sizes, !!this.code());
   });
+  readonly loop = computed(() => pick(this.state().loop ?? undefined, this.syntax()));
+  /** Mesma escala em todas as etapas: a da pista maior do slide (o placar cabe com 2 dígitos). */
+  readonly loopZoom = computed(() => {
+    const steps = this.slide().steps;
+    const sizes = steps
+      .map((_, i) => pick(sceneAt(steps, i).loop ?? undefined, this.syntax()))
+      .filter((l) => !!l)
+      .map((l) => loopLayout(l, 'voltas: 10'));
+    return flowZoom(sizes, !!this.code());
+  });
   readonly hasFigure = computed(
     () =>
+      !!this.loop() ||
       !!this.list() ||
       !!this.compare() ||
       !!this.circuit() ||
