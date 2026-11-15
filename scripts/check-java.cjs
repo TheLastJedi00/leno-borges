@@ -53,7 +53,9 @@ function runJava(code) {
   const dir = fs.mkdtempSync(path.join(out, 'java-'));
   // Classe e `main` por fora; `// no main` separa as funções do que roda dentro do `main`.
   const src = javaSource(code);
-  const file = path.join(dir, 'Main.java');
+  // O arquivo tem o nome da classe pública (`Aula` nos slides com a classe inteira).
+  const main = src.match(/public\s+class\s+(\w+)/)?.[1] ?? 'Main';
+  const file = path.join(dir, `${main}.java`);
   fs.writeFileSync(file, src);
   try {
     execFileSync(javac, ['-encoding', 'UTF-8', file], { stdio: 'pipe' });
@@ -62,7 +64,7 @@ function runJava(code) {
     return { kind: 'compile', lines: errors };
   }
   try {
-    const stdout = execFileSync(java, ['-Dfile.encoding=UTF-8', '-Dsun.stdout.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-cp', dir, 'Main'], { stdio: 'pipe', timeout: TIMEOUT_MS });
+    const stdout = execFileSync(java, ['-Dfile.encoding=UTF-8', '-Dsun.stdout.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-cp', dir, main], { stdio: 'pipe', timeout: TIMEOUT_MS });
     return { kind: 'ok', lines: clean(stdout).trimEnd().split('\n').filter((l, i, a) => a.length > 1 || l) };
   } catch (e) {
     if (e.signal || e.code === 'ETIMEDOUT') return { kind: 'timeout', lines: [`passou de ${TIMEOUT_MS / 1000} s (laço infinito?)`] };

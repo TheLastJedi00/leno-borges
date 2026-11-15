@@ -68,11 +68,10 @@ export const code = {
   ]),
   /** Slide 4: o arquivo inteiro (no Java, a classe com o `main`). */
   wholeFile: {
-    js: ['{c:// aula.js}', fn('js', 'saudar', [], VOID), `  ${print('js', HELLO)}`, '}', '{f:saudar}();'].join('\n'),
-    ts: ['{c:// aula.ts}', fn('ts', 'saudar', [], VOID), `  ${print('ts', HELLO)}`, '}', '{f:saudar}();'].join('\n'),
+    js: [fn('js', 'saudar', [], VOID), `  ${print('js', HELLO)}`, '}', '{f:saudar}();'].join('\n'),
+    ts: [fn('ts', 'saudar', [], VOID), `  ${print('ts', HELLO)}`, '}', '{f:saudar}();'].join('\n'),
     java: [
-      '{c:// Main.java}',
-      '{k:public} {k:class} {t:Main} {',
+      '{k:public} {k:class} {t:Aula} {',
       `  ${fn('java', 'saudar', [], VOID)}`,
       `    ${print('java', HELLO)}`,
       '  }',
@@ -213,7 +212,7 @@ export const code = {
       print('ts', '{f:media}({v:7}, {v:9})'),
     ].join('\n'),
     java: [
-      '{k:public} {k:class} {t:Main} {',
+      '{k:public} {k:class} {t:Aula} {',
       '  {k:public} {k:static} {k:void} {f:main}({t:String}[] {n:args}) {',
       `    ${fn('java', 'dobro', [p('n', NUM)], NUM)}`,
       '      {k:return} {n:n} * {v:2};',

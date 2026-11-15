@@ -130,7 +130,7 @@ export const deck: Deck = {
             ts: 'O arquivo inteiro: o TypeScript roda de cima para baixo, a partir da primeira linha.',
             java: 'O arquivo inteiro. O programa começa no main, uma função que a JVM chama sozinha.',
           },
-          activeLine: { js: 2, ts: 2, java: 7 },
+          activeLine: { js: 1, ts: 1, java: 6 },
           stack: stack([]),
         },
         {
@@ -139,16 +139,16 @@ export const deck: Deck = {
             ts: 'A declaração é pulada: a função só roda quando a linha da chamada chega.',
             java: 'Surpresa: todo o código das aulas 1 a 8 morava aqui, dentro do main.',
           },
-          activeLine: { js: 5, ts: 5, java: 8 },
-          skip: { js: [3], ts: [3], java: [] },
+          activeLine: { js: 4, ts: 4, java: 7 },
+          skip: { js: [2], ts: [2], java: [] },
         },
         {
           caption: {
             js: 'Não existe main: as chamadas ficam soltas no arquivo.',
             ts: 'Não existe main: as chamadas ficam soltas no arquivo.',
-            java: 'As nossas funções ficam ao lado do main, dentro da class Main, e levam static como ele.',
+            java: 'As nossas funções ficam ao lado do main, dentro da class Aula, e levam static como ele.',
           },
-          activeLine: { js: 3, ts: 3, java: 4 },
+          activeLine: { js: 2, ts: 2, java: 3 },
           skip: [],
           stack: stack([], [['saudar', []]]),
           output: 'Olá!',
@@ -164,7 +164,7 @@ export const deck: Deck = {
         },
       ],
       notes: [
-        'Java: todo programa tem uma class e um main; até a aula 8 os slides mostravam só o miolo do main',
+        'Java: todo programa tem uma class (com o nome do arquivo: Aula.java, class Aula) e um main; até a aula 8 os slides mostravam só o miolo do main',
         'public static void main(String[] args): a JVM procura exatamente esse nome para começar',
         'static: por enquanto, toda função nossa leva static, como o main; o porquê fica para a aula de objetos',
         'String[] args é o parâmetro do main (o array da curiosidade da aula 7): o que se digita depois do nome do programa no terminal',
