@@ -1,0 +1,152 @@
+.loop {
+  overflow: visible;
+}
+
+/* Setas: acendem quando a execução passa por elas (como no fluxograma) */
+.arrow polyline {
+  fill: none;
+  stroke: var(--color-line);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.4s ease;
+}
+
+.arrow .head {
+  fill: var(--color-line);
+  transition: fill 0.4s ease;
+}
+
+.arrow.is-lit polyline {
+  stroke: var(--color-accent);
+}
+
+.arrow.is-lit .head {
+  fill: var(--color-accent);
+}
+
+.arrow-label {
+  font: 600 18px var(--font-mono);
+  opacity: 0.55;
+  transition: opacity 0.4s ease;
+}
+
+.arrow.is-lit .arrow-label {
+  opacity: 1;
+}
+
+.yes {
+  fill: var(--color-kit-value);
+}
+
+.no {
+  fill: var(--color-kit-error);
+}
+
+/* Portão da condição */
+.lozenge {
+  fill: var(--color-raised);
+  stroke: var(--color-faint);
+  stroke-width: 3;
+  transition:
+    stroke 0.4s ease,
+    fill 0.4s ease;
+}
+
+.node.is-true .lozenge {
+  stroke: var(--color-kit-value);
+  fill: color-mix(in oklab, var(--color-kit-value) 14%, var(--color-raised));
+}
+
+.node.is-false .lozenge {
+  stroke: var(--color-kit-error);
+  fill: color-mix(in oklab, var(--color-kit-error) 12%, var(--color-raised));
+}
+
+.cond {
+  font: 600 22px var(--font-mono);
+  fill: var(--color-paper);
+}
+
+/* Corpo do laço: acende na volta */
+.body rect {
+  fill: var(--color-ink);
+  stroke: var(--color-line);
+  stroke-width: 3;
+  transition:
+    stroke 0.4s ease,
+    fill 0.4s ease;
+}
+
+.body.is-taken rect {
+  stroke: var(--color-accent);
+  fill: color-mix(in oklab, var(--color-accent) 22%, var(--color-ink));
+}
+
+.body text {
+  font: 600 22px var(--font-mono);
+  fill: var(--color-kit-value);
+}
+
+.body text.update {
+  fill: var(--color-kit-name);
+}
+
+.divider {
+  stroke: var(--color-line);
+  stroke-width: 2;
+  stroke-dasharray: 6 6;
+}
+
+/* Começo do for, antes da pista */
+.init rect {
+  fill: var(--color-ink);
+  stroke: var(--color-line);
+  stroke-width: 3;
+}
+
+.init text {
+  font: 600 22px var(--font-mono);
+  fill: var(--color-kit-name);
+}
+
+/* Placar de voltas */
+.badge rect {
+  fill: var(--color-raised);
+}
+
+.badge text {
+  font: 600 20px var(--font-mono);
+  fill: var(--color-accent-soft);
+}
+
+.end {
+  fill: var(--color-ink);
+  stroke: var(--color-line);
+  stroke-width: 5;
+  transition: stroke 0.4s ease;
+}
+
+.end.is-lit {
+  stroke: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow polyline,
+  .arrow .head,
+  .arrow-label,
+  .lozenge,
+  .body rect,
+  .end {
+    transition: none;
+  }
+}
+
+/* O atalho `font:` religa as ligaduras; o kit mostra os operadores como se digita */
+.cond,
+.body text,
+.init text,
+.badge text,
+.arrow-label {
+  font-variant-ligatures: none;
+}
