@@ -410,6 +410,12 @@ export const pt: Dictionary = {
               'Como guardar vários valores com um nome só e ler, adicionar, trocar, remover e procurar itens, explicado com um gaveteiro de gavetas numeradas.',
             duration: '10 min a 3 h',
           },
+          'lacos-de-repeticao': {
+            title: 'Laços de repetição',
+            summary:
+              'Como repetir um trecho com while e for, percorrer uma lista e somar valores, explicado com uma pista em que cada volta passa pela condição.',
+            duration: '10 min a 3 h',
+          },
         },
       },
     },

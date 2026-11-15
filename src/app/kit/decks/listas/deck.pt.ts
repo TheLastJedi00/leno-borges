@@ -764,7 +764,7 @@ export const deck: Deck = {
         'Junta as aulas: variável (aula 1), ! (aula 4), if (aula 5) e a lista de hoje',
         'Pedir para a turma rodar de novo de cabeça: e se o leite já estivesse no carrinho?',
         'Desafio extra: mostrar "Carrinho vazio" quando o tamanho for 0',
-        'A pergunta final abre a aula de laços de repetição',
+        'A pergunta final abre a aula 8, Laços de repetição',
       ],
     },
 
@@ -800,7 +800,7 @@ export const deck: Deck = {
       notes: [
         'Pedir para a turma montar a lista de compras da semana e tirar um item',
         'Lembrar: índice começa no 0; remover muda o índice de quem vem depois',
-        'Próxima aula: laços de repetição, passar por todos os itens da lista',
+        'Próxima aula: aula 8, Laços de repetição, passar por todos os itens da lista',
         'Abrir para perguntas',
       ],
     },

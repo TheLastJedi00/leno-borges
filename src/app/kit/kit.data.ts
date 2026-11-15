@@ -24,7 +24,8 @@ export type LessonId =
   | 'operadores-logicos'
   | 'condicionais'
   | 'switch-case'
-  | 'listas';
+  | 'listas'
+  | 'lacos-de-repeticao';
 
 export interface Lesson {
   slug: LessonId;
@@ -549,6 +550,12 @@ export const tracks: Track[] = [
         syntaxes: ['js', 'ts', 'java'],
         counts: { essencial: 10, completo: 21 },
         load: () => import('./decks/listas/deck.pt').then((m) => m.deck),
+      },
+      {
+        slug: 'lacos-de-repeticao',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 21 },
+        load: () => import('./decks/lacos-de-repeticao/deck.pt').then((m) => m.deck),
       },
     ],
   },
