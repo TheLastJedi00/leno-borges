@@ -382,7 +382,7 @@ export const deck: Deck = {
         'Mesma ideia, sintaxe diferente: for (const fruta of frutas) no JS/TS, for (String fruta : frutas) no Java',
         'Use quando precisa de cada item e não do índice',
         'Não dá para errar por um: o laço sabe onde a lista acaba',
-        'JS/TS: frutas.forEach(...) faz o mesmo com uma função (próxima aula)',
+        'JS/TS: frutas.forEach(...) faz o mesmo com uma função (aula 9, Funções)',
       ],
     },
 
@@ -662,7 +662,7 @@ export const deck: Deck = {
       ],
       notes: [
         'O for-each não deixa a lista mudar de tamanho enquanto passa por ela',
-        'Para remover com condição: frutas.removeIf(f -> f.equals("maçã")), depois da aula de funções',
+        'Para remover com condição: frutas.removeIf(f -> f.equals("maçã")), depois da aula 9, Funções',
         'Ou com um Iterator e o remove dele',
         'No JS, o mesmo erro passa em silêncio: a lista anda e o laço pula um item',
       ],
@@ -794,7 +794,7 @@ export const deck: Deck = {
       notes: [
         'Lembrar: todo laço precisa de algo que leve a condição a false',
         'Pedir para a turma escrever um laço que some os números de 1 a 100 (5050)',
-        'Próxima aula: funções, dar nome a um trecho de código e usar de novo',
+        'Próxima aula: aula 9, Funções, dar nome a um trecho de código e usar de novo',
         'Abrir para perguntas',
       ],
     },

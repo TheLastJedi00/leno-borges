@@ -125,3 +125,33 @@ describe('exercício escolha o valor', () => {
     expect(view.solved()).toBeTrue();
   });
 });
+
+describe('exercício escolha o valor com a pilha', () => {
+  it('o baú da variável recebe o valor e a sala do topo devolve o resultado', async () => {
+    TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
+    const fixture = TestBed.createComponent(BranchView);
+    fixture.componentRef.setInput('slide', {
+      ...slide,
+      flow: undefined,
+      variable: 'nota',
+      code: '{f:console.log}({f:classificar}({v:@@}));',
+      stack: { frames: [{}, { name: 'classificar', vars: [{ name: 'nota', value: '' }] }] },
+      choices: [
+        { value: '8', output: 'Aprovado', returns: '"Aprovado"' },
+        { value: '3', output: 'Reprovado', returns: '"Reprovado"' },
+      ],
+      goals: ['Reprovado'],
+    } satisfies BranchSlide);
+    fixture.componentRef.setInput('syntax', 'js');
+    const view = fixture.componentInstance;
+    await fixture.whenStable();
+    expect(view.stack()!.frames[1].vars).toEqual([{ name: 'nota', value: '8' }]);
+    expect(view.stack()!.returning).toBe('"Aprovado"');
+    view.choose(1);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('kit-stack .var-value')!.textContent).toBe('3');
+    expect(el.querySelector('kit-stack .returning')!.textContent).toContain('"Reprovado"');
+    expect(view.stackZoom()).toBeGreaterThan(0);
+  });
+});

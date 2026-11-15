@@ -35,10 +35,12 @@ const tsc = path.join(root, 'node_modules/typescript/bin/tsc');
 execFileSync(process.execPath, [
   tsc, '--module', 'commonjs', '--target', 'es2022', '--skipLibCheck', '--outDir', out,
   path.join(kitSrc, 'kit.data.ts'), path.join(kitSrc, 'ui/code/code-markup.ts'),
+  path.join(decksDir, 'java-source.ts'),
   ...slugs.map((s) => path.join(decksDir, s, 'deck.pt.ts')),
 ], { stdio: 'inherit' });
 const { pick } = require(path.join(out, 'kit.data.js'));
 const { codeWithValue, finishedRuns, plainCode } = require(path.join(out, 'ui/code/code-markup.js'));
+const { javaSource } = require(path.join(out, 'decks/java-source.js'));
 
 /** Tempo máximo de cada execução: um laço infinito por engano acusa o slide em vez de travar. */
 const TIMEOUT_MS = 10000;
@@ -49,15 +51,11 @@ const noAddress = (s) => String(s).replace(/;@[0-9a-f]+/g, ';@');
 /** Compila e roda; devolve as linhas que a turma veria (saída, `error: ...` ou a exceção). */
 function runJava(code) {
   const dir = fs.mkdtempSync(path.join(out, 'java-'));
-  const lines = code.split('\n');
-  // Sem `import` no trecho, importa `java.util` (os slides de listas não repetem as linhas).
-  const imports = lines.filter((l) => l.startsWith('import ')).join('\n') || 'import java.util.*;';
-  const body = lines.filter((l) => !l.startsWith('import ')).join('\n');
-  const hasClass = /^\s*(public\s+)?(class|record|enum)\s/m.test(body);
-  const src = hasClass
-    ? `${imports}\n${body}\n`
-    : `${imports}\npublic class Main {\n  public static void main(String[] args) throws Exception {\n${body}\n  }\n}\n`;
-  const file = path.join(dir, 'Main.java');
+  // Classe e `main` por fora; `// no main` separa as funções do que roda dentro do `main`.
+  const src = javaSource(code);
+  // O arquivo tem o nome da classe pública (`Aula` nos slides com a classe inteira).
+  const main = src.match(/public\s+class\s+(\w+)/)?.[1] ?? 'Main';
+  const file = path.join(dir, `${main}.java`);
   fs.writeFileSync(file, src);
   try {
     execFileSync(javac, ['-encoding', 'UTF-8', file], { stdio: 'pipe' });
@@ -66,7 +64,7 @@ function runJava(code) {
     return { kind: 'compile', lines: errors };
   }
   try {
-    const stdout = execFileSync(java, ['-Dfile.encoding=UTF-8', '-Dsun.stdout.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-cp', dir, 'Main'], { stdio: 'pipe', timeout: TIMEOUT_MS });
+    const stdout = execFileSync(java, ['-Dfile.encoding=UTF-8', '-Dsun.stdout.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-cp', dir, main], { stdio: 'pipe', timeout: TIMEOUT_MS });
     return { kind: 'ok', lines: clean(stdout).trimEnd().split('\n').filter((l, i, a) => a.length > 1 || l) };
   } catch (e) {
     if (e.signal || e.code === 'ETIMEDOUT') return { kind: 'timeout', lines: [`passou de ${TIMEOUT_MS / 1000} s (laço infinito?)`] };

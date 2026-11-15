@@ -25,7 +25,8 @@ export type LessonId =
   | 'condicionais'
   | 'switch-case'
   | 'listas'
-  | 'lacos-de-repeticao';
+  | 'lacos-de-repeticao'
+  | 'funcoes';
 
 export interface Lesson {
   slug: LessonId;
@@ -238,6 +239,28 @@ export interface LoopState {
   answer: boolean | null;
 }
 
+/** Um baú em miniatura dentro de uma sala da pilha: o nome e o valor como no código. */
+export interface StackVar {
+  name: string;
+  value: string;
+}
+
+/** Uma sala da pilha de chamadas. Sem `name`, é o próprio arquivo (JS/TS, que não tem `main`). */
+export interface StackFrame {
+  name?: string;
+  vars?: StackVar[];
+}
+
+/**
+ * Pilha de chamadas: `frames[0]` é a sala de baixo (`main` no Java, o arquivo no JS/TS) e a última
+ * é a que está rodando. `returning` é o valor que o `return` está entregando: sai da sala do topo,
+ * que fecha na etapa seguinte.
+ */
+export interface StackState {
+  frames: StackFrame[];
+  returning?: string | null;
+}
+
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
@@ -266,6 +289,8 @@ export interface SceneStep {
   list?: BySyntax<ListState> | null;
   /** Pista do laço; `null` tira a pista da cena. */
   loop?: BySyntax<LoopState> | null;
+  /** Pilha de chamadas; `null` tira a pilha da cena. */
+  stack?: BySyntax<StackState> | null;
 }
 
 interface SlideBase {
@@ -434,6 +459,8 @@ export interface BranchChoice {
   output: BySyntax;
   /** Voltas do laço com esse valor (pista). */
   laps?: number;
+  /** Valor que a função devolve com esse valor, como no código (`"Aprovado"`) (pilha). */
+  returns?: string;
 }
 
 /**
@@ -456,6 +483,11 @@ export interface BranchSlide extends SlideBase {
   list?: BySyntax<Omit<ListState, 'focus' | 'outside'>>;
   /** Pista do laço; as voltas vêm do valor escolhido (`laps`), já terminadas. */
   loop?: BySyntax<Omit<LoopState, 'laps' | 'answer'>>;
+  /**
+   * Pilha de chamadas: o baú com o nome de `variable` recebe o valor escolhido e a sala do topo
+   * devolve o `returns` do valor.
+   */
+  stack?: BySyntax<Omit<StackState, 'returning'>>;
   choices: BranchChoice[];
   /** Valor escolhido no começo (índice em `choices`). */
   start?: number;
@@ -556,6 +588,12 @@ export const tracks: Track[] = [
         syntaxes: ['js', 'ts', 'java'],
         counts: { essencial: 10, completo: 21 },
         load: () => import('./decks/lacos-de-repeticao/deck.pt').then((m) => m.deck),
+      },
+      {
+        slug: 'funcoes',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 22 },
+        load: () => import('./decks/funcoes/deck.pt').then((m) => m.deck),
       },
     ],
   },

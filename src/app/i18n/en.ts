@@ -416,6 +416,12 @@ export const en: Dictionary = {
               'How to repeat code with while and for, go through a list and add up values, explained with a track where every lap passes the condition.',
             duration: '10 min to 3 h',
           },
+          funcoes: {
+            title: 'Functions',
+            summary:
+              'How to name a piece of code, pass it values and get an answer back with return, explained with a stack of rooms where every call opens its own.',
+            duration: '10 min to 3 h',
+          },
         },
       },
     },
@@ -482,6 +488,9 @@ export const en: Dictionary = {
       nothingPrinted: '(nothing is printed)',
       outsideList: 'out of the list',
       loopLaps: 'laps',
+      stackLabel: 'call stack',
+      stackFile: 'file',
+      stackReturns: 'returns',
     },
   },
 };
