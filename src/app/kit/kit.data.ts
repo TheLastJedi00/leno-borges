@@ -24,7 +24,8 @@ export type LessonId =
   | 'operadores-logicos'
   | 'condicionais'
   | 'switch-case'
-  | 'listas';
+  | 'listas'
+  | 'lacos-de-repeticao';
 
 export interface Lesson {
   slug: LessonId;
@@ -220,6 +221,23 @@ export interface ListState {
   fixed?: boolean;
 }
 
+/**
+ * Pista do laço: a condição no portão, o corpo e a seta que volta. `laps` são as voltas já
+ * completadas; `answer` é a resposta da condição nesta etapa (`null` = ainda não perguntou).
+ */
+export interface LoopState {
+  condition: string;
+  body: string[];
+  /** Começo do `for` (`let i = 1`), antes da pista. */
+  init?: string;
+  /** Passo do `for` (`i++`), no fim de cada volta. */
+  update?: string;
+  /** `do`: o corpo vem antes da condição (`do...while`). */
+  kind?: 'while' | 'do';
+  laps: number;
+  answer: boolean | null;
+}
+
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
@@ -246,6 +264,8 @@ export interface SceneStep {
   sorter?: BySyntax<SorterState> | null;
   /** Gaveteiro da lista; `null` tira o gaveteiro da cena. */
   list?: BySyntax<ListState> | null;
+  /** Pista do laço; `null` tira a pista da cena. */
+  loop?: BySyntax<LoopState> | null;
 }
 
 interface SlideBase {
@@ -273,6 +293,8 @@ export interface CoverSlide extends SlideBase {
 export interface SceneSlide extends SlideBase {
   kind: 'scene';
   code?: BySyntax<CodeMarkup>;
+  /** O código não deve rodar (laço infinito): as conferências de JS e Java pulam o slide. */
+  noRun?: boolean;
   steps: SceneStep[];
 }
 
@@ -352,6 +374,39 @@ export interface TruthSlide extends SlideBase {
   footnote?: BySyntax;
 }
 
+/** Coluna do teste de mesa: o título e, para a conferência, o que ela mostra. */
+export interface TraceColumn {
+  /** Título com a marcação de código (`{n:i} <= {v:3}`). */
+  head: BySyntax<CodeMarkup>;
+  /** Expressão em JS avaliada a cada volta (a conferência compara com a célula). */
+  js?: string;
+  /** Coluna com o que a volta imprime. Sem `js` nem `out`, é um rótulo (o número da volta). */
+  out?: boolean;
+}
+
+export interface TraceRow {
+  cells: string[];
+  /** Linha do código em destaque nesta linha da tabela. */
+  line?: BySyntax<number>;
+}
+
+/**
+ * Teste de mesa: o código e uma tabela com o valor das variáveis a cada volta, revelada uma linha
+ * por etapa. A conferência roda o código em JS anotando as colunas antes da linha `at` (a cada
+ * volta) e antes da linha `end` (depois do laço).
+ */
+export interface TraceSlide extends SlideBase {
+  kind: 'trace';
+  lead?: BySyntax;
+  code: BySyntax<CodeMarkup>;
+  columns: TraceColumn[];
+  rows: TraceRow[];
+  /** Linha do código JS (base 1) antes da qual cada volta é anotada. */
+  at: number;
+  /** Linha do código JS (base 1) depois do laço; além da última linha, anota no fim. */
+  end?: number;
+}
+
 /** Um desafio do exercício de circuito: ligar e desligar os interruptores até cumprir o objetivo. */
 export interface CircuitChallenge {
   mode: CircuitMode;
@@ -377,6 +432,8 @@ export interface BranchChoice {
   answers?: boolean[];
   /** O que o programa imprime com esse valor; `""` quando nada aparece. */
   output: BySyntax;
+  /** Voltas do laço com esse valor (pista). */
+  laps?: number;
 }
 
 /**
@@ -397,6 +454,8 @@ export interface BranchSlide extends SlideBase {
   sorter?: BySyntax<Omit<SorterState, 'value' | 'dropped'>>;
   /** Gaveteiro; o valor escolhido é o índice lido (em destaque, ou fantasma se não existir). */
   list?: BySyntax<Omit<ListState, 'focus' | 'outside'>>;
+  /** Pista do laço; as voltas vêm do valor escolhido (`laps`), já terminadas. */
+  loop?: BySyntax<Omit<LoopState, 'laps' | 'answer'>>;
   choices: BranchChoice[];
   /** Valor escolhido no começo (índice em `choices`). */
   start?: number;
@@ -414,7 +473,8 @@ export type Slide =
   | ExprSlide
   | TruthSlide
   | CircuitSlide
-  | BranchSlide;
+  | BranchSlide
+  | TraceSlide;
 
 export interface Deck {
   slides: Slide[];
@@ -435,6 +495,7 @@ export function stepCount(slide: Slide): number {
     case 'cards':
       return Math.max(1, slide.cards.length);
     case 'truth':
+    case 'trace':
       return Math.max(1, slide.rows.length);
     case 'predict':
       return 1 + slide.trace.length;
@@ -489,6 +550,12 @@ export const tracks: Track[] = [
         syntaxes: ['js', 'ts', 'java'],
         counts: { essencial: 10, completo: 21 },
         load: () => import('./decks/listas/deck.pt').then((m) => m.deck),
+      },
+      {
+        slug: 'lacos-de-repeticao',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 21 },
+        load: () => import('./decks/lacos-de-repeticao/deck.pt').then((m) => m.deck),
       },
     ],
   },

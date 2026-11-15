@@ -40,6 +40,8 @@ execFileSync(process.execPath, [
 const { pick } = require(path.join(out, 'kit.data.js'));
 const { codeWithValue, finishedRuns, plainCode } = require(path.join(out, 'ui/code/code-markup.js'));
 
+/** Tempo máximo de cada execução: um laço infinito por engano acusa o slide em vez de travar. */
+const TIMEOUT_MS = 10000;
 const clean = (s) => String(s).replace(/\r/g, '');
 /** O endereço do array muda a cada execução (`[Ljava.lang.String;@1b6d3586`): compara sem ele. */
 const noAddress = (s) => String(s).replace(/;@[0-9a-f]+/g, ';@');
@@ -64,9 +66,10 @@ function runJava(code) {
     return { kind: 'compile', lines: errors };
   }
   try {
-    const stdout = execFileSync(java, ['-Dfile.encoding=UTF-8', '-Dsun.stdout.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-cp', dir, 'Main'], { stdio: 'pipe' });
+    const stdout = execFileSync(java, ['-Dfile.encoding=UTF-8', '-Dsun.stdout.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-cp', dir, 'Main'], { stdio: 'pipe', timeout: TIMEOUT_MS });
     return { kind: 'ok', lines: clean(stdout).trimEnd().split('\n').filter((l, i, a) => a.length > 1 || l) };
   } catch (e) {
+    if (e.signal || e.code === 'ETIMEDOUT') return { kind: 'timeout', lines: [`passou de ${TIMEOUT_MS / 1000} s (laço infinito?)`] };
     const exception = clean(e.stderr).split('\n').find((l) => l.startsWith('Exception'));
     return { kind: 'runtime', lines: [...clean(e.stdout).trimEnd().split('\n').filter(Boolean), exception] };
   }
@@ -78,6 +81,8 @@ for (const slug of slugs) {
   const { deck } = require(path.join(out, 'decks', slug, 'deck.pt.js'));
   for (const slide of deck.slides) {
     if (slide.syntaxes && !slide.syntaxes.includes('java')) continue;
+    // Código que não deve rodar (laço infinito de propósito).
+    if (slide.noRun) continue;
     const markup = 'code' in slide && slide.code ? pick(slide.code, 'java') : undefined;
     if (!markup) continue;
     if (slide.kind === 'branch') {

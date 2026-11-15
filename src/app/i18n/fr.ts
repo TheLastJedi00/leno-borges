@@ -413,6 +413,12 @@ export const fr: Dictionary = {
               'Comment garder plusieurs valeurs sous un seul nom et lire, ajouter, remplacer, retirer et chercher des éléments, expliqué avec un classeur à tiroirs numérotés.',
             duration: '10 min à 3 h',
           },
+          'lacos-de-repeticao': {
+            title: 'Boucles',
+            summary:
+              'Comment répéter du code avec while et for, parcourir une liste et additionner des valeurs, expliqué avec une piste où chaque tour passe par la condition.',
+            duration: '10 min à 3 h',
+          },
         },
       },
     },
@@ -478,6 +484,7 @@ export const fr: Dictionary = {
       valueOf: 'Valeur de',
       nothingPrinted: '(rien ne s’affiche)',
       outsideList: 'hors de la liste',
+      loopLaps: 'tours',
     },
   },
 };

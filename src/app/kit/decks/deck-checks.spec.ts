@@ -1,5 +1,5 @@
 import type { Deck } from '../kit.data';
-import { branchProblems, nodeFormat, runJs } from './deck-checks';
+import { branchProblems, jsOutputProblems, nodeFormat, runJs, traceProblems } from './deck-checks';
 
 const deck = (output: string, answers: boolean[], goals = ['Entra']): Deck => ({
   slides: [
@@ -71,5 +71,75 @@ describe('runJs', () => {
   it('aspas dentro da lista como o Node', () => {
     expect(nodeFormat(["d'água", 'x'])).toBe(`[ "d'água", 'x' ]`);
     expect(nodeFormat([undefined, true])).toBe('[ undefined, true ]');
+  });
+});
+
+describe('noRun', () => {
+  const scene = (noRun: boolean): Deck => ({
+    slides: [
+      {
+        id: 'infinito',
+        kind: 'scene',
+        depth: 'core',
+        title: 't',
+        notes: ['n'],
+        noRun,
+        code: '{f:console.log}({v:1});',
+        steps: [{ output: '1 1 1 ...' }],
+      },
+    ],
+  });
+
+  it('a cena com noRun não roda nas conferências', () => {
+    expect(jsOutputProblems(scene(false)).length).toBe(1);
+    expect(jsOutputProblems(scene(true))).toEqual([]);
+  });
+});
+
+describe('traceProblems', () => {
+  const trace = (rows: string[][], end?: number): Deck => ({
+    slides: [
+      {
+        id: 'mesa',
+        kind: 'trace',
+        depth: 'extra',
+        tag: 'Aprofundamento',
+        title: 't',
+        notes: ['n'],
+        code: [
+          '{k:let} {n:i} = {v:1};',
+          '{k:while} ({n:i} <= {v:3}) {',
+          '  {f:console.log}({n:i});',
+          '  {n:i}++;',
+          '}',
+        ].join(String.fromCharCode(10)),
+        columns: [
+          { head: 'Volta' },
+          { head: '{n:i}', js: 'i' },
+          { head: '{n:i} <= {v:3}', js: 'i <= 3' },
+          { head: 'Imprime', out: true },
+        ],
+        rows: rows.map((cells) => ({ cells })),
+        at: 3,
+        end,
+      },
+    ],
+  });
+  const ok = [
+    ['1', '1', 'true', '1'],
+    ['2', '2', 'true', '2'],
+    ['3', '3', 'true', '3'],
+    ['', '4', 'false', ''],
+  ];
+
+  it('anota cada volta e o fim do laço', () => {
+    expect(traceProblems(trace(ok, 6))).toEqual([]);
+  });
+
+  it('acusa célula errada e linha a menos', () => {
+    const wrong = ok.map((r) => [...r]);
+    wrong[1][3] = '3';
+    expect(traceProblems(trace(wrong, 6)).length).toBe(1);
+    expect(traceProblems(trace(ok))[0]).toContain('3 anotações');
   });
 });

@@ -4,6 +4,7 @@ import {
   type BranchSlide,
   type FlowState,
   type ListState,
+  type LoopState,
   type SorterState,
   type Syntax,
   pick,
@@ -12,6 +13,7 @@ import { Code } from '../ui/code/code';
 import { codeWithValue, fitFontSize } from '../ui/code/code-markup';
 import { Flow, flowLayout } from '../ui/flow/flow';
 import { List, listLayout } from '../ui/list/list';
+import { Loop, loopLayout } from '../ui/loop/loop';
 import { Sorter, sorterLayout } from '../ui/switch/sorter';
 
 /** Espaço da ilustração na coluna da direita do exercício. */
@@ -31,7 +33,7 @@ function listAt(base: Omit<ListState, 'focus' | 'outside'>, value: string): List
  */
 @Component({
   selector: 'kit-branch-view',
-  imports: [Code, Flow, Sorter, List],
+  imports: [Code, Flow, Sorter, List, Loop],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -75,6 +77,11 @@ function listAt(base: Omit<ListState, 'focus' | 'outside'>, value: string): List
           @if (sorter(); as so) {
             <div class="flex min-h-0 flex-1 items-center justify-center">
               <kit-switch [style.zoom]="sorterZoom()" [state]="so"></kit-switch>
+            </div>
+          }
+          @if (loop(); as lo) {
+            <div class="flex min-h-0 flex-1 items-center justify-center">
+              <kit-loop [style.zoom]="loopZoom()" [state]="lo"></kit-loop>
             </div>
           }
           @if (list(); as li) {
@@ -184,6 +191,18 @@ export class BranchView {
     const sizes = this.slide().choices.map((c) => listLayout(listAt(base, c.value)));
     const width = Math.max(...sizes.map((s) => s.width));
     const height = Math.max(...sizes.map((s) => s.height));
+    return Math.min(1, FIG_W / width, FIG_H / height);
+  });
+  /** Pista: o laço já terminou, com as voltas do valor escolhido. */
+  readonly loop = computed<LoopState | undefined>(() => {
+    const base = pick(this.slide().loop, this.syntax());
+    return base ? { ...base, laps: this.current().laps ?? 0, answer: false } : undefined;
+  });
+  /** Escala fixa do slide (o placar com 2 dígitos). */
+  readonly loopZoom = computed(() => {
+    const base = pick(this.slide().loop, this.syntax());
+    if (!base) return 1;
+    const { width, height } = loopLayout({ ...base, laps: 0, answer: null }, 'voltas: 10');
     return Math.min(1, FIG_W / width, FIG_H / height);
   });
   readonly goal = computed(() => this.slide().goals[this.index()]);

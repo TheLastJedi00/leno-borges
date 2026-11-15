@@ -154,6 +154,8 @@ export interface Dictionary {
       nothingPrinted: string;
       /** Gaveteiro da aula de listas, para leitor de tela: índice pedido que não existe. */
       outsideList: string;
+      /** Placar da pista do laço (aula de laços): "voltas: 2". */
+      loopLaps: string;
     };
   };
 }

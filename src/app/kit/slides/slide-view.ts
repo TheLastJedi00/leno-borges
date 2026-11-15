@@ -7,6 +7,7 @@ import { TableView } from './table-view';
 import { SortView } from './sort-view';
 import { PredictView } from './predict-view';
 import { ExprView } from './expr-view';
+import { TraceView } from './trace-view';
 import { TruthView } from './truth-view';
 import { CircuitView } from './circuit-view';
 import { BranchView } from './branch-view';
@@ -23,6 +24,7 @@ import { BranchView } from './branch-view';
     PredictView,
     ExprView,
     TruthView,
+    TraceView,
     CircuitView,
     BranchView,
   ],
@@ -64,6 +66,9 @@ import { BranchView } from './branch-view';
       }
       @case ('truth') {
         <kit-truth-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-truth-view>
+      }
+      @case ('trace') {
+        <kit-trace-view [slide]="s" [step]="step()" [syntax]="syntax()"></kit-trace-view>
       }
       @case ('circuit') {
         <kit-circuit-view [slide]="s" [syntax]="syntax()"></kit-circuit-view>
