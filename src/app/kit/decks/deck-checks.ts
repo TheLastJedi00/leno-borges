@@ -94,7 +94,7 @@ export function exprProblems(deck: Deck, syntaxes: readonly Syntax[]): string[] 
 export function jsOutputProblems(deck: Deck): string[] {
   const problems: string[] = [];
   for (const slide of deck.slides) {
-    if (slide.kind !== 'scene' || !slide.code) continue;
+    if (slide.kind !== 'scene' || !slide.code || slide.noRun) continue;
     if (slide.syntaxes && !slide.syntaxes.includes('js')) continue;
     for (const run of finishedRuns(slide.steps)) {
       const expected = pick(run.output ?? undefined, 'js');

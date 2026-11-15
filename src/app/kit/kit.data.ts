@@ -273,6 +273,8 @@ export interface CoverSlide extends SlideBase {
 export interface SceneSlide extends SlideBase {
   kind: 'scene';
   code?: BySyntax<CodeMarkup>;
+  /** O código não deve rodar (laço infinito): as conferências de JS e Java pulam o slide. */
+  noRun?: boolean;
   steps: SceneStep[];
 }
 

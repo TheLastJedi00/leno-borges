@@ -78,6 +78,8 @@ for (const slug of slugs) {
   const { deck } = require(path.join(out, 'decks', slug, 'deck.pt.js'));
   for (const slide of deck.slides) {
     if (slide.syntaxes && !slide.syntaxes.includes('java')) continue;
+    // Código que não deve rodar (laço infinito de propósito).
+    if (slide.noRun) continue;
     const markup = 'code' in slide && slide.code ? pick(slide.code, 'java') : undefined;
     if (!markup) continue;
     if (slide.kind === 'branch') {

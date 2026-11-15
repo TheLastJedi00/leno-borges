@@ -1,5 +1,5 @@
 import type { Deck } from '../kit.data';
-import { branchProblems, nodeFormat, runJs } from './deck-checks';
+import { branchProblems, jsOutputProblems, nodeFormat, runJs } from './deck-checks';
 
 const deck = (output: string, answers: boolean[], goals = ['Entra']): Deck => ({
   slides: [
@@ -71,5 +71,27 @@ describe('runJs', () => {
   it('aspas dentro da lista como o Node', () => {
     expect(nodeFormat(["d'água", 'x'])).toBe(`[ "d'água", 'x' ]`);
     expect(nodeFormat([undefined, true])).toBe('[ undefined, true ]');
+  });
+});
+
+describe('noRun', () => {
+  const scene = (noRun: boolean): Deck => ({
+    slides: [
+      {
+        id: 'infinito',
+        kind: 'scene',
+        depth: 'core',
+        title: 't',
+        notes: ['n'],
+        noRun,
+        code: '{f:console.log}({v:1});',
+        steps: [{ output: '1 1 1 ...' }],
+      },
+    ],
+  });
+
+  it('a cena com noRun não roda nas conferências', () => {
+    expect(jsOutputProblems(scene(false)).length).toBe(1);
+    expect(jsOutputProblems(scene(true))).toEqual([]);
   });
 });
