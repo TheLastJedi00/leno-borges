@@ -5,6 +5,7 @@ import { chestWidth } from '../ui/chest/chest';
 import { Scale } from '../ui/scale/scale';
 import { Circuit } from '../ui/circuit/circuit';
 import { Flow, flowLayout } from '../ui/flow/flow';
+import { List, listLayout } from '../ui/list/list';
 import { Sorter, sorterLayout } from '../ui/switch/sorter';
 import { I18n } from '../../i18n/i18n';
 import { Code } from '../ui/code/code';
@@ -71,7 +72,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
 /** Slide de cena: baús animados por etapa, com código e saída opcionais ao lado. */
 @Component({
   selector: 'kit-scene-view',
-  imports: [ChestRow, Code, Scale, Circuit, Flow, Sorter],
+  imports: [ChestRow, Code, Scale, Circuit, Flow, Sorter, List],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -108,6 +109,9 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
             }
             @if (sorter(); as so) {
               <kit-switch class="kit-fade" [style.zoom]="sorterZoom()" [state]="so"></kit-switch>
+            }
+            @if (list(); as li) {
+              <kit-list class="kit-fade" [style.zoom]="listZoom()" [state]="li"></kit-list>
             }
             @if (chests().length) {
               <kit-chest-row
@@ -184,8 +188,19 @@ export class SceneView {
       .map((s) => sorterLayout({ ...s, dropped: true, value: s.value }));
     return flowZoom(sizes, !!this.code());
   });
+  readonly list = computed(() => pick(this.state().list ?? undefined, this.syntax()));
+  /** Mesma escala em todas as etapas: a do gaveteiro mais largo do slide. */
+  readonly listZoom = computed(() => {
+    const steps = this.slide().steps;
+    const sizes = steps
+      .map((_, i) => pick(sceneAt(steps, i).list ?? undefined, this.syntax()))
+      .filter((l) => !!l)
+      .map((l) => listLayout(l));
+    return flowZoom(sizes, !!this.code());
+  });
   readonly hasFigure = computed(
     () =>
+      !!this.list() ||
       !!this.compare() ||
       !!this.circuit() ||
       !!this.flow() ||

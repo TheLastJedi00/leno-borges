@@ -404,6 +404,12 @@ export const pt: Dictionary = {
               'Como escolher um caminho entre vários a partir de um valor com switch, case, break e default, explicado com escaninhos de triagem.',
             duration: '10 min a 3 h',
           },
+          listas: {
+            title: 'Listas',
+            summary:
+              'Como guardar vários valores com um nome só e ler, adicionar, trocar, remover e procurar itens, explicado com um gaveteiro de gavetas numeradas.',
+            duration: '10 min a 3 h',
+          },
         },
       },
     },
@@ -468,6 +474,7 @@ export const pt: Dictionary = {
       goalNothing: 'Objetivo: não aparecer nada.',
       valueOf: 'Valor de',
       nothingPrinted: '(nada aparece)',
+      outsideList: 'fora da lista',
     },
   },
 };

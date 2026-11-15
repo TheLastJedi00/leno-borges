@@ -75,4 +75,29 @@ describe('exercício escolha o valor', () => {
     expect(buttons[1].getAttribute('aria-pressed')).toBe('true');
     expect(el.textContent).toContain('Entra');
   });
+
+  it('com gaveteiro, o valor escolhido é o índice lido', async () => {
+    TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
+    const fixture = TestBed.createComponent(BranchView);
+    fixture.componentRef.setInput('slide', {
+      ...slide,
+      variable: 'i',
+      code: '{f:console.log}({n:frutas}[{v:@@}]);',
+      flow: undefined,
+      list: { name: 'frutas', items: [{ id: 'm', value: '"maçã"' }, { id: 'u', value: '"uva"' }] },
+      choices: [
+        { value: '1', output: 'uva' },
+        { value: '2', output: 'undefined' },
+      ],
+      goals: ['uva'],
+    } satisfies BranchSlide);
+    fixture.componentRef.setInput('syntax', 'js');
+    const view = fixture.componentInstance;
+    await fixture.whenStable();
+    expect(view.list()?.focus).toBe(1);
+    view.choose(1);
+    expect(view.list()?.outside).toBe(2);
+    expect(view.list()?.focus).toBeUndefined();
+    expect(view.listZoom()).toBeLessThanOrEqual(1);
+  });
 });

@@ -41,12 +41,15 @@ const { pick } = require(path.join(out, 'kit.data.js'));
 const { codeWithValue, finishedRuns, plainCode } = require(path.join(out, 'ui/code/code-markup.js'));
 
 const clean = (s) => String(s).replace(/\r/g, '');
+/** O endereço do array muda a cada execução (`[Ljava.lang.String;@1b6d3586`): compara sem ele. */
+const noAddress = (s) => String(s).replace(/;@[0-9a-f]+/g, ';@');
 
 /** Compila e roda; devolve as linhas que a turma veria (saída, `error: ...` ou a exceção). */
 function runJava(code) {
   const dir = fs.mkdtempSync(path.join(out, 'java-'));
   const lines = code.split('\n');
-  const imports = lines.filter((l) => l.startsWith('import ')).join('\n');
+  // Sem `import` no trecho, importa `java.util` (os slides de listas não repetem as linhas).
+  const imports = lines.filter((l) => l.startsWith('import ')).join('\n') || 'import java.util.*;';
   const body = lines.filter((l) => !l.startsWith('import ')).join('\n');
   const hasClass = /^\s*(public\s+)?(class|record|enum)\s/m.test(body);
   const src = hasClass
@@ -78,12 +81,12 @@ for (const slug of slugs) {
     const markup = 'code' in slide && slide.code ? pick(slide.code, 'java') : undefined;
     if (!markup) continue;
     if (slide.kind === 'branch') {
-      // Exercício "escolha o valor": roda o código com cada valor.
+      // Exercício "escolha o valor": roda o código com cada valor (a exceção conta como saída).
       for (const choice of slide.choices) {
         const expected = pick(choice.output, 'java') ?? '';
         const result = runJava(plainCode(codeWithValue(markup, choice.value)));
         checked++;
-        if (result.kind !== 'ok' || result.lines.join('\n') !== expected) {
+        if (result.kind === 'compile' || noAddress(result.lines.join('\n')) !== noAddress(expected)) {
           problems++;
           console.log(`\n✗ ${slug} / ${slide.id}, valor ${choice.value}`);
           console.log(`  slide: ${JSON.stringify(expected)}`);
@@ -107,7 +110,7 @@ for (const slug of slugs) {
         // Sem saída no slide: basta compilar e rodar sem erro.
         ok = result.kind === 'ok';
       } else {
-        ok = result.lines.join('\n') === expected;
+        ok = noAddress(result.lines.join('\n')) === noAddress(expected);
       }
       if (!ok) {
         problems++;

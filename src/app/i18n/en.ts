@@ -404,6 +404,12 @@ export const en: Dictionary = {
               'How to pick one path among many from a single value with switch, case, break and default, explained with sorting slots.',
             duration: '10 min to 3 h',
           },
+          listas: {
+            title: 'Lists',
+            summary:
+              'How to keep many values under one name and read, add, replace, remove and find items, explained with a cabinet of numbered drawers.',
+            duration: '10 min to 3 h',
+          },
         },
       },
     },
@@ -468,6 +474,7 @@ export const en: Dictionary = {
       goalNothing: 'Goal: make the program print nothing.',
       valueOf: 'Value of',
       nothingPrinted: '(nothing is printed)',
+      outsideList: 'out of the list',
     },
   },
 };

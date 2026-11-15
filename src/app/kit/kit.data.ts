@@ -23,7 +23,8 @@ export type LessonId =
   | 'operadores-relacionais'
   | 'operadores-logicos'
   | 'condicionais'
-  | 'switch-case';
+  | 'switch-case'
+  | 'listas';
 
 export interface Lesson {
   slug: LessonId;
@@ -198,6 +199,27 @@ export function sorterRoute(state: SorterState): { landed: number | null; ran: n
   return { landed, ran };
 }
 
+/** Uma gaveta do gaveteiro: `id` estável entre etapas (para animar) e o valor como no código. */
+export interface ListItem {
+  id: string;
+  value: string;
+}
+
+/**
+ * Gaveteiro da lista: um nome, gavetas lado a lado e o índice de cada uma (a partir do 0). O
+ * índice não é guardado: é a posição da gaveta, e muda quando outra entra ou sai antes dela.
+ */
+export interface ListState {
+  name: string;
+  items: ListItem[];
+  /** Índice da gaveta em destaque (lida, trocada, encontrada). */
+  focus?: number | null;
+  /** Índice pedido que não existe: mostra uma gaveta fantasma em vermelho. */
+  outside?: number | null;
+  /** Tamanho fixo (array do Java): gaveteiro parafusado, sem lugar para gaveta nova. */
+  fixed?: boolean;
+}
+
 /** Estado de uma etapa; cada etapa herda a anterior e sobrescreve só o que declara. */
 export interface SceneStep {
   caption?: BySyntax;
@@ -222,6 +244,8 @@ export interface SceneStep {
   flow?: BySyntax<FlowState> | null;
   /** Triagem do switch; `null` tira a triagem da cena. */
   sorter?: BySyntax<SorterState> | null;
+  /** Gaveteiro da lista; `null` tira o gaveteiro da cena. */
+  list?: BySyntax<ListState> | null;
 }
 
 interface SlideBase {
@@ -371,6 +395,8 @@ export interface BranchSlide extends SlideBase {
   flow?: BySyntax<Omit<FlowState, 'answers'>>;
   /** Triagem sem o valor (vem do valor escolhido). */
   sorter?: BySyntax<Omit<SorterState, 'value' | 'dropped'>>;
+  /** Gaveteiro; o valor escolhido é o índice lido (em destaque, ou fantasma se não existir). */
+  list?: BySyntax<Omit<ListState, 'focus' | 'outside'>>;
   choices: BranchChoice[];
   /** Valor escolhido no começo (índice em `choices`). */
   start?: number;
@@ -457,6 +483,12 @@ export const tracks: Track[] = [
         syntaxes: ['js', 'ts', 'java'],
         counts: { essencial: 10, completo: 16 },
         load: () => import('./decks/switch-case/deck.pt').then((m) => m.deck),
+      },
+      {
+        slug: 'listas',
+        syntaxes: ['js', 'ts', 'java'],
+        counts: { essencial: 10, completo: 21 },
+        load: () => import('./decks/listas/deck.pt').then((m) => m.deck),
       },
     ],
   },

@@ -132,10 +132,27 @@ export function truthProblems(deck: Deck): string[] {
   return problems;
 }
 
+/**
+ * Valor como o `console.log` do Node mostra no terminal: texto solto sem aspas, listas com
+ * espaço depois do `[` e textos dentro da lista entre aspas simples (`[ 'maçã', 1 ]`). Vale para
+ * listas curtas (o Node quebra linha nas compridas, que os slides não usam).
+ */
+export function nodeFormat(value: unknown, nested = false): string {
+  if (Array.isArray(value)) {
+    return value.length ? `[ ${value.map((v) => nodeFormat(v, true)).join(', ')} ]` : '[]';
+  }
+  if (typeof value === 'string' && nested) {
+    return value.includes("'") && !value.includes('"') ? `"${value}"` : `'${value.replaceAll("'", "\\'")}'`;
+  }
+  return String(value);
+}
+
 /** Roda um trecho de JS com `console.log` falso e devolve o que ele imprimiu. */
-function runJs(code: string): string {
+export function runJs(code: string): string {
   const printed: string[] = [];
-  const fakeConsole = { log: (...args: unknown[]) => printed.push(args.map(String).join(' ')) };
+  const fakeConsole = {
+    log: (...args: unknown[]) => printed.push(args.map((a) => nodeFormat(a)).join(' ')),
+  };
   try {
     Function('console', code)(fakeConsole);
   } catch (error) {
@@ -156,6 +173,7 @@ export function branchProblems(deck: Deck): string[] {
     const code = plainCode(pick(slide.code, 'js') ?? '');
     const flow = pick(slide.flow, 'js');
     const sorter = pick(slide.sorter, 'js');
+    const list = pick(slide.list, 'js');
     for (const choice of slide.choices) {
       const expected = pick(choice.output, 'js') ?? '';
       const actual = runJs(codeWithValue(code, choice.value));
@@ -168,6 +186,14 @@ export function branchProblems(deck: Deck): string[] {
         const shown = ran.map((i) => outs[i].replace(/^"(.*)"$/, '$1')).filter(Boolean).join('\n');
         if (shown !== expected) {
           problems.push(`${slide.id}, valor ${choice.value}: triagem roda ${JSON.stringify(shown)}, a saída é ${JSON.stringify(expected)}`);
+        }
+      }
+      if (list) {
+        // Gaveteiro: a gaveta do índice escolhido guarda o que o código imprime.
+        const item = list.items[Number(choice.value)];
+        const shown = item ? item.value.replace(/^"(.*)"$/, '$1') : 'undefined';
+        if (shown !== expected) {
+          problems.push(`${slide.id}, valor ${choice.value}: gaveta com ${JSON.stringify(shown)}, a saída é ${JSON.stringify(expected)}`);
         }
       }
       if (flow) {
