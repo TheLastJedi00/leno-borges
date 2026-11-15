@@ -8,6 +8,7 @@ import { Flow, flowLayout } from '../ui/flow/flow';
 import { List, listLayout } from '../ui/list/list';
 import { Loop, loopLayout } from '../ui/loop/loop';
 import { Sorter, sorterLayout } from '../ui/switch/sorter';
+import { Stack, stackSize } from '../ui/stack/stack';
 import { I18n } from '../../i18n/i18n';
 import { Code } from '../ui/code/code';
 import { codeWithValue, fitFontSize, parseCode, sceneAt } from '../ui/code/code-markup';
@@ -73,7 +74,7 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
 /** Slide de cena: baús animados por etapa, com código e saída opcionais ao lado. */
 @Component({
   selector: 'kit-scene-view',
-  imports: [ChestRow, Code, Scale, Circuit, Flow, Sorter, List, Loop],
+  imports: [ChestRow, Code, Scale, Circuit, Flow, Sorter, List, Loop, Stack],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -114,13 +115,16 @@ export function chestsFor(state: SceneStep, syntax: Syntax): ChestState[] {
             @if (loop(); as lo) {
               <kit-loop class="kit-fade" [style.zoom]="loopZoom()" [state]="lo"></kit-loop>
             }
+            @if (stack(); as sk) {
+              <kit-stack class="kit-fade" [style.zoom]="stackZoom()" [state]="sk"></kit-stack>
+            }
             @if (list(); as li) {
               <kit-list class="kit-fade" [style.zoom]="listZoom()" [state]="li"></kit-list>
             }
             @if (chests().length) {
               <kit-chest-row
                 class="self-stretch"
-                [style.zoom]="compare() || loop() ? 0.6 : zoom()"
+                [style.zoom]="compare() || loop() || stack() ? 0.6 : zoom()"
                 [chests]="chests()"
                 [syntax]="syntax()"
               ></kit-chest-row>
@@ -217,8 +221,26 @@ export class SceneView {
     });
     return flowZoom(sizes, !!this.code()) * (shared ? 0.8 : 1);
   });
+  readonly stack = computed(() => pick(this.state().stack ?? undefined, this.syntax()));
+  /**
+   * Mesma escala em todas as etapas: a da pilha mais alta do slide, sem passar de 1. Com baús ou
+   * gaveteiro na mesma cena, a pilha divide a altura com eles.
+   */
+  readonly stackZoom = computed(() => {
+    const steps = this.slide().steps;
+    const sizes = steps
+      .map((_, i) => pick(sceneAt(steps, i).stack ?? undefined, this.syntax()))
+      .filter((s) => !!s)
+      .map((s) => stackSize(s, this.t().kit.exercise.stackFile));
+    const shared = steps.some((_, i) => {
+      const st = sceneAt(steps, i);
+      return (pick(st.chests, this.syntax()) ?? []).length > 0 || !!st.list;
+    });
+    return Math.min(1, flowZoom(sizes, !!this.code())) * (shared ? 0.8 : 1);
+  });
   readonly hasFigure = computed(
     () =>
+      !!this.stack() ||
       !!this.loop() ||
       !!this.list() ||
       !!this.compare() ||

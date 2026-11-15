@@ -88,3 +88,34 @@ describe('SceneView com pista do laço', () => {
     expect(fixture.componentInstance.loopZoom()).toBeGreaterThan(0);
   });
 });
+
+describe('SceneView com pilha de chamadas', () => {
+  beforeEach(() => TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] }));
+
+  const slide: SceneSlide = {
+    id: 'f',
+    kind: 'scene',
+    depth: 'core',
+    title: 't',
+    notes: ['n'],
+    code: '{k:let} {n:r} = {f:dobro}({v:4});',
+    steps: [
+      { stack: { frames: [{}, { name: 'dobro', vars: [{ name: 'n', value: '4' }] }], returning: '8' } },
+      { stack: { frames: [{}] }, chests: [{ id: 'r', label: 'r', item: '8', shape: 'int', open: true }] },
+    ],
+  };
+
+  it('a sala abre e fecha com o return; com baús, a pilha encolhe', () => {
+    const fixture = TestBed.createComponent(SceneView);
+    fixture.componentRef.setInput('slide', slide);
+    fixture.componentRef.setInput('syntax', 'js');
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelectorAll('kit-stack .frame').length).toBe(2);
+    expect(el.querySelector('kit-stack .returning')).not.toBeNull();
+    expect(fixture.componentInstance.stackZoom()).toBeLessThanOrEqual(0.8);
+    fixture.componentRef.setInput('step', 1);
+    fixture.detectChanges();
+    expect(el.querySelectorAll('kit-stack .frame').length).toBe(1);
+  });
+});
