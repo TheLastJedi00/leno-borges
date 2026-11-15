@@ -482,6 +482,9 @@ export const en: Dictionary = {
       nothingPrinted: '(nothing is printed)',
       outsideList: 'out of the list',
       loopLaps: 'laps',
+      stackLabel: 'call stack',
+      stackFile: 'file',
+      stackReturns: 'returns',
     },
   },
 };
