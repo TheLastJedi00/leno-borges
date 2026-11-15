@@ -35,10 +35,12 @@ const tsc = path.join(root, 'node_modules/typescript/bin/tsc');
 execFileSync(process.execPath, [
   tsc, '--module', 'commonjs', '--target', 'es2022', '--skipLibCheck', '--outDir', out,
   path.join(kitSrc, 'kit.data.ts'), path.join(kitSrc, 'ui/code/code-markup.ts'),
+  path.join(decksDir, 'java-source.ts'),
   ...slugs.map((s) => path.join(decksDir, s, 'deck.pt.ts')),
 ], { stdio: 'inherit' });
 const { pick } = require(path.join(out, 'kit.data.js'));
 const { codeWithValue, finishedRuns, plainCode } = require(path.join(out, 'ui/code/code-markup.js'));
+const { javaSource } = require(path.join(out, 'decks/java-source.js'));
 
 /** Tempo máximo de cada execução: um laço infinito por engano acusa o slide em vez de travar. */
 const TIMEOUT_MS = 10000;
@@ -49,14 +51,8 @@ const noAddress = (s) => String(s).replace(/;@[0-9a-f]+/g, ';@');
 /** Compila e roda; devolve as linhas que a turma veria (saída, `error: ...` ou a exceção). */
 function runJava(code) {
   const dir = fs.mkdtempSync(path.join(out, 'java-'));
-  const lines = code.split('\n');
-  // Sem `import` no trecho, importa `java.util` (os slides de listas não repetem as linhas).
-  const imports = lines.filter((l) => l.startsWith('import ')).join('\n') || 'import java.util.*;';
-  const body = lines.filter((l) => !l.startsWith('import ')).join('\n');
-  const hasClass = /^\s*(public\s+)?(class|record|enum)\s/m.test(body);
-  const src = hasClass
-    ? `${imports}\n${body}\n`
-    : `${imports}\npublic class Main {\n  public static void main(String[] args) throws Exception {\n${body}\n  }\n}\n`;
+  // Classe e `main` por fora; `// no main` separa as funções do que roda dentro do `main`.
+  const src = javaSource(code);
   const file = path.join(dir, 'Main.java');
   fs.writeFileSync(file, src);
   try {

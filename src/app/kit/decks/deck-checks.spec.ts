@@ -1,5 +1,5 @@
-import type { Deck } from '../kit.data';
-import { branchProblems, jsOutputProblems, nodeFormat, runJs, traceProblems } from './deck-checks';
+import type { Deck, SceneStep } from '../kit.data';
+import { branchProblems, jsOutputProblems, nodeFormat, runJs, stackProblems, traceProblems } from './deck-checks';
 
 const deck = (output: string, answers: boolean[], goals = ['Entra']): Deck => ({
   slides: [
@@ -141,5 +141,62 @@ describe('traceProblems', () => {
     wrong[1][3] = '3';
     expect(traceProblems(trace(wrong, 6)).length).toBe(1);
     expect(traceProblems(trace(ok))[0]).toContain('3 anotações');
+  });
+});
+
+describe('stackProblems', () => {
+  const scene = (after: SceneStep): Deck => ({
+    slides: [
+      {
+        id: 'p',
+        kind: 'scene',
+        depth: 'core',
+        title: 't',
+        notes: ['n'],
+        steps: [
+          { stack: { js: { frames: [{}, { name: 'dobro', vars: [{ name: 'n', value: '4' }] }], returning: '8' }, java: { frames: [{ name: 'main' }, { name: 'dobro' }], returning: '8' } } },
+          after,
+        ],
+      },
+    ],
+  });
+  const closed = { js: { frames: [{}] }, java: { frames: [{ name: 'main' }] } };
+
+  it('aceita o return que fecha a sala e chega ao baú', () => {
+    expect(stackProblems(scene({ stack: closed, chests: [{ id: 'r', item: '8' }] }), ['js', 'java'])).toEqual([]);
+  });
+
+  it('acusa sala que não fecha, valor que não chega e main sem nome', () => {
+    expect(stackProblems(scene({ chests: [{ id: 'r', item: '8' }] }), ['js'])).toEqual([
+      'p (js), etapa 1: o return não fecha a sala do topo na etapa seguinte',
+    ]);
+    expect(stackProblems(scene({ stack: closed, output: '9' }), ['js'])).toEqual([
+      'p (js), etapa 1: o valor 8 não chega a um baú nem à saída',
+    ]);
+    const noMain = scene({ stack: { frames: [{}] }, output: '8' });
+    expect(stackProblems(noMain, ['java']).some((p) => p.includes('não é o main'))).toBeTrue();
+  });
+
+  it('exercício: o valor devolvido é o que aparece', () => {
+    const branch = (returns: string): Deck => ({
+      slides: [
+        {
+          id: 'b',
+          kind: 'branch',
+          depth: 'extra',
+          tag: 'Exercício',
+          title: 't',
+          lead: 'l',
+          notes: ['n'],
+          variable: 'nota',
+          code: '{f:console.log}({v:"Ok"});',
+          stack: { frames: [{}, { name: 'f', vars: [{ name: 'nota', value: '' }] }] },
+          choices: [{ value: '8', output: 'Ok', returns }],
+          goals: ['Ok'],
+        },
+      ],
+    });
+    expect(stackProblems(branch('"Ok"'), ['js'])).toEqual([]);
+    expect(stackProblems(branch('"No"'), ['js']).length).toBe(1);
   });
 });

@@ -16,6 +16,7 @@ import {
   parseCode,
   parseExpr,
   plainCode,
+  sceneAt,
 } from '../ui/code/code-markup';
 
 // Conferências comuns a todos os decks, usadas pelos testes de cada aula. Funções puras (sem
@@ -266,6 +267,62 @@ export function traceProblems(deck: Deck): string[] {
         }
       });
     });
+  }
+  return problems;
+}
+
+/** Texto do valor sem as aspas do código (`"Ana"` → `Ana`). */
+const unquote = (value: string) => value.replace(/^"(.*)"$/, '$1');
+
+/**
+ * Pilha de chamadas: a sala de baixo é o `main` no Java e o arquivo (sem nome) no JS/TS. Numa
+ * cena, a etapa com `returning` é seguida de uma etapa que fecha a sala do topo, e o valor
+ * devolvido aparece num baú ou na saída dessa etapa. No exercício, o valor devolvido é o que o
+ * programa imprime e a sala do topo tem o baú da variável escolhida.
+ */
+export function stackProblems(deck: Deck, syntaxes: readonly Syntax[]): string[] {
+  const problems: string[] = [];
+  const bottom = (s: Syntax, name: string | undefined, where: string) => {
+    if (s === 'java' && name !== 'main') problems.push(`${where}: a sala de baixo do Java não é o main`);
+    if (s !== 'java' && name !== undefined) problems.push(`${where}: a sala de baixo do ${s} tem nome (${name})`);
+  };
+  for (const slide of deck.slides) {
+    for (const s of slide.syntaxes ?? syntaxes) {
+      if (slide.kind === 'branch' && slide.stack) {
+        const stack = pick(slide.stack, s);
+        if (!stack) continue;
+        bottom(s, stack.frames[0]?.name, `${slide.id} (${s})`);
+        const top = stack.frames.at(-1);
+        if (!top?.vars?.some((v) => v.name === slide.variable)) {
+          problems.push(`${slide.id} (${s}): a sala do topo não tem o baú ${slide.variable}`);
+        }
+        for (const choice of slide.choices) {
+          const out = pick(choice.output, s) ?? '';
+          if (choice.returns === undefined || unquote(choice.returns) !== out) {
+            problems.push(`${slide.id} (${s}), valor ${choice.value}: devolve ${choice.returns}, imprime ${JSON.stringify(out)}`);
+          }
+        }
+      }
+      if (slide.kind !== 'scene') continue;
+      const states = slide.steps.map((_, i) => sceneAt(slide.steps, i));
+      states.forEach((state, i) => {
+        const stack = pick(state.stack ?? undefined, s);
+        if (!stack) return;
+        const where = `${slide.id} (${s}), etapa ${i + 1}`;
+        bottom(s, stack.frames[0]?.name, where);
+        if (!stack.returning || slide.steps[i].stack === undefined) return;
+        const next = states[i + 1];
+        const after = next && slide.steps[i + 1].stack !== undefined ? pick(next.stack ?? undefined, s) : undefined;
+        if (!after || after.frames.length !== stack.frames.length - 1 || after.returning) {
+          problems.push(`${where}: o return não fecha a sala do topo na etapa seguinte`);
+          return;
+        }
+        const value = unquote(stack.returning);
+        const inChest = (pick(next.chests, s) ?? []).some((c) => c.item !== undefined && unquote(c.item) === value);
+        const inOutput = (pick(next.output ?? undefined, s) ?? '').includes(value);
+        if (!inChest && !inOutput) problems.push(`${where}: o valor ${stack.returning} não chega a um baú nem à saída`);
+      });
+    }
   }
   return problems;
 }
