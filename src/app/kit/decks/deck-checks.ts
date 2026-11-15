@@ -277,7 +277,7 @@ const unquote = (value: string) => value.replace(/^"(.*)"$/, '$1');
 /**
  * Pilha de chamadas: a sala de baixo é o `main` no Java e o arquivo (sem nome) no JS/TS. Numa
  * cena, a etapa com `returning` é seguida de uma etapa que fecha a sala do topo, e o valor
- * devolvido aparece num baú ou na saída dessa etapa. No exercício, o valor devolvido é o que o
+ * devolvido aparece num baú, na saída ou num baú da sala que recebeu o valor. No exercício, o valor devolvido é o que o
  * programa imprime e a sala do topo tem o baú da variável escolhida.
  */
 export function stackProblems(deck: Deck, syntaxes: readonly Syntax[]): string[] {
@@ -313,14 +313,17 @@ export function stackProblems(deck: Deck, syntaxes: readonly Syntax[]): string[]
         if (!stack.returning || slide.steps[i].stack === undefined) return;
         const next = states[i + 1];
         const after = next && slide.steps[i + 1].stack !== undefined ? pick(next.stack ?? undefined, s) : undefined;
-        if (!after || after.frames.length !== stack.frames.length - 1 || after.returning) {
+        if (!after || after.frames.length !== stack.frames.length - 1) {
           problems.push(`${where}: o return não fecha a sala do topo na etapa seguinte`);
           return;
         }
         const value = unquote(stack.returning);
         const inChest = (pick(next.chests, s) ?? []).some((c) => c.item !== undefined && unquote(c.item) === value);
         const inOutput = (pick(next.output ?? undefined, s) ?? '').includes(value);
-        if (!inChest && !inOutput) problems.push(`${where}: o valor ${stack.returning} não chega a um baú nem à saída`);
+        const inFrame = (after.frames.at(-1)?.vars ?? []).some((v) => unquote(v.value) === value);
+        if (!inChest && !inOutput && !inFrame) {
+          problems.push(`${where}: o valor ${stack.returning} não chega a um baú nem à saída`);
+        }
       });
     }
   }
