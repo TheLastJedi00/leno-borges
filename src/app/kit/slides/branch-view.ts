@@ -6,6 +6,7 @@ import {
   type ListState,
   type LoopState,
   type SorterState,
+  type StackState,
   type Syntax,
   pick,
 } from '../kit.data';
@@ -15,6 +16,7 @@ import { Flow, flowLayout } from '../ui/flow/flow';
 import { List, listLayout } from '../ui/list/list';
 import { Loop, loopLayout } from '../ui/loop/loop';
 import { Sorter, sorterLayout } from '../ui/switch/sorter';
+import { Stack, stackSize } from '../ui/stack/stack';
 
 /** Espaço da ilustração na coluna da direita do exercício. */
 const FIG_W = 552;
@@ -26,6 +28,16 @@ function listAt(base: Omit<ListState, 'focus' | 'outside'>, value: string): List
   return index < base.items.length ? { ...base, focus: index } : { ...base, outside: index };
 }
 
+/** Pilha com o valor escolhido no baú da variável e o valor devolvido pela sala do topo. */
+function stackWith(base: Omit<StackState, 'returning'>, variable: string, value: string, returns?: string): StackState {
+  const frames = base.frames.map((f, i) =>
+    i === base.frames.length - 1
+      ? { ...f, vars: (f.vars ?? []).map((v) => (v.name === variable ? { ...v, value } : v)) }
+      : f,
+  );
+  return { frames, returning: returns ?? null };
+}
+
 /**
  * Exercício "escolha o valor": a turma troca o valor da variável (botões, Tab e Enter) e vê o
  * caminho no fluxograma e a saída. Cada desafio pede uma saída. Nada é salvo: reiniciar volta ao
@@ -33,7 +45,7 @@ function listAt(base: Omit<ListState, 'focus' | 'outside'>, value: string): List
  */
 @Component({
   selector: 'kit-branch-view',
-  imports: [Code, Flow, Sorter, List, Loop],
+  imports: [Code, Flow, Sorter, List, Loop, Stack],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full' },
   template: `
@@ -82,6 +94,11 @@ function listAt(base: Omit<ListState, 'focus' | 'outside'>, value: string): List
           @if (loop(); as lo) {
             <div class="flex min-h-0 flex-1 items-center justify-center">
               <kit-loop [style.zoom]="loopZoom()" [state]="lo"></kit-loop>
+            </div>
+          }
+          @if (stack(); as sk) {
+            <div class="flex min-h-0 flex-1 items-center justify-center">
+              <kit-stack [style.zoom]="stackZoom()" [state]="sk"></kit-stack>
             </div>
           }
           @if (list(); as li) {
@@ -203,6 +220,21 @@ export class BranchView {
     const base = pick(this.slide().loop, this.syntax());
     if (!base) return 1;
     const { width, height } = loopLayout({ ...base, laps: 0, answer: null }, 'voltas: 10');
+    return Math.min(1, FIG_W / width, FIG_H / height);
+  });
+  /** Pilha: o baú da variável recebe o valor escolhido e a sala do topo devolve o `returns`. */
+  readonly stack = computed<StackState | undefined>(() => {
+    const base = pick(this.slide().stack, this.syntax());
+    return base ? stackWith(base, this.slide().variable, this.current().value, this.current().returns) : undefined;
+  });
+  /** Escala fixa do slide: a do valor mais largo. */
+  readonly stackZoom = computed(() => {
+    const base = pick(this.slide().stack, this.syntax());
+    if (!base) return 1;
+    const file = this.t().kit.exercise.stackFile;
+    const sizes = this.slide().choices.map((c) => stackSize(stackWith(base, this.slide().variable, c.value, c.returns), file));
+    const width = Math.max(...sizes.map((s) => s.width));
+    const height = Math.max(...sizes.map((s) => s.height));
     return Math.min(1, FIG_W / width, FIG_H / height);
   });
   readonly goal = computed(() => this.slide().goals[this.index()]);
