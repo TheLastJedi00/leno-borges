@@ -100,4 +100,28 @@ describe('exercício escolha o valor', () => {
     expect(view.list()?.focus).toBeUndefined();
     expect(view.listZoom()).toBeLessThanOrEqual(1);
   });
+
+  it('com pista, o laço termina com as voltas do valor escolhido', async () => {
+    TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
+    const fixture = TestBed.createComponent(BranchView);
+    fixture.componentRef.setInput('slide', {
+      ...slide,
+      variable: 'inicio',
+      code: '{k:for} ({k:let} {n:i} = {v:@@}; {n:i} >= {v:1}; {n:i}--) {f:console.log}({n:i});',
+      flow: undefined,
+      loop: { condition: 'i >= 1', body: ['console.log(i)'], update: 'i--' },
+      choices: [
+        { value: '2', output: '2' + String.fromCharCode(10) + '1', laps: 2 },
+        { value: '0', output: '', laps: 0 },
+      ],
+      goals: [''],
+    } satisfies BranchSlide);
+    fixture.componentRef.setInput('syntax', 'js');
+    const view = fixture.componentInstance;
+    await fixture.whenStable();
+    expect(view.loop()).toEqual(jasmine.objectContaining({ laps: 2, answer: false }));
+    view.choose(1);
+    expect(view.loop()?.laps).toBe(0);
+    expect(view.solved()).toBeTrue();
+  });
 });

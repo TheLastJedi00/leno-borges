@@ -174,6 +174,7 @@ export function branchProblems(deck: Deck): string[] {
     const flow = pick(slide.flow, 'js');
     const sorter = pick(slide.sorter, 'js');
     const list = pick(slide.list, 'js');
+    const loop = pick(slide.loop, 'js');
     for (const choice of slide.choices) {
       const expected = pick(choice.output, 'js') ?? '';
       const actual = runJs(codeWithValue(code, choice.value));
@@ -186,6 +187,13 @@ export function branchProblems(deck: Deck): string[] {
         const shown = ran.map((i) => outs[i].replace(/^"(.*)"$/, '$1')).filter(Boolean).join('\n');
         if (shown !== expected) {
           problems.push(`${slide.id}, valor ${choice.value}: triagem roda ${JSON.stringify(shown)}, a saída é ${JSON.stringify(expected)}`);
+        }
+      }
+      if (loop) {
+        // Pista: cada volta do exercício imprime uma linha.
+        const printedLines = expected ? expected.split('\n').length : 0;
+        if ((choice.laps ?? 0) !== printedLines) {
+          problems.push(`${slide.id}, valor ${choice.value}: ${choice.laps ?? 0} voltas na pista, a saída tem ${printedLines} linhas`);
         }
       }
       if (list) {
