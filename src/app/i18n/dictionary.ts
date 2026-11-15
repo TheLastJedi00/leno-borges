@@ -156,6 +156,12 @@ export interface Dictionary {
       outsideList: string;
       /** Placar da pista do laço (aula de laços): "voltas: 2". */
       loopLaps: string;
+      /** Pilha de chamadas (aula de funções), para leitor de tela: "pilha de chamadas: ...". */
+      stackLabel: string;
+      /** Sala de baixo da pilha no JS/TS, que não tem `main`: o próprio arquivo. */
+      stackFile: string;
+      /** Antes do valor do return, para leitor de tela: "devolve 8". */
+      stackReturns: string;
     };
   };
 }

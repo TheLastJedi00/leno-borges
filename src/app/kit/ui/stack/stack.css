@@ -1,0 +1,126 @@
+/* A pilha cresce para cima: a sala de baixo é a primeira do estado */
+.stack {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.frame {
+  min-width: 240px;
+  padding: 0 20px 12px;
+  border-radius: 16px;
+  background: var(--color-ink);
+  border: 3px solid var(--color-line);
+  box-shadow: var(--shadow-inset);
+  opacity: 0.7;
+  animation: frame-open 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transition:
+    border-color 0.4s ease,
+    opacity 0.4s ease,
+    background-color 0.4s ease;
+}
+
+/* A sala do topo é a que está rodando */
+.frame.is-top {
+  opacity: 1;
+  border-color: var(--color-accent);
+  background: color-mix(in oklab, var(--color-accent) 16%, var(--color-ink));
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 44px;
+}
+
+.name {
+  font: 600 22px var(--font-mono);
+  color: var(--color-paper);
+}
+
+.frame.is-file .name {
+  font-family: var(--font-sans);
+  font-style: italic;
+  color: var(--color-muted);
+}
+
+/* O valor do return saindo da sala */
+.returning {
+  margin-left: auto;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--color-raised);
+  box-shadow: var(--shadow-raised);
+  font: 600 20px var(--font-mono);
+  color: var(--color-kit-value);
+  white-space: nowrap;
+  animation: kit-return 0.6s ease both;
+}
+
+.returning .kw {
+  color: var(--color-kit-keyword);
+}
+
+.returning .arrow {
+  margin-left: 8px;
+  color: var(--color-accent-soft);
+}
+
+.vars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Baú em miniatura: etiqueta e valor */
+.var {
+  display: inline-flex;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid color-mix(in oklab, var(--color-accent) 55%, transparent);
+  font: 600 20px var(--font-mono);
+  line-height: 36px;
+}
+
+.var-name {
+  padding: 0 10px;
+  background: var(--color-raised);
+  color: var(--color-kit-name);
+}
+
+.var-value {
+  padding: 0 12px;
+  color: var(--color-kit-value);
+  white-space: pre;
+}
+
+@keyframes frame-open {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+}
+
+@keyframes kit-return {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame,
+  .returning {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* O atalho `font:` religa as ligaduras; o kit mostra os operadores como se digita */
+.name,
+.returning,
+.var {
+  font-variant-ligatures: none;
+}

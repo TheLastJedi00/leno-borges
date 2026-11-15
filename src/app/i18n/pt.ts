@@ -482,6 +482,9 @@ export const pt: Dictionary = {
       nothingPrinted: '(nada aparece)',
       outsideList: 'fora da lista',
       loopLaps: 'voltas',
+      stackLabel: 'pilha de chamadas',
+      stackFile: 'arquivo',
+      stackReturns: 'devolve',
     },
   },
 };

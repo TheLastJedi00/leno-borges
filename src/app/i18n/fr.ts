@@ -485,6 +485,9 @@ export const fr: Dictionary = {
       nothingPrinted: '(rien ne s’affiche)',
       outsideList: 'hors de la liste',
       loopLaps: 'tours',
+      stackLabel: 'pile d’appels',
+      stackFile: 'fichier',
+      stackReturns: 'renvoie',
     },
   },
 };
