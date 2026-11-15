@@ -410,6 +410,12 @@ export const en: Dictionary = {
               'How to keep many values under one name and read, add, replace, remove and find items, explained with a cabinet of numbered drawers.',
             duration: '10 min to 3 h',
           },
+          'lacos-de-repeticao': {
+            title: 'Loops',
+            summary:
+              'How to repeat code with while and for, go through a list and add up values, explained with a track where every lap passes the condition.',
+            duration: '10 min to 3 h',
+          },
         },
       },
     },
