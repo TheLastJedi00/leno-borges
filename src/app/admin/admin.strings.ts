@@ -43,6 +43,14 @@ export const adminStrings = {
     submit: 'Gerar 3 variações',
     submitting: 'Gerando',
     empty: 'As variações aparecem aqui.',
+    history: {
+      heading: 'Histórico',
+      empty: 'Nenhuma geração ainda.',
+      open: 'Abrir',
+      remove: 'Excluir',
+      confirm: 'Confirmar exclusão',
+      failed: 'Não foi possível carregar o histórico.',
+    },
     variation: {
       title: (n: number) => `Variação ${n}`,
       download: 'Baixar PNG',

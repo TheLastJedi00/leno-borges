@@ -5,6 +5,7 @@ import { adminStrings } from '../admin.strings';
 import type { AdFormat, AdLang, GenerateRequest, Generation, Network } from '../ads/ad.types';
 import { AdApi } from '../core/ad-api';
 import { AdAssets } from '../core/ad-assets';
+import { AdHistory } from '../core/ad-history';
 import { AdVariationCard } from './ad-variation';
 
 @Component({
@@ -16,6 +17,7 @@ import { AdVariationCard } from './ad-variation';
 export class AdGenerator {
   private readonly api = inject(AdApi);
   private readonly assets = inject(AdAssets);
+  private readonly history = inject(AdHistory);
   readonly s = adminStrings.adGenerator;
 
   readonly formats: AdFormat[] = ['story', 'carousel', 'post'];
@@ -46,6 +48,39 @@ export class AdGenerator {
     }
   }
 
+  readonly items = signal<Generation[]>([]);
+  readonly historyFailed = signal(false);
+  /** Id da geracao com a exclusao armada (segundo clique confirma). */
+  readonly confirming = signal<string | null>(null);
+
+  constructor() {
+    void this.loadHistory();
+  }
+
+  async loadHistory() {
+    try {
+      this.items.set(await this.history.list());
+      this.historyFailed.set(false);
+    } catch {
+      this.historyFailed.set(true);
+    }
+  }
+
+  async remove(g: Generation) {
+    if (this.confirming() !== g.id) {
+      this.confirming.set(g.id);
+      return;
+    }
+    this.confirming.set(null);
+    try {
+      await this.history.remove(g);
+      this.items.update((list) => list.filter((x) => x.id !== g.id));
+      if (this.generation()?.id === g.id) this.generation.set(null);
+    } catch (e) {
+      this.error.set((e as Error).message);
+    }
+  }
+
   readonly canSubmit = computed(() => {
     const t = this.theme().trim().length;
     return !this.loading() && t >= 3 && t <= 500;
@@ -71,6 +106,7 @@ export class AdGenerator {
     try {
       const result = await this.api.generate(this.request());
       this.notice.set(result.backgroundError ?? null);
+      this.items.update((list) => [result.generation, ...list]);
       await this.show(result.generation);
     } catch (e) {
       this.error.set((e as Error).message);

@@ -29,6 +29,7 @@ export interface AdVariation {
 
 export interface Generation {
   id: string;
+  owner_id?: string;
   created_at: string;
   theme: string;
   format: AdFormat;
