@@ -58,6 +58,14 @@ describe('AdGenerator (formulario)', () => {
     expect(c.canSubmit()).toBeTrue();
   });
 
+  it('tema longo pode ser enviado, sem limite de caracteres', () => {
+    const c = fixture.componentInstance;
+    c.theme.set('x'.repeat(5000));
+    expect(c.canSubmit()).toBeTrue();
+    const textarea = (fixture.nativeElement as HTMLElement).querySelector('textarea[name=theme]');
+    expect(textarea?.hasAttribute('maxlength')).toBeFalse();
+  });
+
   it('mostra a mensagem de erro da funcao', async () => {
     generate.and.rejectWith(new Error('Acesso negado.'));
     const c = fixture.componentInstance;

@@ -260,7 +260,7 @@ Lista das gerações (mais novas primeiro) abaixo do formulário: data, tema, fo
   | `OWNER_USER_ID` | UUID do usuário criado no Supabase Auth |
 
   Os modelos vêm de secret para trocar sem novo deploy. `GEMINI_THINKING_LEVEL` vai em `generationConfig.thinkingConfig.thinkingLevel`. Se o alias `gemini-flash-latest` apontar para um modelo que só aceita `thinkingBudget`, a função converte `medium` para um orçamento médio. Os dois caminhos têm teste. `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` já vêm na função e não entram no `.env`.
-- **Entrada:** `{ theme, format, network, lang, slideCount?, withBackground }`, validada (tema de 3 a 500 caracteres; `slideCount` só no carrossel).
+- **Entrada:** `{ theme, format, network, lang, slideCount?, withBackground }`, validada (tema com pelo menos 3 caracteres, sem limite máximo; `slideCount` só no carrossel).
 - **Erros:** 401 sem JWT válido, 403 se não for o dono, 422 entrada inválida, 502 se o Gemini falhar ou devolver JSON fora do schema. Mensagens em PT.
 - **CORS:** só `http://localhost:4200`, `https://lenoborges.com.br` e `https://www.lenoborges.com.br`.
 - **TDD** (regra do backend): a suíte `deno test` vem antes da implementação e cobre validação de entrada, checagem do dono, montagem do prompt (identidade, guia da rede e regras de texto), conversão do nível de raciocínio, validação do schema, verificador de texto (travessões, emojis, clichês nos três idiomas), retry com as violações, correção das peças e `warnings` do texto sugerido. O Gemini é mockado.
