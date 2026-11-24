@@ -20,6 +20,8 @@ export const routes: Routes = [
     loadComponent: () => import('./kit/player/player').then((m) => m.Player),
   },
   { path: 'kit/**', redirectTo: 'kit' },
+  // Area restrita do dono (spec 013), toda lazy
+  { path: 'admin', loadChildren: () => import('./admin/admin.routes').then((m) => m.adminRoutes) },
   // Case BF Academy removido na spec 002; mantém links antigos funcionando
   { path: 'bfacademy', redirectTo: '' },
   { path: '**', redirectTo: '' },
