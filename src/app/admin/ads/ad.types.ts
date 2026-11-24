@@ -17,6 +17,8 @@ export interface AdSlide {
   title: string;
   body?: string;
   cta?: string;
+  /** Arte criada pelo Gemini. Geracoes antigas nao tem: usam os templates fixos. */
+  html?: string;
 }
 
 export interface AdVariation {

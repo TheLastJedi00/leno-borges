@@ -10,6 +10,7 @@ import {
 import { adminStrings } from '../admin.strings';
 import { FORMAT_SIZE, type AdVariation, type Generation } from '../ads/ad.types';
 import { AdCarouselSlide } from '../ads/pieces/ad-carousel-slide';
+import { AdHtmlPiece } from '../ads/pieces/ad-html-piece';
 import { AdPost } from '../ads/pieces/ad-post';
 import { AdStory } from '../ads/pieces/ad-story';
 import { AdAssets, exportName } from '../core/ad-assets';
@@ -20,7 +21,7 @@ const PREVIEW_SCALE = { story: 0.25, carousel: 0.3, post: 0.27 } as const;
 /** Uma variacao: previews, download de cada peca, texto sugerido e avisos. */
 @Component({
   selector: 'app-ad-variation',
-  imports: [AdStory, AdCarouselSlide, AdPost],
+  imports: [AdStory, AdCarouselSlide, AdPost, AdHtmlPiece],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './ad-variation.html',
 })

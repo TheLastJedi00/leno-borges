@@ -24,6 +24,9 @@
           [style.height.px]="box().height"
         >
           <div class="origin-top-left" [style.transform]="'scale(' + scale() + ')'">
+            @if (slide.html) {
+              <app-ad-html-piece [html]="slide.html" [format]="format()" [background]="background()" />
+            } @else {
             @switch (format()) {
               @case ('story') {
                 <app-ad-story [slide]="slide" [network]="network()" [background]="background()" />
@@ -40,6 +43,7 @@
                   [background]="background()"
                 />
               }
+            }
             }
           </div>
         </div>
