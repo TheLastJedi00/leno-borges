@@ -1,0 +1,124 @@
+import type { Env, GenerateInput } from './types.ts';
+
+const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
+
+/** Falha ao falar com o Gemini. A mensagem nunca leva a chave nem o corpo da requisicao. */
+export class GeminiError extends Error {
+  constructor(message: string, readonly status?: number) {
+    super(message);
+    this.name = 'GeminiError';
+  }
+}
+
+type Level = 'minimal' | 'low' | 'medium' | 'high';
+const LEVELS: Level[] = ['minimal', 'low', 'medium', 'high'];
+/** Orcamento equivalente, para modelos que so aceitam `thinkingBudget`. */
+const BUDGET: Record<Level, number> = { minimal: 512, low: 1024, medium: 4096, high: 8192 };
+
+function level(raw: string): Level {
+  return LEVELS.includes(raw as Level) ? (raw as Level) : 'medium';
+}
+
+// deno-lint-ignore no-explicit-any
+type Json = any;
+
+async function post(fetchFn: typeof fetch, env: Env, model: string, body: unknown): Promise<Json> {
+  let res: Response;
+  try {
+    res = await fetchFn(`${BASE_URL}/${model}:generateContent`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    throw new GeminiError('Não foi possível falar com o Gemini.');
+  }
+  const json = await res.json().catch(() => null);
+  if (!res.ok) {
+    const detail: string = json?.error?.message ?? '';
+    throw new GeminiError(`Gemini respondeu ${res.status}${detail ? `: ${detail}` : ''}`, res.status);
+  }
+  return json;
+}
+
+/** Texto da resposta (ignora partes de "pensamento"). */
+function textOf(json: Json): string {
+  const parts: Json[] = json?.candidates?.[0]?.content?.parts ?? [];
+  return parts
+    .filter((p) => typeof p.text === 'string' && !p.thought)
+    .map((p) => p.text)
+    .join('');
+}
+
+const str = { type: 'STRING' };
+
+/** Schema da saida estruturada: 3 variacoes, cada uma com o numero de slides pedido. */
+export function responseSchema(input: GenerateInput) {
+  return {
+    type: 'OBJECT',
+    properties: {
+      variations: {
+        type: 'ARRAY',
+        minItems: 3,
+        maxItems: 3,
+        items: {
+          type: 'OBJECT',
+          properties: {
+            angle: str,
+            slides: {
+              type: 'ARRAY',
+              minItems: input.slideCount,
+              maxItems: input.slideCount,
+              items: {
+                type: 'OBJECT',
+                properties: { kicker: str, title: str, body: str, cta: str },
+                required: ['title'],
+              },
+            },
+            caption: str,
+            hashtags: { type: 'ARRAY', items: str },
+          },
+          required: ['angle', 'slides', 'caption', 'hashtags'],
+        },
+      },
+    },
+    required: ['variations'],
+  };
+}
+
+/** Pede as 3 variacoes ao `GEMINI_MODEL`, com saida estruturada e raciocinio no nivel configurado. */
+export async function generateVariations(
+  fetchFn: typeof fetch,
+  env: Env,
+  input: GenerateInput,
+  prompt: { system: string; user: string },
+): Promise<unknown> {
+  const lvl = level(env.GEMINI_THINKING_LEVEL);
+  const request = (thinkingConfig: Record<string, unknown>) => ({
+    systemInstruction: { parts: [{ text: prompt.system }] },
+    contents: [{ role: 'user', parts: [{ text: prompt.user }] }],
+    generationConfig: {
+      responseMimeType: 'application/json',
+      responseSchema: responseSchema(input),
+      thinkingConfig,
+    },
+  });
+
+  let json: Json;
+  try {
+    json = await post(fetchFn, env, env.GEMINI_MODEL, request({ thinkingLevel: lvl }));
+  } catch (e) {
+    // Modelos mais antigos so aceitam orcamento de raciocinio: repete uma vez nesse formato.
+    if (e instanceof GeminiError && e.status === 400 && /think/i.test(e.message)) {
+      json = await post(fetchFn, env, env.GEMINI_MODEL, request({ thinkingBudget: BUDGET[lvl] }));
+    } else {
+      throw e;
+    }
+  }
+
+  try {
+    return JSON.parse(textOf(json));
+  } catch {
+    throw new GeminiError('A resposta do Gemini não veio em JSON válido.');
+  }
+}
