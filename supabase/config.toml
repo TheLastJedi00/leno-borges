@@ -1,0 +1,9 @@
+# Spec 013. Configuracao minima: o projeto remoto e `Leno Borges` (jhipjjtfyzjnezwyzfgq).
+# Migrations em supabase/migrations, Edge Functions em supabase/functions.
+project_id = "leno-borges"
+
+[auth]
+enable_signup = false
+
+[functions.generate-ad]
+verify_jwt = true
