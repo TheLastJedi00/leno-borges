@@ -188,9 +188,12 @@
   <div
     class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-8"
   >
-    <p class="text-xs text-faint">
-      &copy; {{ currentYear }} Leno Borges · {{ d.footer.location }}. {{ d.footer.rights }}
-    </p>
+    <div class="flex flex-col gap-2 text-xs text-faint">
+      <p>&copy; {{ currentYear }} Leno Borges · {{ d.footer.location }}. {{ d.footer.rights }}</p>
+      <a routerLink="/admin" class="w-fit transition-colors hover:text-paper">{{
+        d.footer.admin
+      }}</a>
+    </div>
     <app-links></app-links>
   </div>
 </footer>

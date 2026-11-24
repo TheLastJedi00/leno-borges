@@ -1,0 +1,169 @@
+<main class="mx-auto max-w-7xl px-4 py-10 sm:px-8">
+  <a routerLink="/admin" class="text-sm text-faint transition-colors hover:text-paper">{{ s.back }}</a>
+  <h1 class="mt-3 font-display text-3xl font-semibold text-paper sm:text-4xl">{{ s.heading }}</h1>
+  <p class="mt-2 max-w-2xl text-muted">{{ s.lead }}</p>
+
+  <div class="mt-10 grid gap-10 lg:grid-cols-[22rem_1fr]">
+    <div class="flex flex-col gap-8 self-start">
+    <form
+      (ngSubmit)="submit()"
+      class="flex flex-col gap-6 rounded-3xl bg-surface p-6 shadow-raised"
+    >
+      <label class="block">
+        <span class="text-sm font-medium text-paper">{{ s.theme }}</span>
+        <textarea
+          name="theme"
+          rows="4"
+          maxlength="500"
+          required
+          [ngModel]="theme()"
+          (ngModelChange)="theme.set($event)"
+          class="mt-2 w-full resize-y rounded-xl bg-ink px-4 py-3 text-paper shadow-inset outline-none ring-accent focus-visible:ring-2"
+        ></textarea>
+        <span class="mt-1 block text-xs text-faint">{{ s.themeHint }}</span>
+      </label>
+
+      <fieldset>
+        <legend class="text-sm font-medium text-paper">{{ s.format }}</legend>
+        <div class="mt-2 grid grid-cols-3 gap-1 rounded-2xl bg-ink p-1 shadow-inset">
+          @for (f of formats; track f) {
+            <button
+              type="button"
+              (click)="format.set(f)"
+              [attr.aria-pressed]="format() === f"
+              class="rounded-xl px-2 py-2 text-sm transition-[color,background-color,box-shadow]"
+              [class]="format() === f ? 'bg-raised text-paper shadow-raised' : 'text-faint hover:text-paper'"
+            >
+              <span class="block font-medium">{{ s.formats[f] }}</span>
+              <span class="block font-mono text-[11px] text-faint">{{ s.formatRatio[f] }}</span>
+            </button>
+          }
+        </div>
+      </fieldset>
+
+      @if (format() === 'carousel') {
+        <label class="block">
+          <span class="flex items-baseline justify-between text-sm font-medium text-paper">
+            {{ s.slides }}
+            <span class="font-mono text-accent-soft">{{ slideCount() }}</span>
+          </span>
+          <input
+            type="range"
+            name="slides"
+            min="3"
+            max="10"
+            [ngModel]="slideCount()"
+            (ngModelChange)="slideCount.set(+$event)"
+            class="mt-2 w-full accent-accent"
+          />
+        </label>
+      }
+
+      <fieldset>
+        <legend class="text-sm font-medium text-paper">{{ s.network }}</legend>
+        <div class="mt-2 grid grid-cols-2 gap-1 rounded-2xl bg-ink p-1 shadow-inset">
+          @for (n of networks; track n) {
+            <button
+              type="button"
+              (click)="network.set(n)"
+              [attr.aria-pressed]="network() === n"
+              class="rounded-xl px-2 py-2 text-sm font-medium transition-[color,background-color,box-shadow]"
+              [class]="network() === n ? 'bg-raised text-paper shadow-raised' : 'text-faint hover:text-paper'"
+            >
+              {{ s.networks[n] }}
+            </button>
+          }
+        </div>
+      </fieldset>
+
+      <label class="block">
+        <span class="text-sm font-medium text-paper">{{ s.lang }}</span>
+        <select
+          name="lang"
+          [ngModel]="lang()"
+          (ngModelChange)="lang.set($event)"
+          class="mt-2 w-full rounded-xl bg-ink px-4 py-3 text-paper shadow-inset outline-none ring-accent focus-visible:ring-2"
+        >
+          @for (l of langs; track l) {
+            <option [value]="l">{{ s.langs[l] }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="flex cursor-pointer items-start gap-3">
+        <input
+          type="checkbox"
+          name="background"
+          [ngModel]="withBackground()"
+          (ngModelChange)="withBackground.set($event)"
+          class="mt-1 size-4 accent-accent"
+        />
+        <span>
+          <span class="block text-sm font-medium text-paper">{{ s.background }}</span>
+          <span class="block text-xs text-faint">{{ s.backgroundHint }}</span>
+        </span>
+      </label>
+
+      <button
+        type="submit"
+        [disabled]="!canSubmit()"
+        class="rounded-full bg-accent-deep px-4 py-3 text-sm font-semibold text-white shadow-raised transition-[filter,box-shadow] hover:brightness-110 active:shadow-inset disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {{ loading() ? s.submitting : s.submit }}
+      </button>
+
+      <p class="min-h-5 text-sm text-kit-error" role="alert">{{ error() }}</p>
+    </form>
+
+    <section>
+      <h2 class="font-display text-lg font-semibold text-paper">{{ s.history.heading }}</h2>
+      @if (historyFailed()) {
+        <p class="mt-3 text-sm text-kit-error">{{ s.history.failed }}</p>
+      } @else if (items().length === 0) {
+        <p class="mt-3 text-sm text-faint">{{ s.history.empty }}</p>
+      } @else {
+        <ul class="mt-3 flex flex-col gap-2">
+          @for (g of items(); track g.id) {
+            <li
+              class="rounded-2xl px-4 py-3 transition-colors"
+              [class]="generation()?.id === g.id ? 'bg-raised shadow-raised' : 'bg-surface'"
+            >
+              <button type="button" (click)="show(g)" class="block w-full text-left">
+                <span class="line-clamp-2 text-sm text-paper">{{ g.theme }}</span>
+                <span class="mt-1 block font-mono text-[11px] text-faint">
+                  {{ g.created_at.slice(0, 10) }} / {{ s.formats[g.format] }} / {{ s.networks[g.network] }} / {{ g.lang }}
+                </span>
+              </button>
+              <button
+                type="button"
+                (click)="remove(g)"
+                class="mt-2 text-xs transition-colors"
+                [class]="confirming() === g.id ? 'font-semibold text-kit-error' : 'text-faint hover:text-paper'"
+              >
+                {{ confirming() === g.id ? s.history.confirm : s.history.remove }}
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+    </div>
+
+    <section aria-live="polite" class="min-w-0">
+      @if (notice()) {
+        <p class="mb-6 rounded-2xl bg-surface px-5 py-4 text-sm text-muted shadow-raised">{{ notice() }}</p>
+      }
+      @if (generation(); as g) {
+        <div class="flex flex-col gap-8">
+          @for (v of g.variations; track $index) {
+            <app-ad-variation [generation]="g" [variation]="v" [number]="$index + 1" [background]="background()" />
+          }
+        </div>
+      } @else {
+        <p class="rounded-3xl border border-dashed border-line p-10 text-center text-faint">
+          {{ loading() ? s.submitting : s.empty }}
+        </p>
+      }
+    </section>
+  </div>
+</main>

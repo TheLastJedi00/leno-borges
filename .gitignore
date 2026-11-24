@@ -42,3 +42,8 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 resume/.tmp/
+
+# Secrets (spec 013)
+.env
+.env.*
+!.env.example

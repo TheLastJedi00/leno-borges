@@ -1,0 +1,26 @@
+<div class="min-h-screen bg-ink">
+  @if (auth.signedIn()) {
+    <header class="border-b border-line bg-ink/80">
+      <nav
+        class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-8"
+        aria-label="Área restrita"
+      >
+        <a routerLink="/admin" class="-m-1.5 flex items-center gap-3 rounded-xl p-1.5">
+          <img class="h-8 w-auto" src="images/logo.svg" width="37" height="32" alt="" />
+          <span class="font-display text-base font-semibold text-paper">{{ s.title }}</span>
+        </a>
+        <div class="flex items-center gap-3">
+          <span class="hidden text-sm text-faint sm:inline">{{ auth.user()?.email }}</span>
+          <button
+            type="button"
+            (click)="signOut()"
+            class="rounded-full bg-surface px-4 py-2 text-sm font-medium text-paper shadow-raised transition-shadow hover:shadow-raised-lg active:shadow-inset"
+          >
+            {{ s.signOut }}
+          </button>
+        </div>
+      </nav>
+    </header>
+  }
+  <router-outlet />
+</div>

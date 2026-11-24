@@ -14,6 +14,7 @@ export const en: Dictionary = {
     home: 'Leno Borges home page',
     nav: { about: 'About', experience: 'Experience', skills: 'Skills', education: 'Education' },
     contact: 'Contact',
+    admin: 'Admin area',
     langLabel: 'Language',
     langNames: { en: 'English', fr: 'Français (Canada)', pt: 'Português (Brasil)' },
   },
@@ -334,6 +335,7 @@ export const en: Dictionary = {
   footer: {
     location: 'Barrie & GTA, Canada · Blumenau, SC, Brazil',
     rights: 'All rights reserved.',
+    admin: 'Admin area',
   },
   kit: {
     cardButton: 'Teaching kit',

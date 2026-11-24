@@ -13,6 +13,7 @@ export const pt: Dictionary = {
     home: 'Página inicial de Leno Borges',
     nav: { about: 'Sobre', experience: 'Experiência', skills: 'Competências', education: 'Formação' },
     contact: 'Contato',
+    admin: 'Área restrita',
     langLabel: 'Idioma',
     langNames: { en: 'English', fr: 'Français (Canada)', pt: 'Português (Brasil)' },
   },
@@ -334,6 +335,7 @@ export const pt: Dictionary = {
   footer: {
     location: 'Barrie & GTA, Canadá · Blumenau, SC, Brasil',
     rights: 'Todos os direitos reservados.',
+    admin: 'Área restrita',
   },
   kit: {
     cardButton: 'Kit de ensino',

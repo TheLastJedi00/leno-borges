@@ -1,0 +1,91 @@
+<article class="rounded-3xl bg-surface p-6 shadow-raised">
+  <header class="flex flex-wrap items-baseline justify-between gap-3">
+    <h3 class="font-display text-lg font-semibold text-paper">{{ s.title(number()) }}</h3>
+    @if (format() === 'carousel') {
+      <button
+        type="button"
+        (click)="downloadAll()"
+        [disabled]="busy() !== null"
+        class="rounded-full bg-accent-deep px-4 py-2 text-sm font-semibold text-white shadow-raised transition-[filter] hover:brightness-110 disabled:opacity-60"
+      >
+        {{ busy() === 'all' ? s.downloading : s.downloadAll }}
+      </button>
+    }
+  </header>
+  <p class="mt-1 text-sm text-muted">{{ variation().angle }}</p>
+
+  <div class="-mx-6 mt-5 flex gap-4 overflow-x-auto px-6 pb-3">
+    @for (slide of variation().slides; track $index) {
+      <figure class="m-0 shrink-0">
+        <div
+          data-frame
+          class="overflow-hidden rounded-xl shadow-raised"
+          [style.width.px]="box().width"
+          [style.height.px]="box().height"
+        >
+          <div class="origin-top-left" [style.transform]="'scale(' + scale() + ')'">
+            @switch (format()) {
+              @case ('story') {
+                <app-ad-story [slide]="slide" [network]="network()" [background]="background()" />
+              }
+              @case ('post') {
+                <app-ad-post [slide]="slide" [network]="network()" [background]="background()" />
+              }
+              @default {
+                <app-ad-carousel-slide
+                  [slide]="slide"
+                  [network]="network()"
+                  [index]="$index"
+                  [total]="variation().slides.length"
+                  [background]="background()"
+                />
+              }
+            }
+          </div>
+        </div>
+        <figcaption class="mt-2 flex items-center justify-between gap-2">
+          @if (format() === 'carousel') {
+            <span class="font-mono text-xs text-faint">{{ $index + 1 }}/{{ variation().slides.length }}</span>
+          }
+          <button
+            type="button"
+            (click)="download($index)"
+            [disabled]="busy() !== null"
+            class="ml-auto rounded-full px-3 py-1.5 text-xs font-medium text-paper transition-colors hover:bg-raised disabled:opacity-60"
+          >
+            {{ busy() === $index ? s.downloading : s.download }}
+          </button>
+        </figcaption>
+      </figure>
+    }
+  </div>
+
+  @if (failed()) {
+    <p class="mt-2 text-sm text-kit-error" role="alert">{{ s.downloadFailed }}</p>
+  }
+
+  @if (variation().warnings?.length) {
+    <div class="mt-4 rounded-2xl border border-kit-name/40 px-4 py-3">
+      <p class="text-sm font-medium text-kit-name">{{ s.warnings }}</p>
+      <ul class="mt-1 list-disc pl-5 text-sm text-muted">
+        @for (w of variation().warnings; track w) {
+          <li>{{ w }}</li>
+        }
+      </ul>
+    </div>
+  }
+
+  <div class="mt-4 rounded-2xl bg-ink p-4 shadow-inset">
+    <div class="flex items-center justify-between gap-3">
+      <p class="text-sm font-medium text-paper">{{ s.caption }}</p>
+      <button
+        type="button"
+        (click)="copy()"
+        class="rounded-full bg-surface px-3 py-1.5 text-xs font-medium text-paper shadow-raised transition-shadow hover:shadow-raised-lg active:shadow-inset"
+      >
+        {{ copied() ? s.copied : s.copy }}
+      </button>
+    </div>
+    <p class="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{{ captionText() }}</p>
+  </div>
+</article>

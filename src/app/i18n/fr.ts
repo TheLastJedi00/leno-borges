@@ -16,6 +16,7 @@ export const fr: Dictionary = {
     home: 'Page d’accueil de Leno Borges',
     nav: { about: 'À propos', experience: 'Expérience', skills: 'Compétences', education: 'Formation' },
     contact: 'Me joindre',
+    admin: 'Espace réservé',
     langLabel: 'Langue',
     langNames: { en: 'English', fr: 'Français (Canada)', pt: 'Português (Brasil)' },
   },
@@ -337,6 +338,7 @@ export const fr: Dictionary = {
   footer: {
     location: 'Barrie et RGT, Canada · Blumenau, SC, Brésil',
     rights: 'Tous droits réservés.',
+    admin: 'Espace réservé',
   },
   kit: {
     cardButton: 'Trousse pédagogique',
