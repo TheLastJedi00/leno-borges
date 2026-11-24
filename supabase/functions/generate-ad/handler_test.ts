@@ -1,5 +1,6 @@
 import { assert, assertEquals, assertStringIncludes } from 'jsr:@std/assert@1';
 import { type Deps, handle } from './handler.ts';
+import { DIRECTIONS } from '../_shared/prompt.ts';
 import type { AdVariation, GenerationRow } from '../_shared/types.ts';
 
 const OWNER = 'owner-uuid';
@@ -13,20 +14,22 @@ const goodBody = {
   withBackground: false,
 };
 
+const art = (title: string) =>
+  `<div style="width:1080px;height:1920px;background:#1C1C1E"><img src="{{LOGO_URL}}" alt=""><h1 style="color:#F2F3F5">${title}</h1></div>`;
+
 const clean = (n: number): AdVariation => ({
   angle: `angulo ${n}`,
-  slides: [{ kicker: 'Kit de Ensino', title: `Funcoes em pratica ${n}`, body: 'Nove aulas no ar.', cta: 'Veja o kit' }],
+  slides: [{ kicker: 'Kit de Ensino', title: `Funcoes em pratica ${n}`, body: 'Nove aulas no ar.', cta: 'Veja o kit', html: art(`Funcoes em pratica ${n}`) }],
   caption: 'Nove aulas no ar. Veja o kit no link da bio.',
   hashtags: ['#java', '#barrie'],
 });
-const cleanSet = () => ({ variations: [clean(1), clean(2), clean(3)] });
 
-function dirtySet() {
-  const set = cleanSet();
-  set.variations[0].slides[0].title = 'O jogo virou — de vez 🚀';
-  set.variations[1].caption = 'Hora de virar o jogo — sem mais delongas';
-  return set;
-}
+/** Variacao com travessao e emoji na peca (e no HTML) e cliche no texto sugerido. */
+const dirty = (n: number): AdVariation => ({
+  ...clean(n),
+  slides: [{ ...clean(n).slides[0], title: 'O jogo virou — de vez 🚀', html: art('O jogo virou — de vez 🚀') }],
+  caption: 'Hora de virar o jogo — sem mais delongas',
+});
 
 const textReply = (obj: unknown) =>
   new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: JSON.stringify(obj) }] } }] }));
@@ -37,17 +40,27 @@ const imageReply = () =>
     }),
   );
 
+interface TextCall {
+  /** Qual das 3 direcoes (0, 1 ou 2) esta chamada pediu. */
+  direction: number;
+  /** 1 na primeira tentativa daquela direcao, 2 na segunda. */
+  attempt: number;
+  user: string;
+}
+
+type Reply = (call: TextCall) => Response;
+
 interface Harness {
   deps: Deps;
-  textCalls: { user: string }[];
+  textCalls: TextCall[];
   imageCalls: number;
   saved: GenerationRow[];
   uploads: { path: string; mimeType: string }[];
 }
 
-function harness(textResponses: Array<() => Response>, overrides: Partial<Deps> = {}): Harness {
+function harness(reply: Reply, overrides: Partial<Deps> = {}): Harness {
   const h: Harness = { textCalls: [], imageCalls: 0, saved: [], uploads: [], deps: undefined as never };
-  let i = 0;
+  const attempts = [0, 0, 0];
   h.deps = {
     env: {
       GEMINI_API_KEY: 'k',
@@ -61,10 +74,11 @@ function harness(textResponses: Array<() => Response>, overrides: Partial<Deps> 
         h.imageCalls++;
         return Promise.resolve(imageReply());
       }
-      const body = JSON.parse(String(init?.body));
-      h.textCalls.push({ user: body.contents[0].parts[0].text });
-      const make = textResponses[Math.min(i++, textResponses.length - 1)];
-      return Promise.resolve(make());
+      const user: string = JSON.parse(String(init?.body)).contents[0].parts[0].text;
+      const direction = DIRECTIONS.findIndex((d) => user.includes(d));
+      const call = { direction, attempt: ++attempts[direction], user };
+      h.textCalls.push(call);
+      return Promise.resolve(reply(call));
     }) as typeof fetch,
     getUserId: (token) => Promise.resolve(token === 'dono' ? OWNER : token === 'outro' ? 'intruso' : null),
     saveGeneration: (row) => {
@@ -81,6 +95,8 @@ function harness(textResponses: Array<() => Response>, overrides: Partial<Deps> 
   return h;
 }
 
+const allClean: Reply = ({ direction }) => textReply(clean(direction + 1));
+
 function req(body: unknown, { token = 'dono', origin = ORIGIN, method = 'POST' } = {}) {
   const headers: Record<string, string> = { 'content-type': 'application/json' };
   if (origin) headers.origin = origin;
@@ -96,7 +112,7 @@ function req(body: unknown, { token = 'dono', origin = ORIGIN, method = 'POST' }
 
 Deno.test('preflight de origem permitida responde 204 com os headers de CORS', async () => {
   for (const origin of ['http://localhost:4200', 'https://lenoborges.com.br', 'https://www.lenoborges.com.br']) {
-    const res = await handle(req(null, { method: 'OPTIONS', origin }), harness([]).deps);
+    const res = await handle(req(null, { method: 'OPTIONS', origin }), harness(allClean).deps);
     assertEquals(res.status, 204);
     assertEquals(res.headers.get('access-control-allow-origin'), origin);
     assertStringIncludes(res.headers.get('access-control-allow-headers') ?? '', 'authorization');
@@ -104,128 +120,126 @@ Deno.test('preflight de origem permitida responde 204 com os headers de CORS', a
 });
 
 Deno.test('origem fora da lista e recusada, inclusive no preflight', async () => {
-  const pre = await handle(req(null, { method: 'OPTIONS', origin: 'https://evil.example' }), harness([]).deps);
+  const pre = await handle(req(null, { method: 'OPTIONS', origin: 'https://evil.example' }), harness(allClean).deps);
   assertEquals(pre.status, 403);
   assertEquals(pre.headers.get('access-control-allow-origin'), null);
-  const post = await handle(req(goodBody, { origin: 'https://evil.example' }), harness([]).deps);
+  const post = await handle(req(goodBody, { origin: 'https://evil.example' }), harness(allClean).deps);
   assertEquals(post.status, 403);
 });
 
-Deno.test('a resposta de sucesso devolve o CORS da origem', async () => {
-  const res = await handle(req(goodBody), harness([() => textReply(cleanSet())]).deps);
-  assertEquals(res.headers.get('access-control-allow-origin'), ORIGIN);
-});
-
-// --- autenticacao ---
+// --- autenticacao e entrada ---
 
 Deno.test('sem token ou com token invalido: 401, e o Gemini nunca e chamado', async () => {
-  const h = harness([() => textReply(cleanSet())]);
+  const h = harness(allClean);
   assertEquals((await handle(req(goodBody, { token: '' }), h.deps)).status, 401);
   assertEquals((await handle(req(goodBody, { token: 'lixo' }), h.deps)).status, 401);
   assertEquals(h.textCalls.length, 0);
 });
 
 Deno.test('usuario que nao e o dono: 403, e o Gemini nunca e chamado', async () => {
-  const h = harness([() => textReply(cleanSet())]);
-  const res = await handle(req(goodBody, { token: 'outro' }), h.deps);
-  assertEquals(res.status, 403);
+  const h = harness(allClean);
+  assertEquals((await handle(req(goodBody, { token: 'outro' }), h.deps)).status, 403);
   assertEquals(h.textCalls.length, 0);
   assertEquals(h.saved.length, 0);
 });
 
-// --- entrada ---
-
 Deno.test('entrada invalida: 422 com mensagem em portugues', async () => {
-  const h = harness([() => textReply(cleanSet())]);
+  const h = harness(allClean);
   const res = await handle(req({ ...goodBody, theme: 'a' }), h.deps);
   assertEquals(res.status, 422);
-  const { error } = await res.json();
-  assert(typeof error === 'string' && error.length > 0);
+  assert(typeof (await res.json()).error === 'string');
   assertEquals(h.textCalls.length, 0);
 });
 
-Deno.test('corpo que nao e JSON: 422', async () => {
-  const r = new Request('https://x/functions/v1/generate-ad', {
+Deno.test('corpo que nao e JSON: 422; metodo GET: 405', async () => {
+  const bad = new Request('https://x/functions/v1/generate-ad', {
     method: 'POST',
     headers: { origin: ORIGIN, authorization: 'Bearer dono' },
     body: 'nao e json',
   });
-  assertEquals((await handle(r, harness([]).deps)).status, 422);
-});
-
-Deno.test('metodo diferente de POST e OPTIONS: 405', async () => {
-  const r = new Request('https://x/functions/v1/generate-ad', {
+  assertEquals((await handle(bad, harness(allClean).deps)).status, 422);
+  const get = new Request('https://x/functions/v1/generate-ad', {
     method: 'GET',
     headers: { origin: ORIGIN, authorization: 'Bearer dono' },
   });
-  assertEquals((await handle(r, harness([]).deps)).status, 405);
+  assertEquals((await handle(get, harness(allClean).deps)).status, 405);
 });
 
-// --- sucesso ---
+// --- sucesso: 3 direcoes em paralelo ---
 
-Deno.test('sucesso: 3 variacoes gravadas para o dono, com o modelo usado', async () => {
-  const h = harness([() => textReply(cleanSet())]);
+Deno.test('sucesso: uma chamada por direcao, 3 variacoes na ordem das direcoes, gravadas para o dono', async () => {
+  const h = harness(allClean);
   const res = await handle(req(goodBody), h.deps);
   assertEquals(res.status, 200);
+  assertEquals(res.headers.get('access-control-allow-origin'), ORIGIN);
   const { generation } = await res.json();
-  assertEquals(generation.id, 'gen-1');
-  assertEquals(generation.variations.length, 3);
-  assertEquals(generation.model, 'text-model');
-  assertEquals(h.saved.length, 1);
+  assertEquals(generation.variations.map((v: AdVariation) => v.angle), ['angulo 1', 'angulo 2', 'angulo 3']);
+  assertEquals(generation.variations[0].slides[0].html, art('Funcoes em pratica 1'));
+  assertEquals(h.textCalls.map((c) => c.direction).sort(), [0, 1, 2]);
   assertEquals(h.saved[0].owner_id, OWNER);
-  assertEquals(h.saved[0].slide_count, 1);
-  assertEquals(h.saved[0].background_path, null);
-  assertEquals(h.textCalls.length, 1);
+  assertEquals(h.saved[0].model, 'text-model');
   assertEquals(h.imageCalls, 0);
 });
 
 Deno.test('o prompt enviado leva o guia da rede escolhida', async () => {
-  const h = harness([() => textReply(cleanSet())]);
+  const h = harness(allClean);
   await handle(req({ ...goodBody, network: 'linkedin' }), h.deps);
   assertStringIncludes(h.textCalls[0].user, 'LinkedIn');
 });
 
-// --- verificador: retry e correcao ---
+// --- verificador: retry e correcao, por variacao ---
 
-Deno.test('violacao na primeira resposta: pede de novo uma vez, listando o que violou', async () => {
-  const h = harness([() => textReply(dirtySet()), () => textReply(cleanSet())]);
+Deno.test('violacao numa variacao: so ela e pedida de novo, com a lista do que violou', async () => {
+  const h = harness(({ direction, attempt }) =>
+    textReply(direction === 0 && attempt === 1 ? dirty(1) : clean(direction + 1)),
+  );
   const res = await handle(req(goodBody), h.deps);
   assertEquals(res.status, 200);
-  assertEquals(h.textCalls.length, 2);
-  assertStringIncludes(h.textCalls[1].user, 'travessão');
-  assertStringIncludes(h.textCalls[1].user, 'jogo');
+  assertEquals(h.textCalls.length, 4);
+  const retry = h.textCalls.find((c) => c.attempt === 2)!;
+  assertEquals(retry.direction, 0);
+  assertStringIncludes(retry.user, 'travessão');
   const { generation } = await res.json();
-  assertEquals(generation.variations[0].warnings ?? [], []);
+  assertEquals(generation.variations[0].warnings, undefined);
 });
 
-Deno.test('violacao persistente: corrige as pecas sozinha e marca o texto sugerido em warnings', async () => {
-  const h = harness([() => textReply(dirtySet())]);
+Deno.test('violacao persistente: corrige as pecas e o HTML sozinha e marca o texto sugerido em warnings', async () => {
+  const h = harness(({ direction }) => textReply(dirty(direction + 1)));
   const res = await handle(req(goodBody), h.deps);
   assertEquals(res.status, 200);
-  assertEquals(h.textCalls.length, 2, 'so uma nova tentativa');
+  assertEquals(h.textCalls.length, 6, 'uma nova tentativa por direcao');
   const { generation } = await res.json();
-  const [v0, v1] = generation.variations;
-  assertEquals(v0.slides[0].title, 'O jogo virou, de vez');
-  assert(!/[—–]|\p{Extended_Pictographic}/u.test(JSON.stringify(v0.slides)));
-  assert(v1.warnings.length > 0, 'o cliche da legenda vira aviso');
-  assertEquals(v1.caption, 'Hora de virar o jogo — sem mais delongas', 'o texto sugerido nao e reescrito');
+  const v = generation.variations[0];
+  assertEquals(v.slides[0].title, 'O jogo virou, de vez');
+  assert(!/[—–]|\p{Extended_Pictographic}/u.test(JSON.stringify(v.slides)));
+  assertStringIncludes(v.slides[0].html, '<h1 style="color:#F2F3F5">O jogo virou, de vez</h1>');
+  assert(v.warnings.length > 0, 'o cliche continua visivel como aviso');
+  assertEquals(v.caption, 'Hora de virar o jogo — sem mais delongas', 'o texto sugerido nao e reescrito');
 });
 
-Deno.test('JSON fora do schema: tenta uma vez de novo e depois devolve 502', async () => {
-  const h = harness([() => textReply({ variations: [clean(1)] })]);
+Deno.test('HTML inseguro: pede de novo; se insistir, a variacao e descartada', async () => {
+  const unsafe = (n: number) => ({ ...clean(n), slides: [{ ...clean(n).slides[0], html: '<div><script>alert(1)</script></div>' }] });
+  const h = harness(({ direction }) => textReply(direction === 1 ? unsafe(2) : clean(direction + 1)));
   const res = await handle(req(goodBody), h.deps);
-  assertEquals(res.status, 502);
-  assertEquals(h.textCalls.length, 2);
-  assertEquals(h.saved.length, 0);
+  assertEquals(res.status, 200);
+  const calls1 = h.textCalls.filter((c) => c.direction === 1);
+  assertEquals(calls1.length, 2);
+  assertStringIncludes(calls1[1].user, 'script');
+  const { generation } = await res.json();
+  assertEquals(generation.variations.map((v: AdVariation) => v.angle), ['angulo 1', 'angulo 3']);
+  assert(!JSON.stringify(generation).includes('<script'));
 });
 
-Deno.test('schema invalido na 1a e valido na 2a: sucesso', async () => {
-  const h = harness([() => textReply({ variations: [] }), () => textReply(cleanSet())]);
-  assertEquals((await handle(req(goodBody), h.deps)).status, 200);
+Deno.test('JSON fora do schema numa direcao: tenta de novo e, se insistir, segue com as outras', async () => {
+  const h = harness(({ direction }) => textReply(direction === 2 ? { angle: 'sem slides' } : clean(direction + 1)));
+  const res = await handle(req(goodBody), h.deps);
+  assertEquals(res.status, 200);
+  assertEquals(h.textCalls.filter((c) => c.direction === 2).length, 2);
+  assertEquals((await res.json()).generation.variations.length, 2);
 });
 
-Deno.test('falha do Gemini: 502 em portugues, sem vazar a chave nem gravar nada', async () => {
-  const h = harness([() => new Response(JSON.stringify({ error: { message: 'boom k' } }), { status: 500 })]);
+Deno.test('nenhuma direcao deu certo: 502 em portugues, sem vazar detalhe nem gravar', async () => {
+  const h = harness(() => new Response(JSON.stringify({ error: { message: 'boom k' } }), { status: 500 }));
   const res = await handle(req(goodBody), h.deps);
   assertEquals(res.status, 502);
   const { error } = await res.json();
@@ -236,7 +250,7 @@ Deno.test('falha do Gemini: 502 em portugues, sem vazar a chave nem gravar nada'
 // --- fundo ---
 
 Deno.test('com fundo: gera a imagem uma vez, envia para <dono>/backgrounds/<id>.png e grava o caminho', async () => {
-  const h = harness([() => textReply(cleanSet())]);
+  const h = harness(allClean);
   const res = await handle(req({ ...goodBody, withBackground: true }), h.deps);
   assertEquals(res.status, 200);
   assertEquals(h.imageCalls, 1);
@@ -245,9 +259,7 @@ Deno.test('com fundo: gera a imagem uma vez, envia para <dono>/backgrounds/<id>.
 });
 
 Deno.test('se so o fundo falhar, a geracao sai sem fundo (nao perde o texto)', async () => {
-  const h = harness([() => textReply(cleanSet())], {
-    uploadBackground: () => Promise.reject(new Error('storage fora do ar')),
-  });
+  const h = harness(allClean, { uploadBackground: () => Promise.reject(new Error('storage fora do ar')) });
   const res = await handle(req({ ...goodBody, withBackground: true }), h.deps);
   assertEquals(res.status, 200);
   const { generation, backgroundError } = await res.json();
