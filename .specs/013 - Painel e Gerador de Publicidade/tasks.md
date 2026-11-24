@@ -36,7 +36,7 @@ Uma branch `feat/<fase>` por fase, com um commit por tarefa. Ao final, merge na 
 - [x] 4.7 Fundo opcional com o `GEMINI_IMAGE_MODEL` na proporção do formato e upload em `<dono>/backgrounds/`; conferido com `models.list`: `gemini-3.1-flash-image`
 - [x] 4.8 Gravação em `ad_generations`, CORS (`localhost:4200`, `lenoborges.com.br`, `www.lenoborges.com.br`) e erros em PT
 - [x] 4.9 Secrets cadastrados e deploy da função (versão 1, ativa); teste de fumaça em produção: preflight 204, origem estranha 403, sem token 401, token que não é usuário 401
-- [ ] 4.9 (resto) Teste real com um tema em cada formato: **depende do login do dono**, fica para a validação
+- [x] 4.9 (resto) Teste real com um tema em cada formato: o mesmo `handler` rodado localmente com o Gemini de verdade (só autenticação e gravação simuladas, chave lida do `.env`). Stories/Instagram/PT com fundo (25 s, fundo JPEG de 439 KB), Carrossel/LinkedIn/EN com 5 slides (34 s) e Post/LinkedIn/FR (18 s): todos HTTP 200, 3 variações com o número certo de slides, nenhuma peça com emoji ou travessão, nenhum `warning`, texto sugerido no tamanho da rede (Instagram 313 a 321 caracteres, LinkedIn 614 a 898)
 
 ## Fase 5, `feat/admin-ad-generator`, gerador
 - [x] 5.1 Formulário (tema, formato, rede, idioma EN/FR-CA/PT-BR, nº de slides, fundo com IA) e chamada à função com estado de carregando e erro
@@ -58,7 +58,10 @@ Uma branch `feat/<fase>` por fase, com um commit por tarefa. Ao final, merge na 
 - [x] Merge das fases na branch `release/013-painel-publicidade`
 - [x] `npm run build` e `npm test` sem falhas (235 testes); `deno test` da função sem falhas (56 testes); `main` do bundle sem o `supabase-js` (bundle inicial 411,93 kB)
 - [x] Homologado no Chrome (porta 4211, ver decisões): cadeado no header e link no rodapé, guard sem sessão leva ao login, `noindex` e título "Painel" no `/admin`, home restaura título e tira o `noindex`; as 3 peças × 2 redes × com/sem fundo na página de revisão
-- [ ] **Validação do dono** (precisa do login): login com erro e com sucesso, dashboard, gerar os 3 formatos nas 2 redes e nos 3 idiomas, conferir que nenhuma peça tem emoji nem travessão, fundo com IA, baixar PNG (dimensões certas), histórico, excluir, sair
+
+## Validação do dono (fora da execução)
+
+Pedida pelo dono para o fim ("ao fim eu valido"); precisa do login dele, que não passa pelo agente. Roteiro: login com erro e com sucesso, dashboard, gerar os 3 formatos nas 2 redes e nos 3 idiomas, fundo com IA, baixar PNG (dimensões certas), histórico, excluir, sair. Subir com `npx ng serve --port 4211` (ou `npm start` se a 4200 estiver livre).
 
 ## Decisões tomadas na execução
 
@@ -77,6 +80,8 @@ Uma branch `feat/<fase>` por fase, com um commit por tarefa. Ao final, merge na 
 - **`kicker` em vez de `eyebrow`** no contrato: em caixa normal, sem o rótulo em caixa alta espaçada (padrão genérico)
 - **Porta 4211 na homologação:** a 4200 estava ocupada por outro projeto do dono (e a 4201 e a 4210 também). O servidor dele não foi derrubado
 - **`deno.lock` fora do repositório:** o Deno é rodado via `npx`, sem versão fixa no projeto; os imports usam versões fixas (`jsr:@std/assert@1`, `npm:@supabase/supabase-js@2`)
+- **Achado do teste real: o Gemini inventa detalhes** que não estão no tema ("OpenJDK 21", "repositório", "open source", "Link in comments", "challenge problems"), apesar da regra "não invente" no prompt. As peças passam no verificador (que só olha forma, não fatos). Não corrigido nesta spec: ver o ponto 7 abaixo
+- **Hashtags locais em PT** (`#BarrieTech`, `#GTAtech`): a marca no prompt cita Barrie e GTA, então o modelo usa mesmo sem as palavras-chave de mercado (que só entram em EN e FR)
 - **Avisos do Supabase fora do escopo, não mexidos:** a função `public.rls_auto_enable()` (SECURITY DEFINER) pode ser chamada por `anon` e por usuários logados; a proteção contra senhas vazadas está desligada
 
 ## Pontos para o dono decidir (solução tomada e alternativas)
@@ -123,3 +128,14 @@ Uma branch `feat/<fase>` por fase, com um commit por tarefa. Ao final, merge na 
 - **Alternativa:** revogar `EXECUTE` de `rls_auto_enable()` para `anon` e `authenticated` e ligar a proteção de senhas vazadas.
   - Prós: fecha uma função SECURITY DEFINER exposta na API.
   - Contras: se algum fluxo do projeto chamar essa função pela API, ele para de funcionar (não foi encontrado nenhum).
+
+### 7. Detalhes inventados pelo Gemini (achado do teste real)
+- **Tomada:** nada além da regra já existente no prompt; o texto vai para revisão do dono antes de publicar.
+  - Prós: nenhum custo a mais.
+  - Contras: uma peça pode citar versão, link ou recurso que não existe.
+- **Alternativa A:** endurecer o prompt ("não cite versões, repositórios, links, onde está o link nem números que não estejam no tema") e redeploy.
+  - Prós: simples, reduz bastante o problema.
+  - Contras: não garante; o modelo ainda pode inventar.
+- **Alternativa B:** campo "fatos" no formulário (o que pode ser dito) e o verificador acusar números e nomes técnicos que não estejam no tema nem nos fatos.
+  - Prós: controle real do que a peça afirma.
+  - Contras: mais trabalho no formulário e falsos positivos no verificador.
