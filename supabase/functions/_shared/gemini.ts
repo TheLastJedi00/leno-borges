@@ -1,3 +1,4 @@
+import { BACKGROUND_BRIEF } from './brand.ts';
 import type { Env, GenerateInput } from './types.ts';
 
 const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
@@ -121,4 +122,32 @@ export async function generateVariations(
   } catch {
     throw new GeminiError('A resposta do Gemini não veio em JSON válido.');
   }
+}
+
+const ASPECT: Record<GenerateInput['format'], string> = { story: '9:16', carousel: '1:1', post: '3:4' };
+
+export interface BackgroundImage {
+  bytes: Uint8Array;
+  mimeType: string;
+}
+
+/** Gera o fundo opcional (uma imagem por geracao) na proporcao do formato, sem texto. */
+export async function generateBackground(
+  fetchFn: typeof fetch,
+  env: Env,
+  input: GenerateInput,
+): Promise<BackgroundImage> {
+  const json = await post(fetchFn, env, env.GEMINI_IMAGE_MODEL, {
+    contents: [{ role: 'user', parts: [{ text: `${BACKGROUND_BRIEF} Proporção ${ASPECT[input.format]}.` }] }],
+    generationConfig: {
+      responseModalities: ['IMAGE'],
+      imageConfig: { aspectRatio: ASPECT[input.format] },
+    },
+  });
+  const parts: Json[] = json?.candidates?.[0]?.content?.parts ?? [];
+  const image = parts.find((p) => p.inlineData?.data)?.inlineData;
+  if (!image) throw new GeminiError('O Gemini não devolveu a imagem de fundo.');
+  const binary = atob(image.data as string);
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+  return { bytes, mimeType: (image.mimeType as string) ?? 'image/png' };
 }
