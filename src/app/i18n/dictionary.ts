@@ -17,6 +17,8 @@ export interface Dictionary {
     home: string;
     nav: { about: string; experience: string; skills: string; education: string };
     contact: string;
+    /** Rótulo do cadeado que leva à área restrita (só ícone). */
+    admin: string;
     langLabel: string;
     langNames: Record<Lang, string>;
   };
@@ -52,7 +54,7 @@ export interface Dictionary {
     emailLabel: string;
     whatsappMessage: string;
   };
-  footer: { location: string; rights: string };
+  footer: { location: string; rights: string; admin: string };
   /** Kit de Ensino: interface trilíngue; o conteúdo das aulas fica no deck (PT). */
   kit: {
     /** Botão interno no card de experiência que leva ao kit. */
