@@ -20,6 +20,7 @@ export const adminStrings = {
     lead: 'Escolha um módulo.',
     comingSoon: 'Em breve',
     comingSoonText: 'Contatos, leads e propostas.',
+    generated: (n: number) => (n === 1 ? '1 geração' : `${n} gerações`),
   },
   adGenerator: {
     cardTitle: 'Gerador de publicidade',

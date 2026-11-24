@@ -1,13 +1,22 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { adminStrings } from '../admin.strings';
+import { AdHistory } from '../core/ad-history';
 
 @Component({
   selector: 'app-dashboard',
+  imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<main class="mx-auto max-w-6xl px-4 py-16 sm:px-8">
-    <h1 class="font-display text-3xl font-semibold text-paper">{{ s.heading }}</h1>
-  </main>`,
+  templateUrl: './dashboard.html',
 })
 export class Dashboard {
   readonly s = adminStrings.dashboard;
+  readonly generator = adminStrings.adGenerator;
+  readonly total = signal<number | null>(null);
+
+  constructor() {
+    inject(AdHistory)
+      .count()
+      .then((n) => this.total.set(n));
+  }
 }
