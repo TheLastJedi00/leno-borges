@@ -21,7 +21,7 @@ import { cleanPieceText, titleSize } from './piece-text';
       <img class="logo" style="top: 290px" src="images/logo.svg" alt="" />
 
       @if (network() === 'linkedin') {
-        <div class="content" style="left: 96px; right: 96px; top: 620px">
+        <div class="content" style="left: 96px; right: 96px; top: 720px">
           <div style="width: 120px; height: 8px; border-radius: 4px; background: #3986ff; margin-bottom: 44px"></div>
           @if (text().kicker) {
             <p class="kicker">{{ text().kicker }}</p>
@@ -86,10 +86,10 @@ export class AdStory {
             { chars: 999, size: 100 },
           ]
         : [
-            { chars: 24, size: 132 },
-            { chars: 40, size: 112 },
-            { chars: 60, size: 96 },
-            { chars: 999, size: 84 },
+            { chars: 24, size: 148 },
+            { chars: 40, size: 126 },
+            { chars: 60, size: 106 },
+            { chars: 999, size: 92 },
           ],
     ),
   );

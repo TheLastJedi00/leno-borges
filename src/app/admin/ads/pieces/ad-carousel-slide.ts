@@ -2,10 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import type { AdSlide, Network } from '../ad.types';
 import { cleanPieceText, titleSize, type TitleSteps } from './piece-text';
 
-const SIZE = 1080;
-/** Raio e alturas das formas que atravessam a borda entre slides (Instagram). */
-const RADIUS = 300;
-const borderY = (border: number) => (border % 2 === 1 ? 820 : 690);
+/**
+ * Instagram: um horizonte azul inclinado na base, continuo entre os slides. A altura na borda
+ * `k` (entre os slides k-1 e k) alterna, entao a borda direita de um slide casa com a esquerda
+ * do proximo e o deslize desenha uma linha so.
+ */
+export const horizonY = (border: number) => (border % 2 === 0 ? 900 : 800);
 
 const STEPS: Record<Network, { cover: TitleSteps; inner: TitleSteps }> = {
   linkedin: {
@@ -40,8 +42,7 @@ const STEPS: Record<Network, { cover: TitleSteps; inner: TitleSteps }> = {
  * Slide de carrossel 1:1 (1080x1080). Capa com o gancho em escala maxima, meio numa grade fixa
  * (mesma margem e mesma linha de base) e o ultimo com o CTA.
  *  - LinkedIn: barra de progresso fina embaixo, com o n/N.
- *  - Instagram: formas azuis centradas na borda entre slides, entao metade de cada uma aparece
- *    em cada lado e o deslize parece uma peca so.
+ *  - Instagram: horizonte azul inclinado na base, continuo de um slide para o outro.
  */
 @Component({
   selector: 'app-ad-carousel-slide',
@@ -53,15 +54,19 @@ const STEPS: Record<Network, { cover: TitleSteps; inner: TitleSteps }> = {
         <img class="bg-img" [src]="bg" alt="" />
         <div class="veil"></div>
       }
-      @for (c of circles(); track c.x) {
-        <div
-          class="field"
-          [style.left.px]="c.x - radius"
-          [style.top.px]="c.y - radius"
-          [style.width.px]="radius * 2"
-          [style.height.px]="radius * 2"
-          style="border-radius: 50%"
-        ></div>
+      @if (horizon(); as h) {
+        <svg
+          class="field horizon"
+          style="inset: 0; background: none"
+          width="1080"
+          height="1080"
+          viewBox="0 0 1080 1080"
+          [attr.data-left]="h.left"
+          [attr.data-right]="h.right"
+          aria-hidden="true"
+        >
+          <polygon [attr.points]="'0,' + h.left + ' 1080,' + h.right + ' 1080,1080 0,1080'" fill="#2563d9" />
+        </svg>
       }
       <img class="logo" style="top: 88px" src="images/logo.svg" alt="" />
 
@@ -76,7 +81,7 @@ const STEPS: Record<Network, { cover: TitleSteps; inner: TitleSteps }> = {
       </div>
 
       @if (text().cta) {
-        <div class="content" style="left: 96px; bottom: 150px">
+        <div class="content" style="left: 96px; bottom: 96px">
           <span [class]="network() === 'instagram' ? 'pill' : 'plate cta'">{{ text().cta }}</span>
         </div>
       }
@@ -99,8 +104,6 @@ export class AdCarouselSlide {
   readonly total = input.required<number>();
   readonly background = input<string | null>(null);
 
-  readonly radius = RADIUS;
-
   readonly text = computed(() => {
     const s = this.slide();
     return {
@@ -118,13 +121,10 @@ export class AdCarouselSlide {
 
   readonly progress = computed(() => ((this.index() + 1) / this.total()) * 100);
 
-  /** Formas nas bordas deste slide (so no Instagram), em coordenadas do proprio slide. */
-  readonly circles = computed(() => {
-    if (this.network() !== 'instagram') return [];
+  /** Alturas do horizonte nas bordas esquerda e direita deste slide (so no Instagram). */
+  readonly horizon = computed(() => {
+    if (this.network() !== 'instagram') return null;
     const i = this.index();
-    const out: { x: number; y: number }[] = [];
-    if (i > 0) out.push({ x: 0, y: borderY(i) });
-    if (i < this.total() - 1) out.push({ x: SIZE, y: borderY(i + 1) });
-    return out;
+    return { left: horizonY(i), right: horizonY(i + 1) };
   });
 }

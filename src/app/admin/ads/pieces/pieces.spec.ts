@@ -71,22 +71,15 @@ describe('pecas de publicidade', () => {
     expect(fill.style.width).toBe('50%');
   });
 
-  it('Instagram: as formas ficam nas bordas entre slides e casam de um slide para o outro', () => {
-    const circlesOf = (index: number) =>
-      Array.from(
-        render(AdCarouselSlide, { slide, network: 'instagram', index, total: 3 }).piece.querySelectorAll<HTMLElement>('.field'),
-      ).map((el) => ({ left: parseFloat(el.style.left), top: parseFloat(el.style.top) }));
-
-    const first = circlesOf(0);
-    const middle = circlesOf(1);
-    const last = circlesOf(2);
-    expect(first.length).toBe(1);
-    expect(middle.length).toBe(2);
-    expect(last.length).toBe(1);
-    // A forma da direita do slide 1 e a mesma da esquerda do slide 2, deslocada 1080 px
-    expect(first[0].left - 1080).toBe(middle[0].left);
-    expect(first[0].top).toBe(middle[0].top);
-    expect(middle[1].left - 1080).toBe(last[0].left);
+  it('Instagram: o horizonte e continuo de um slide para o outro', () => {
+    const horizonOf = (index: number) => {
+      const svg = render(AdCarouselSlide, { slide, network: 'instagram', index, total: 3 }).piece.querySelector('svg.horizon')!;
+      return { left: Number(svg.getAttribute('data-left')), right: Number(svg.getAttribute('data-right')) };
+    };
+    const [a, b, c] = [horizonOf(0), horizonOf(1), horizonOf(2)];
+    expect(a.right).toBe(b.left);
+    expect(b.right).toBe(c.left);
+    expect(a.left).not.toBe(a.right);
   });
 
   it('LinkedIn nao usa formas azuis no carrossel', () => {
