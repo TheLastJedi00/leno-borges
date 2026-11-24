@@ -256,7 +256,7 @@ Lista das gerações (mais novas primeiro) abaixo do formulário: data, tema, fo
   | `GEMINI_API_KEY` | O dono preenche (Google AI Studio) |
   | `GEMINI_MODEL` | `gemini-flash-latest` |
   | `GEMINI_THINKING_LEVEL` | `medium` |
-  | `GEMINI_IMAGE_MODEL` | `gemini-2.5-flash-image` (conferir na execução com `models.list` se há versão mais nova) |
+  | `GEMINI_IMAGE_MODEL` | `gemini-3.1-flash-image` (conferido na execução com `models.list`: modelo estável mais novo) |
   | `OWNER_USER_ID` | UUID do usuário criado no Supabase Auth |
 
   Os modelos vêm de secret para trocar sem novo deploy. `GEMINI_THINKING_LEVEL` vai em `generationConfig.thinkingConfig.thinkingLevel`. Se o alias `gemini-flash-latest` apontar para um modelo que só aceita `thinkingBudget`, a função converte `medium` para um orçamento médio. Os dois caminhos têm teste. `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` já vêm na função e não entram no `.env`.
