@@ -1,8 +1,8 @@
 import { fixVariation, lintVariation } from '../_shared/copy-lint.ts';
-import { GeminiError, generateBackground, generateVariations } from '../_shared/gemini.ts';
-import { buildPrompt } from '../_shared/prompt.ts';
+import { GeminiError, generateBackground, generateVariation } from '../_shared/gemini.ts';
+import { DIRECTIONS, buildPrompt } from '../_shared/prompt.ts';
 import type { AdVariation, Env, GenerateInput, GenerationRow } from '../_shared/types.ts';
-import { parseInput, validateVariations } from '../_shared/validate.ts';
+import { parseInput, unsafeHtml, validateVariation } from '../_shared/validate.ts';
 
 /** Tudo o que a funcao toca fora dela, injetado para os testes trocarem por simulacoes. */
 export interface Deps {
@@ -52,47 +52,49 @@ function reply(status: number, body: unknown, origin: string | null): Response {
 
 const EXTENSION: Record<string, string> = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' };
 
-interface Outcome {
-  variations: AdVariation[];
+/** Problemas de seguranca no HTML de todos os slides de uma variacao. */
+function htmlProblems(v: AdVariation): string[] {
+  return v.slides.flatMap((s, i) => unsafeHtml(s.html ?? '').map((p) => `HTML do slide ${i + 1}: ${p}`));
 }
 
 /**
- * Ate 2 tentativas. A segunda recebe o que a primeira errou (schema ou verificador de texto).
- * No fim, as pecas sao corrigidas sozinhas e o que sobrar no texto sugerido vira `warnings`.
+ * Uma direcao criativa, ate 2 tentativas. A segunda recebe o que a primeira errou (schema, HTML
+ * inseguro ou verificador de texto). HTML inseguro nunca passa: sem uma versao segura, a variacao
+ * e descartada. No fim, as pecas sao corrigidas sozinhas e o que sobrar no texto vira `warnings`.
  */
-async function writeVariations(deps: Deps, input: GenerateInput): Promise<Outcome | null> {
+async function writeVariation(deps: Deps, input: GenerateInput, direction: number): Promise<AdVariation | null> {
   let feedback: string[] = [];
-  let best: AdVariation[] | null = null;
+  let best: AdVariation | null = null;
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     let raw: unknown;
     try {
-      raw = await generateVariations(deps.fetch, deps.env, input, buildPrompt(input, feedback));
+      raw = await generateVariation(deps.fetch, deps.env, input, buildPrompt(input, direction, feedback));
     } catch (e) {
       if (!(e instanceof GeminiError)) throw e;
-      if (best) break; // ja tem uma resposta valida da tentativa anterior: usa ela
-      if (attempt === MAX_ATTEMPTS) return null;
       feedback = ['A resposta anterior falhou. Gere de novo no formato pedido.'];
       continue;
     }
 
-    const parsed = validateVariations(raw, input);
+    const parsed = validateVariation(raw, input);
     if (!parsed.ok) {
       feedback = [parsed.error];
       continue;
     }
+
+    const unsafe = htmlProblems(parsed.value);
+    if (unsafe.length > 0) {
+      feedback = unsafe;
+      continue;
+    }
     best = parsed.value;
 
-    feedback = [];
-    parsed.value.forEach((v, i) => {
-      const lint = lintVariation(v, input.network);
-      for (const m of [...lint.pieces, ...lint.caption]) feedback.push(`variação ${i + 1}, ${m}`);
-    });
+    const lint = lintVariation(parsed.value, input.network);
+    feedback = [...lint.pieces, ...lint.caption];
     if (feedback.length === 0) break;
   }
 
-  if (!best) return null;
-  return { variations: best.map((v) => finish(v, input)) };
+  return best ? finish(best, input) : null;
 }
 
 function finish(v: AdVariation, input: GenerateInput): AdVariation {
@@ -130,7 +132,7 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
   if (!parsed.ok) return reply(422, { error: parsed.error }, origin);
   const input = parsed.value;
 
-  // O fundo e gerado em paralelo ao texto; so e enviado ao Storage se o texto der certo.
+  // Fundo e as 3 direcoes em paralelo: o tempo total e o da chamada mais lenta.
   const background = input.withBackground
     ? generateBackground(deps.fetch, deps.env, input).then(
         (image) => ({ image }),
@@ -138,8 +140,9 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
       )
     : null;
 
-  const outcome = await writeVariations(deps, input);
-  if (!outcome) {
+  const results = await Promise.all(DIRECTIONS.map((_, i) => writeVariation(deps, input, i)));
+  const variations = results.filter((v): v is AdVariation => v !== null);
+  if (variations.length === 0) {
     await background;
     return reply(502, { error: MSG.gemini }, origin);
   }
@@ -172,7 +175,7 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
       network: input.network,
       lang: input.lang,
       slide_count: input.slideCount,
-      variations: outcome.variations,
+      variations,
       background_path: backgroundPath,
       model: deps.env.GEMINI_MODEL,
     });

@@ -54,6 +54,48 @@ export function lintText(text: string, kind: TextKind, network?: Network): strin
   return out;
 }
 
+const ENTITIES: Record<string, string> = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: ' ',
+  aacute: 'á',
+  eacute: 'é',
+  iacute: 'í',
+  oacute: 'ó',
+  uacute: 'ú',
+  atilde: 'ã',
+  otilde: 'õ',
+  acirc: 'â',
+  ecirc: 'ê',
+  ocirc: 'ô',
+  agrave: 'à',
+  egrave: 'è',
+  ccedil: 'ç',
+  mdash: '—',
+  ndash: '–',
+};
+
+function decode(text: string): string {
+  return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, code: string) => {
+    if (code[0] === '#') {
+      const hex = code[1].toLowerCase() === 'x';
+      const n = hex ? parseInt(code.slice(2), 16) : parseInt(code.slice(1), 10);
+      return Number.isFinite(n) ? String.fromCodePoint(n) : m;
+    }
+    return ENTITIES[code.toLowerCase()] ?? m;
+  });
+}
+
+/** Texto que aparece na arte: sem tags, sem CSS e com as entidades decodificadas. */
+export function visibleText(html: string): string {
+  return decode(html.replace(/<(style|script)\b[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]*>/g, ' '))
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 const SLIDE_FIELDS = ['kicker', 'title', 'body', 'cta'] as const;
 
 export interface VariationLint {
@@ -70,6 +112,11 @@ export function lintVariation(v: AdVariation, network: Network): VariationLint {
       const value = slide[field];
       if (!value) continue;
       for (const msg of lintText(value, 'piece')) pieces.push(`slide ${i + 1} ${field}: ${msg}`);
+    }
+    if (slide.html) {
+      for (const msg of lintText(visibleText(slide.html), 'piece')) {
+        pieces.push(`slide ${i + 1} html: ${msg}`);
+      }
     }
   });
   const caption = [
@@ -91,6 +138,20 @@ export function cleanPieceText(text: string): string {
     .replace(/^[,\s]+|[,\s]+$/g, '');
 }
 
+/**
+ * Limpa so o texto entre as tags (emoji fora, travessao vira virgula), sem tocar em tags e estilos.
+ * Mantem os espacos das bordas de cada trecho, que podem separar palavras de tags vizinhas.
+ */
+export function cleanHtmlText(html: string): string {
+  return html.replace(/>([^<]+)</g, (_m, chunk: string) => {
+    const core = chunk.trim();
+    if (!core) return `>${chunk}<`;
+    const lead = chunk.match(/^\s*/)![0];
+    const trail = chunk.match(/\s*$/)![0];
+    return `>${lead}${cleanPieceText(core)}${trail}<`;
+  });
+}
+
 function cleanSlide(slide: AdSlide): AdSlide {
   const out: AdSlide = { title: cleanPieceText(slide.title) };
   for (const field of ['kicker', 'body', 'cta'] as const) {
@@ -100,10 +161,11 @@ function cleanSlide(slide: AdSlide): AdSlide {
       if (cleaned) out[field] = cleaned;
     }
   }
+  if (slide.html) out.html = cleanHtmlText(slide.html);
   return out;
 }
 
-/** Corrige so as pecas. O texto sugerido nao e reescrito: so marcado em `warnings`. */
+/** Corrige so as pecas e o HTML. O texto sugerido nao e reescrito: so marcado em `warnings`. */
 export function fixVariation(v: AdVariation): AdVariation {
   return { ...v, slides: v.slides.map(cleanSlide) };
 }

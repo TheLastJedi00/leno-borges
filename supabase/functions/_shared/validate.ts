@@ -4,8 +4,6 @@ const FORMATS: AdFormat[] = ['story', 'carousel', 'post'];
 const NETWORKS: Network[] = ['instagram', 'linkedin'];
 const LANGS: Lang[] = ['en', 'fr', 'pt'];
 
-export const VARIATION_COUNT = 3;
-
 export type Parsed<T> = { ok: true; value: T } | { ok: false; error: string };
 
 const fail = (error: string): { ok: false; error: string } => ({ ok: false, error });
@@ -51,7 +49,8 @@ const text = (x: unknown): string | null => (typeof x === 'string' && x.trim() ?
 function parseSlide(raw: unknown): AdSlide | null {
   if (!isRecord(raw)) return null;
   const title = text(raw.title);
-  if (!title) return null;
+  const html = text(raw.html);
+  if (!title || !html) return null;
   const slide: AdSlide = { title };
   for (const field of ['kicker', 'body', 'cta'] as const) {
     if (raw[field] === undefined || raw[field] === null) continue;
@@ -59,38 +58,60 @@ function parseSlide(raw: unknown): AdSlide | null {
     const value = text(raw[field]);
     if (value) slide[field] = value;
   }
+  slide.html = html;
   return slide;
 }
 
-/** Confere a saida do Gemini contra o contrato e devolve so os campos conhecidos. */
-export function validateVariations(raw: unknown, input: GenerateInput): Parsed<AdVariation[]> {
-  if (!isRecord(raw) || !Array.isArray(raw.variations)) return fail('Resposta sem variações.');
-  if (raw.variations.length !== VARIATION_COUNT) {
-    return fail(`Esperava ${VARIATION_COUNT} variações, vieram ${raw.variations.length}.`);
+/** Confere uma variacao do Gemini contra o contrato e devolve so os campos conhecidos. */
+export function validateVariation(raw: unknown, input: GenerateInput): Parsed<AdVariation> {
+  if (!isRecord(raw)) return fail('Variação inválida.');
+  const angle = text(raw.angle);
+  if (!angle) return fail('Variação sem ângulo.');
+  const caption = text(raw.caption);
+  if (!caption) return fail('Variação sem texto sugerido.');
+  if (!Array.isArray(raw.hashtags) || raw.hashtags.some((h) => typeof h !== 'string')) {
+    return fail('Hashtags inválidas.');
   }
+  if (!Array.isArray(raw.slides) || raw.slides.length !== input.slideCount) {
+    return fail(`A variação deveria ter ${input.slideCount} slide(s).`);
+  }
+  const slides: AdSlide[] = [];
+  for (const [j, s] of raw.slides.entries()) {
+    const slide = parseSlide(s);
+    if (!slide) return fail(`Slide ${j + 1} inválido (título e html são obrigatórios).`);
+    slides.push(slide);
+  }
+  const hashtags = (raw.hashtags as string[]).map((h) => h.trim()).filter(Boolean);
+  return { ok: true, value: { angle, slides, caption, hashtags } };
+}
 
-  const out: AdVariation[] = [];
-  for (const [i, item] of raw.variations.entries()) {
-    const n = i + 1;
-    if (!isRecord(item)) return fail(`Variação ${n} inválida.`);
-    const angle = text(item.angle);
-    if (!angle) return fail(`Variação ${n} sem ângulo.`);
-    const caption = text(item.caption);
-    if (!caption) return fail(`Variação ${n} sem texto sugerido.`);
-    if (!Array.isArray(item.hashtags) || item.hashtags.some((h) => typeof h !== 'string')) {
-      return fail(`Variação ${n} com hashtags inválidas.`);
-    }
-    if (!Array.isArray(item.slides) || item.slides.length !== input.slideCount) {
-      return fail(`Variação ${n} deveria ter ${input.slideCount} slide(s).`);
-    }
-    const slides: AdSlide[] = [];
-    for (const [j, s] of item.slides.entries()) {
-      const slide = parseSlide(s);
-      if (!slide) return fail(`Variação ${n}, slide ${j + 1} inválido (título obrigatório).`);
-      slides.push(slide);
-    }
-    const hashtags = (item.hashtags as string[]).map((h) => h.trim()).filter(Boolean);
-    out.push({ angle, slides, caption, hashtags });
+/** Marcadores que o front troca pelos arquivos reais (os unicos "enderecos" aceitos no HTML). */
+const PLACEHOLDER = /^\s*['"]?\s*(\{\{(LOGO_URL|BACKGROUND_URL)\}\}|data:image\/)/i;
+
+/**
+ * Problemas de seguranca no HTML gerado (vazio = aceito). O HTML e mostrado no painel, na mesma
+ * origem da sessao: nada de script, handler, CSS em bloco ou endereco externo. O front ainda passa
+ * tudo pelo DOMPurify; esta checagem serve para pedir ao Gemini um HTML limpo.
+ */
+export function unsafeHtml(html: string): string[] {
+  const out: string[] = [];
+  const has = (re: RegExp) => re.test(html);
+  if (has(/<\s*script\b/i)) out.push('tem <script>');
+  if (has(/<\s*style\b/i)) out.push('tem <style> (use só style="..." inline)');
+  if (has(/<\s*(iframe|object|embed|link|meta|base|form|input|frame|frameset)\b/i)) {
+    out.push('tem tag proibida (iframe, object, embed, link, meta, base, form ou input)');
   }
-  return { ok: true, value: out };
+  if (has(/\son[a-z]+\s*=/i)) out.push('tem atributo de evento (on...=)');
+  if (has(/javascript\s*:/i)) out.push('tem javascript:');
+  if (has(/@import/i)) out.push('tem @import');
+
+  const external: string[] = [];
+  for (const m of html.matchAll(/\b(?:src|href|xlink:href)\s*=\s*(["'])(.*?)\1/gi)) {
+    if (!PLACEHOLDER.test(m[2]) && !m[2].startsWith('#')) external.push(m[2]);
+  }
+  for (const m of html.matchAll(/url\(\s*([^)]*)\)/gi)) {
+    if (!PLACEHOLDER.test(m[1]) && !/^\s*['"]?#/.test(m[1])) external.push(m[1]);
+  }
+  if (external.length > 0) out.push('tem endereço externo (use só {{LOGO_URL}}, {{BACKGROUND_URL}} ou data:)');
+  return out;
 }
