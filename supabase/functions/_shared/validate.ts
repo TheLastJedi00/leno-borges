@@ -19,7 +19,7 @@ export function parseInput(body: unknown): Parsed<GenerateInput> {
   if (!isRecord(body)) return fail('Corpo da requisição inválido.');
 
   const theme = typeof body.theme === 'string' ? body.theme.trim() : '';
-  if (theme.length < 3 || theme.length > 500) return fail('Informe um tema de 3 a 500 caracteres.');
+  if (theme.length < 3) return fail('Informe um tema com pelo menos 3 caracteres.');
 
   if (!FORMATS.includes(body.format as AdFormat)) return fail('Formato inválido.');
   if (!NETWORKS.includes(body.network as Network)) return fail('Rede inválida.');

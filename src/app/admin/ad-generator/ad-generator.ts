@@ -83,7 +83,7 @@ export class AdGenerator {
 
   readonly canSubmit = computed(() => {
     const t = this.theme().trim().length;
-    return !this.loading() && t >= 3 && t <= 500;
+    return !this.loading() && t >= 3;
   });
 
   request(): GenerateRequest {
