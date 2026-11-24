@@ -43,5 +43,16 @@ export const adminStrings = {
     submit: 'Gerar 3 variações',
     submitting: 'Gerando',
     empty: 'As variações aparecem aqui.',
+    variation: {
+      title: (n: number) => `Variação ${n}`,
+      download: 'Baixar PNG',
+      downloadAll: 'Baixar todos os slides',
+      downloading: 'Baixando',
+      downloadFailed: 'Não foi possível gerar o PNG. Tente de novo.',
+      caption: 'Texto sugerido',
+      copy: 'Copiar',
+      copied: 'Copiado',
+      warnings: 'Revise antes de publicar',
+    },
   },
 } as const;

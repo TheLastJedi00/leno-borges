@@ -2,6 +2,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AdApi } from '../core/ad-api';
+import { AdAssets } from '../core/ad-assets';
 import { AdGenerator } from './ad-generator';
 
 describe('AdGenerator (formulario)', () => {
@@ -16,6 +17,7 @@ describe('AdGenerator (formulario)', () => {
         provideZonelessChangeDetection(),
         provideRouter([]),
         { provide: AdApi, useValue: { generate } },
+        { provide: AdAssets, useValue: { background: () => Promise.resolve('data:image/png;base64,AA==') } },
       ],
     });
     fixture = TestBed.createComponent(AdGenerator);
@@ -60,7 +62,7 @@ describe('AdGenerator (formulario)', () => {
 
   it('guarda a geracao e o aviso do fundo', async () => {
     generate.and.resolveTo({
-      generation: { id: 'g1', variations: [] },
+      generation: { id: 'g1', variations: [], background_path: 'o/backgrounds/g1.jpg' },
       backgroundError: 'Sem fundo.',
     });
     const c = fixture.componentInstance;
@@ -68,5 +70,6 @@ describe('AdGenerator (formulario)', () => {
     await c.submit();
     expect(c.generation()?.id).toBe('g1');
     expect(c.notice()).toBe('Sem fundo.');
+    expect(c.background()).toBe('data:image/png;base64,AA==');
   });
 });
