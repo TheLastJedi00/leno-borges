@@ -13,6 +13,11 @@ export const adminRoutes: Routes = [
         loadComponent: () => import('./login/login').then((m) => m.Login),
       },
       {
+        // Sem guard: a propria tela trata link expirado ou ausente
+        path: 'redefinir-senha',
+        loadComponent: () => import('./set-password/set-password').then((m) => m.SetPassword),
+      },
+      {
         path: '',
         pathMatch: 'full',
         canActivate: [adminGuard],

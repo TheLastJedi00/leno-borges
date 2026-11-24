@@ -11,6 +11,9 @@ export class Supabase {
   readonly client: SupabaseClient = createClient(
     environment.supabaseUrl,
     environment.supabasePublishableKey,
-    { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } },
+    {
+      // detectSessionInUrl: os links de e-mail (recuperacao, convite) trazem a sessao no hash.
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'implicit' },
+    },
   );
 }
