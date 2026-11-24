@@ -238,8 +238,8 @@ RLS ligado, uma policy por operação: `owner_id = auth.uid()` (select, insert, 
 
 ### Bucket `ads` (privado)
 
-- `backgrounds/<generation_id>.png` e `exports/<generation_id>/v<n>[-<slide>].png`.
-- Policies em `storage.objects`: só o dono lê e escreve, e só no bucket `ads`.
+- `<owner_id>/backgrounds/<generation_id>.png` e `<owner_id>/exports/<generation_id>/v<n>[-<slide>].png`: o primeiro nível é o UUID do dono, e as policies comparam essa pasta com `auth.uid()` (a função envia com a chave de serviço, e esses arquivos não teriam `owner_id`).
+- Policies em `storage.objects`: só o dono lê, envia e apaga, e só no bucket `ads`.
 - Leitura por URL assinada (expira em 1 h).
 
 ### Histórico
