@@ -15,6 +15,18 @@ export const adminStrings = {
     invalid: 'E-mail ou senha inválidos.',
     back: 'Voltar ao site',
   },
+  setPassword: {
+    heading: 'Definir senha',
+    lead: 'Escolha a senha de acesso ao painel.',
+    password: 'Senha nova',
+    confirm: 'Repita a senha',
+    submit: 'Salvar senha',
+    submitting: 'Salvando',
+    mismatch: 'As senhas não conferem.',
+    tooShort: 'Use pelo menos 8 caracteres.',
+    noSession: 'Abra esta página pelo link do e-mail de recuperação ou de convite.',
+    login: 'Ir para o login',
+  },
   dashboard: {
     heading: 'Painel',
     lead: 'Escolha um módulo.',
