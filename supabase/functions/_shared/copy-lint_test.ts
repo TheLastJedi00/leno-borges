@@ -1,5 +1,5 @@
 import { assert, assertEquals } from 'jsr:@std/assert@1';
-import { cleanPieceText, findEmoji, fixVariation, lintText, lintVariation } from './copy-lint.ts';
+import { cleanPieceText, findEmoji, fixVariation, lintText, lintVariation, visibleText } from './copy-lint.ts';
 import type { AdVariation } from './types.ts';
 
 Deno.test('findEmoji acha emojis comuns e sequencias, e ignora acentos e setas', () => {
@@ -77,6 +77,42 @@ Deno.test('lintVariation separa as violacoes das pecas das do texto sugerido', (
   assert(r.pieces.length >= 3);
   assert(r.caption.length >= 1);
   assert(r.pieces.some((m) => m.includes('slide 1')));
+});
+
+Deno.test('visibleText tira tags, estilos e entidades e fica so com o texto visivel', () => {
+  assertEquals(
+    visibleText(
+      '<div style="font-family:\'DM Sans\';margin:0 -4px"><h1>Ol&aacute; &amp; adeus</h1><p>linha&nbsp;dois</p></div>',
+    ),
+    'Olá & adeus linha dois',
+  );
+});
+
+Deno.test('o texto visivel do HTML conta como peca; CSS e atributos nao', () => {
+  const v: AdVariation = {
+    angle: 'a',
+    slides: [{
+      title: 'Limpo',
+      html: '<div style="margin: 0 -8px; background: linear-gradient(135deg, #488FFF 0%, #3986FF 100%)"><h1>Pronto — no ar 🚀</h1></div>',
+    }],
+    caption: 'ok',
+    hashtags: [],
+  };
+  const r = lintVariation(v, 'linkedin');
+  assert(r.pieces.some((m) => m.startsWith('slide 1 html: contém travessão')));
+  assert(r.pieces.some((m) => m.startsWith('slide 1 html: contém emoji')));
+  const clean = { ...v, slides: [{ title: 'Limpo', html: '<div style="margin: 0 -8px"><h1>Pronto, no ar</h1></div>' }] };
+  assertEquals(lintVariation(clean, 'linkedin').pieces, []);
+});
+
+Deno.test('fixVariation limpa o texto dentro do HTML sem mexer em tags e estilos', () => {
+  const fixed = fixVariation({
+    angle: 'a',
+    slides: [{ title: 'T', html: '<div style="margin:0 -8px"><h1>Pronto — no ar 🚀</h1><p> Antes - depois </p></div>' }],
+    caption: 'c',
+    hashtags: [],
+  });
+  assertEquals(fixed.slides[0].html, '<div style="margin:0 -8px"><h1>Pronto, no ar</h1><p> Antes, depois </p></div>');
 });
 
 Deno.test('fixVariation limpa as pecas, mas nao mexe no texto sugerido', () => {

@@ -139,3 +139,10 @@ Pedida pelo dono para o fim ("ao fim eu valido"); precisa do login dele, que nã
 - **Alternativa B:** campo "fatos" no formulário (o que pode ser dito) e o verificador acusar números e nomes técnicos que não estejam no tema nem nos fatos.
   - Prós: controle real do que a peça afirma.
   - Contras: mais trabalho no formulário e falsos positivos no verificador.
+
+## Fixes depois do merge
+
+- **Senha pelo link do e-mail** (PR #17): o `/admin` lê a sessão do link (`detectSessionInUrl`) e manda recuperação, convite e link expirado para `/admin/redefinir-senha`.
+- **Tema sem limite de caracteres** (PR #18): o mínimo de 3 continua.
+- **Permissões da tabela** (PR #19): `GRANT` para `authenticated` e `service_role`; o projeto não expõe tabelas novas à API.
+- **Arte criada pelo Gemini** (fix/gemini-html): o dono achou os templates fixos sem impacto ("texto simples com fundo em duas cores"). Agora o Gemini recebe a identidade visual e as regras de arte no prompt e devolve o HTML de cada slide (só estilos inline, logo e fundo por marcador). 3 chamadas em paralelo, uma por direção criativa (tipográfica, prova, pôster). A função recusa HTML inseguro e pede de novo; o front sanitiza com DOMPurify. Os templates fixos ficam só para gerações antigas. Teste real: carrossel de 5 slides em 43 s, stories em 17 s, post em 28 s; export PNG 1080x1080 em cerca de 1 s por peça. Segue inventando "repository" e não fez a forma contínua do carrossel do Instagram.

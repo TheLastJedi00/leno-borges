@@ -1,5 +1,5 @@
 import { assert, assertEquals, assertRejects, assertStringIncludes } from 'jsr:@std/assert@1';
-import { GeminiError, generateBackground, generateVariations } from './gemini.ts';
+import { GeminiError, generateBackground, generateVariation } from './gemini.ts';
 import type { Env, GenerateInput } from './types.ts';
 
 const env: Env = {
@@ -42,22 +42,30 @@ const textReply = (obj: unknown) => ({
   json: { candidates: [{ content: { parts: [{ text: JSON.stringify(obj) }] } }] },
 });
 
-Deno.test('generateVariations chama o modelo certo, com a chave no header e JSON estruturado', async () => {
-  const { fn, calls } = fakeFetch([textReply({ variations: [] })]);
-  await generateVariations(fn, env, input, { system: 'SYS', user: 'USR' });
+Deno.test('generateVariation chama o modelo certo, com a chave no header e JSON estruturado', async () => {
+  const { fn, calls } = fakeFetch([textReply({ angle: 'a' })]);
+  await generateVariation(fn, env, input, { system: 'SYS', user: 'USR' });
   assertStringIncludes(calls[0].url, 'models/gemini-flash-latest:generateContent');
   assertEquals(calls[0].headers.get('x-goog-api-key'), 'chave-secreta');
   assert(!calls[0].url.includes('chave-secreta'), 'a chave nao pode ir na URL');
   const b = calls[0].body;
   assertEquals(b.generationConfig.responseMimeType, 'application/json');
-  assertEquals(b.generationConfig.responseSchema.properties.variations.type, 'ARRAY');
+  const schema = b.generationConfig.responseSchema;
+  assertEquals(schema.type, 'OBJECT');
+  assertEquals(schema.required, ['angle', 'slides', 'caption', 'hashtags']);
+  const slideSchema = schema.properties.slides.items;
+  assertEquals(slideSchema.properties.html.type, 'STRING');
+  assertEquals(slideSchema.required, ['title', 'html']);
+  assertEquals(schema.properties.slides.minItems, 1);
+  assertEquals(schema.properties.slides.maxItems, 1);
+  assert(b.generationConfig.maxOutputTokens >= 32768, 'HTML do carrossel precisa de espaco');
   assertEquals(b.systemInstruction.parts[0].text, 'SYS');
   assertEquals(b.contents[0].parts[0].text, 'USR');
 });
 
 Deno.test('o raciocinio vai como thinkingLevel medium', async () => {
-  const { fn, calls } = fakeFetch([textReply({ variations: [] })]);
-  await generateVariations(fn, env, input, prompt);
+  const { fn, calls } = fakeFetch([textReply({ angle: 'a' })]);
+  await generateVariation(fn, env, input, prompt);
   assertEquals(calls[0].body.generationConfig.thinkingConfig, { thinkingLevel: 'medium' });
 });
 
@@ -66,8 +74,8 @@ Deno.test('se o modelo recusar thinkingLevel, repete com thinkingBudget medio', 
     status: 400,
     json: { error: { message: 'thinking_level is not supported for this model' } },
   };
-  const { fn, calls } = fakeFetch([refusal, textReply({ variations: [] })]);
-  await generateVariations(fn, env, input, prompt);
+  const { fn, calls } = fakeFetch([refusal, textReply({ angle: 'a' })]);
+  await generateVariation(fn, env, input, prompt);
   assertEquals(calls.length, 2);
   assertEquals(calls[1].body.generationConfig.thinkingConfig, { thinkingBudget: 4096 });
 });
@@ -76,26 +84,26 @@ Deno.test('um 400 que nao e sobre raciocinio nao e repetido', async () => {
   const { fn, calls } = fakeFetch([
     { status: 400, json: { error: { message: 'API key not valid' } } },
   ]);
-  await assertRejects(() => generateVariations(fn, env, input, prompt), GeminiError);
+  await assertRejects(() => generateVariation(fn, env, input, prompt), GeminiError);
   assertEquals(calls.length, 1);
 });
 
 Deno.test('erro HTTP ou resposta sem JSON viram GeminiError sem vazar a chave', async () => {
   const http = fakeFetch([{ status: 500, json: { error: { message: 'boom' } } }]);
-  await assertRejects(() => generateVariations(http.fn, env, input, prompt), GeminiError);
+  await assertRejects(() => generateVariation(http.fn, env, input, prompt), GeminiError);
   const junk = fakeFetch([
     { json: { candidates: [{ content: { parts: [{ text: 'isso nao e json' }] } }] } },
   ]);
   const err = await assertRejects(
-    () => generateVariations(junk.fn, env, input, prompt),
+    () => generateVariation(junk.fn, env, input, prompt),
     GeminiError,
   );
   assert(!String(err).includes('chave-secreta'));
 });
 
-Deno.test('generateVariations devolve o JSON ja convertido', async () => {
-  const { fn } = fakeFetch([textReply({ variations: [{ angle: 'a' }] })]);
-  assertEquals(await generateVariations(fn, env, input, prompt), { variations: [{ angle: 'a' }] });
+Deno.test('generateVariation devolve o JSON ja convertido', async () => {
+  const { fn } = fakeFetch([textReply({ angle: 'a' })]);
+  assertEquals(await generateVariation(fn, env, input, prompt), { angle: 'a' });
 });
 
 // --- imagem ---

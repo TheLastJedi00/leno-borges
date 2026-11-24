@@ -17,6 +17,12 @@ export interface AdSlide {
   title: string;
   body?: string;
   cta?: string;
+  /**
+   * Arte da peca em HTML, criada pelo Gemini: so estilos inline, no tamanho exato do formato,
+   * com os marcadores {{LOGO_URL}} e {{BACKGROUND_URL}}. Geracoes antigas nao tem (o front usa
+   * os templates fixos).
+   */
+  html?: string;
 }
 
 export interface AdVariation {

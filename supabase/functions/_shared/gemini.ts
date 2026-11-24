@@ -53,42 +53,34 @@ function textOf(json: Json): string {
 
 const str = { type: 'STRING' };
 
-/** Schema da saida estruturada: 3 variacoes, cada uma com o numero de slides pedido. */
+/** Teto de saida: o HTML de um carrossel de 10 slides passa facil de 20 mil tokens. */
+const MAX_OUTPUT_TOKENS = 49152;
+
+/** Schema da saida estruturada: uma variacao, com o texto e o HTML de cada slide. */
 export function responseSchema(input: GenerateInput) {
   return {
     type: 'OBJECT',
     properties: {
-      variations: {
+      angle: str,
+      slides: {
         type: 'ARRAY',
-        minItems: 3,
-        maxItems: 3,
+        minItems: input.slideCount,
+        maxItems: input.slideCount,
         items: {
           type: 'OBJECT',
-          properties: {
-            angle: str,
-            slides: {
-              type: 'ARRAY',
-              minItems: input.slideCount,
-              maxItems: input.slideCount,
-              items: {
-                type: 'OBJECT',
-                properties: { kicker: str, title: str, body: str, cta: str },
-                required: ['title'],
-              },
-            },
-            caption: str,
-            hashtags: { type: 'ARRAY', items: str },
-          },
-          required: ['angle', 'slides', 'caption', 'hashtags'],
+          properties: { kicker: str, title: str, body: str, cta: str, html: str },
+          required: ['title', 'html'],
         },
       },
+      caption: str,
+      hashtags: { type: 'ARRAY', items: str },
     },
-    required: ['variations'],
+    required: ['angle', 'slides', 'caption', 'hashtags'],
   };
 }
 
-/** Pede as 3 variacoes ao `GEMINI_MODEL`, com saida estruturada e raciocinio no nivel configurado. */
-export async function generateVariations(
+/** Pede uma variacao ao `GEMINI_MODEL`, com saida estruturada e raciocinio no nivel configurado. */
+export async function generateVariation(
   fetchFn: typeof fetch,
   env: Env,
   input: GenerateInput,
@@ -101,6 +93,7 @@ export async function generateVariations(
     generationConfig: {
       responseMimeType: 'application/json',
       responseSchema: responseSchema(input),
+      maxOutputTokens: MAX_OUTPUT_TOKENS,
       thinkingConfig,
     },
   });
