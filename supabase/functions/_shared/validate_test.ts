@@ -26,12 +26,15 @@ Deno.test('parseInput aceita a entrada completa', () => {
   assertEquals(ok(base), base);
 });
 
-Deno.test('parseInput apara o tema e rejeita tema curto ou longo demais', () => {
+Deno.test('parseInput apara o tema e rejeita tema curto', () => {
   assertEquals(ok({ ...base, theme: '  Tema com folga  ' }).theme, 'Tema com folga');
   bad({ ...base, theme: 'ab' });
   bad({ ...base, theme: '   a   ' });
-  bad({ ...base, theme: 'x'.repeat(501) });
-  assertEquals(ok({ ...base, theme: 'x'.repeat(500) }).theme.length, 500);
+});
+
+Deno.test('parseInput aceita tema longo, sem limite de caracteres', () => {
+  assertEquals(ok({ ...base, theme: 'x'.repeat(501) }).theme.length, 501);
+  assertEquals(ok({ ...base, theme: 'x'.repeat(20000) }).theme.length, 20000);
 });
 
 Deno.test('parseInput rejeita formato, rede e idioma desconhecidos', () => {
