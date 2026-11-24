@@ -1,7 +1,7 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import type { Session } from '@supabase/supabase-js';
-import { Auth } from './auth';
+import { AUTH_URL_HASH, Auth } from './auth';
 import { Supabase } from './supabase';
 
 type AuthListener = (event: string, session: Session | null) => void;
@@ -10,7 +10,7 @@ function fakeSession(email = 'dono@exemplo.com'): Session {
   return { user: { id: 'u1', email } } as Session;
 }
 
-function setup(initial: Session | null, signInError: unknown = null) {
+function setup(initial: Session | null, signInError: unknown = null, hash = '') {
   let listener: AuthListener = () => {};
   const auth = {
     getSession: jasmine.createSpy('getSession').and.resolveTo({ data: { session: initial } }),
@@ -22,11 +22,20 @@ function setup(initial: Session | null, signInError: unknown = null) {
       .createSpy('signInWithPassword')
       .and.resolveTo({ error: signInError }),
     signOut: jasmine.createSpy('signOut').and.resolveTo({ error: null }),
+    updateUser: jasmine.createSpy('updateUser').and.resolveTo({ error: null }),
   };
   TestBed.configureTestingModule({
-    providers: [provideZonelessChangeDetection(), { provide: Supabase, useValue: { client: { auth } } }],
+    providers: [
+      provideZonelessChangeDetection(),
+      { provide: Supabase, useValue: { client: { auth } } },
+      { provide: AUTH_URL_HASH, useValue: hash },
+    ],
   });
-  return { service: TestBed.inject(Auth), auth, emit: (s: Session | null) => listener('X', s) };
+  return {
+    service: TestBed.inject(Auth),
+    auth,
+    emit: (s: Session | null, event = 'X') => listener(event, s),
+  };
 }
 
 describe('Auth', () => {
@@ -70,5 +79,46 @@ describe('Auth', () => {
     await service.signOut();
     expect(auth.signOut).toHaveBeenCalled();
     expect(service.signedIn()).toBeFalse();
+  });
+
+  it('link de recuperacao ou de convite pede para definir a senha', () => {
+    expect(setup(null, null, '#access_token=a&type=recovery').service.needsPassword()).toBeTrue();
+    TestBed.resetTestingModule();
+    expect(setup(null, null, '#access_token=a&type=invite').service.needsPassword()).toBeTrue();
+    TestBed.resetTestingModule();
+    expect(setup(null, null, '#access_token=a&type=signup').service.needsPassword()).toBeFalse();
+    TestBed.resetTestingModule();
+    expect(setup(null).service.needsPassword()).toBeFalse();
+  });
+
+  it('o evento PASSWORD_RECOVERY do SDK tambem pede a senha', async () => {
+    const { service, emit } = setup(null);
+    await service.whenReady();
+    emit(fakeSession(), 'PASSWORD_RECOVERY');
+    expect(service.needsPassword()).toBeTrue();
+  });
+
+  it('link expirado vira mensagem em portugues', () => {
+    const { service } = setup(null, null, '#error=access_denied&error_code=otp_expired&error_description=Email+link+is+invalid');
+    expect(service.linkError()).toBe('O link expirou ou já foi usado. Peça um novo no painel do Supabase.');
+    expect(service.needsPassword()).toBeFalse();
+  });
+
+  it('updatePassword grava a senha e encerra o pedido', async () => {
+    const { service, auth } = setup(fakeSession(), null, '#type=recovery');
+    expect(await service.updatePassword('nova-senha-123')).toBeNull();
+    expect(auth.updateUser).toHaveBeenCalledWith({ password: 'nova-senha-123' });
+    expect(service.needsPassword()).toBeFalse();
+  });
+
+  it('updatePassword devolve a mensagem do erro e mantem o pedido', async () => {
+    const { service, auth } = setup(fakeSession(), null, '#type=recovery');
+    auth.updateUser.and.resolveTo({ error: { code: 'weak_password', message: 'weak' } });
+    expect(await service.updatePassword('123')).toBe('Senha fraca. Use pelo menos 8 caracteres, misturando letras e números.');
+    auth.updateUser.and.resolveTo({ error: { code: 'same_password', message: 'same' } });
+    expect(await service.updatePassword('igual')).toBe('A senha nova precisa ser diferente da atual.');
+    auth.updateUser.and.resolveTo({ error: { message: 'outra coisa' } });
+    expect(await service.updatePassword('x')).toBe('Não foi possível salvar a senha. Tente de novo.');
+    expect(service.needsPassword()).toBeTrue();
   });
 });
