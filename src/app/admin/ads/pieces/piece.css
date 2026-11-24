@@ -1,0 +1,125 @@
+/*
+ * Direcao de arte das pecas (spec 013). Tudo em px no tamanho real (1080 de largura):
+ * o preview reduz por fora, o export usa este mesmo elemento.
+ *
+ * Uma coisa memoravel por peca:
+ *  - LinkedIn: a placa em relevo (neomorfismo em escala de peca) num layout editorial.
+ *  - Instagram: campos de accent-deep que ocupam a peca, como num poster.
+ * Cor em forma, nunca destacando palavra solta. Numeracao so no carrossel.
+ */
+
+:host {
+  display: block;
+}
+
+.piece {
+  position: relative;
+  overflow: hidden;
+  background: #1c1c1e;
+  color: #a3a7ad;
+  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- fundo opcional gerado por IA, sempre com veu ink --- */
+.bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgb(28 28 30 / 0.6) 0%,
+    rgb(28 28 30 / 0.78) 45%,
+    rgb(28 28 30 / 0.92) 100%
+  );
+}
+
+/* --- marca --- */
+.logo {
+  position: absolute;
+  left: 96px;
+  height: 60px;
+  width: auto;
+  z-index: 3;
+}
+
+/* --- tipografia --- */
+.kicker {
+  margin: 0 0 28px;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: #488fff;
+}
+.title {
+  margin: 0;
+  font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: #f2f3f5;
+  text-wrap: balance;
+}
+.body {
+  margin: 36px 0 0;
+  font-size: 40px;
+  line-height: 1.42;
+  max-width: 860px;
+  text-wrap: pretty;
+}
+.count {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 28px;
+  font-weight: 500;
+  color: #8e8e93;
+  letter-spacing: 0.02em;
+}
+
+/* --- placa em relevo (no maximo uma por peca) --- */
+.plate {
+  border-radius: 40px;
+  background: #232326;
+  box-shadow:
+    20px 20px 48px rgb(0 0 0 / 0.55),
+    -12px -12px 32px rgb(255 255 255 / 0.035),
+    inset 0 2px 0 rgb(255 255 255 / 0.05);
+}
+.cta {
+  display: inline-block;
+  padding: 30px 52px;
+  font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: #f2f3f5;
+}
+
+/* --- Instagram: campo azul e pilula escura --- */
+.field {
+  position: absolute;
+  background: #2563d9;
+  z-index: 1;
+}
+.pill {
+  display: inline-block;
+  padding: 28px 52px;
+  border-radius: 999px;
+  background: #1c1c1e;
+  font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: #f2f3f5;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.35);
+}
+
+.content {
+  position: absolute;
+  z-index: 2;
+}
